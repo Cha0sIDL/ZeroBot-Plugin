@@ -3,9 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/driver"
+	"github.com/wdvxdr1123/ZeroBot/message"
 	"os"
 	"strings"
-
 	// 注：以下插件均可通过前面加 // 注释，注释后停用并不加载插件
 	// 下列插件可与 wdvxdr1123/ZeroBot v1.1.2 以上配合单独使用
 
@@ -28,7 +30,7 @@ import (
 
 	// 娱乐类
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin_wtf"       // 鬼东西
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_false"     // 服务器监控
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_false"     // 服务器监控
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_book_review"  // 哀伤雪刃吧推书记录
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_cangtoushi"   // 藏头诗
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_choose"       // 选择困难症帮手
@@ -56,25 +58,26 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_diana" // 嘉心糖发病
 
 	// 二次元图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_acgimage"      // 随机图片与AI点评
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_aiwife"        // 随机老婆
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_coser"         // 三次元小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_danbooru"      // DeepDanbooru二次元图标签识别
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_image_finder"  // 关键字搜图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_lolicon"       // lolicon 随机图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativesetu"    // 本地涩图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativewife"    // 本地老婆
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_saucenao"      // 以图搜图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_setutime"      // 来份涩图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_tracemoe"      // 搜番
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation" // vtb语录
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_acgimage"     // 随机图片与AI点评
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_aiwife"       // 随机老婆
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_coser"        // 三次元小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_danbooru"     // DeepDanbooru二次元图标签识别
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_image_finder" // 关键字搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_lolicon"      // lolicon 随机图片
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativesetu"   // 本地涩图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativewife"   // 本地老婆
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_saucenao"     // 以图搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_setutime"     // 来份涩图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_tracemoe"     // 搜番
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation" // vtb语录
+
+	//其他
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_jx3"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_sulian"
 
 	// 以下为内置依赖，勿动
 	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
-	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/driver"
-	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
 var (

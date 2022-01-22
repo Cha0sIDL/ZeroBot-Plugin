@@ -3,10 +3,11 @@ package order
 
 const (
 	PrioChat = iota * 10
+	PrioJx3
+	PrioSulian
 	PrioSleepManage
 	PrioAtri
 	PrioManager
-
 	PrioACGImage
 	PrioAIFalse
 	PrioAIWife
