@@ -16,12 +16,12 @@
 [![License](https://img.shields.io/github/license/FloatTech/ZeroBot-Plugin.svg?style=flat-square&logo=gnu)](https://raw.githubusercontent.com/FloatTech/ZeroBot-Plugin/master/LICENSE)
 [![qq group](https://img.shields.io/badge/group-1048452984-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=QMb7x1mM)
 
-本项目符合 [OneBot](https://github.com/howmanybots/onebot) 标准，可基于以下项目与机器人框架/平台进行交互
-| 项目地址 | 平台 | 核心作者 |
-| --- | --- | --- |
+本项目符合 [OneBot](https://github.com/howmanybots/onebot) 标准，可基于以下项目与机器人框架/平台进行交互 | 项目地址 | 平台 | 核心作者 | | --- | --- | --- |
 | [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp) | [MiraiGo](https://github.com/Mrs4s/MiraiGo) | Mrs4s |
-| [yyuueexxiinngg/cqhttp-mirai](https://github.com/yyuueexxiinngg/cqhttp-mirai) | [Mirai](https://github.com/mamoe/mirai) | yyuueexxiinngg |
-| [takayama-lily/onebot](https://github.com/takayama-lily/onebot) | [OICQ](https://github.com/takayama-lily/oicq) | takayama |
+| [yyuueexxiinngg/cqhttp-mirai](https://github.com/yyuueexxiinngg/cqhttp-mirai)
+| [Mirai](https://github.com/mamoe/mirai) | yyuueexxiinngg |
+| [takayama-lily/onebot](https://github.com/takayama-lily/onebot) | [OICQ](https://github.com/takayama-lily/oicq) |
+takayama |
 
 > 从 https://github.com/FloatTech/ZeroBot-Plugin.git fork 来的，增加了一些自己需要的功能
 
@@ -30,10 +30,13 @@
 > 如果您不知道什么是 [OneBot](https://github.com/howmanybots/onebot) 或不希望运行多个程序，还可以直接前往 [gocqzbp](https://github.com/FloatTech/gocqzbp) 的 [Release](https://github.com/FloatTech/gocqzbp/releases) 页面下载单一可执行文件或前往 [Packages](https://github.com/FloatTech/gocqzbp/pkgs/container/gocqzbp) 页面使用`docker`，运行后按提示登录即可。
 
 ## 命令行参数
+
 > `[]`代表是可选参数
+
 ```bash
 zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地址:端口] [qq1 qq2 qq3 ...] [&]
 ```
+
 - **-h**: 显示帮助
 - **-t token**: 设置`AccessToken`，默认为空
 - **-u url**: 设置`Url`，默认为`ws://127.0.0.1:6700`
@@ -45,8 +48,10 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
 - **&**: 驻留在后台，必须放在最后，仅`Linux`下有效
 
 ## 功能
+
 > 在编译时，以下功能除插件控制外，均可通过注释`main.go`中的相应`import`而物理禁用，减小插件体积。
 > 通过插件控制，还可动态管理某个功能在某个群的打开/关闭。
+
 - **web管理** `import _ "github.com/FloatTech/zbputils/control/web"`
     - 开启后可执行文件大约增加 5M ，默认注释不开启。如需开启请自行编辑`main.go`取消注释
     - 需要配合 [webgui](https://github.com/FloatTech/bot-manager) 使用
@@ -71,7 +76,13 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 空调关
     - [x] 群温度
     - [x] 设置温度[正整数]
-    - [x] @Bot mua | 啾咪 | 摸 | 上你 | 傻 | 裸 | 贴 | 老婆 | 抱 | 亲 | 一下 | 咬 | 操 | 123 | 进去 | 调教 | 搓 | 让 | 捏 | 挤 | 略 | 呐 | 原味 | 胖次 | 内裤 | 内衣 | 衣服 | ghs | 批 | 憨批 | kkp | 咕 | 骚 | 喜欢 | suki | 好き | 看 | 不能 | 砸了 | 透 | 口我 | 草我 | 自慰 | onani | オナニー | 炸了 | 色图 | 涩图 | 告白 | 对不起 | 回来 | 吻 | 软 | 壁咚 | 掰开 | 女友 | 是 | 喵 | 嗷呜 | 叫 | 拜 | 佬 | awsl | 臭 | 香 | 腿 | 张开 | 脚 | 脸 | 头发 | 手 | pr | 舔 | 小穴 | 腰 | 诶嘿嘿 | 可爱 | 扭蛋 | 鼻 | 眼 | 色气 | 推 | 床 | 举 | 手冲 | 饿 | 变 | 敲 | 爬 | 怕 | 冲 | 射 | 不穿 | 迫害 | 猫粮 | 揪尾巴 | 薄荷 | 早 | 晚安 | 揉 | 榨 | 掐 | 胸 | 奶子 | 欧派 | 嫩 | 蹭 | 牵手 | 握手 | 拍照 | w | 睡不着 | 欧尼酱 | 哥 | 爱你 | 过来 | 自闭 | 打不过 | 么么哒 | 很懂 | 膝枕 | 累了 | 安慰 | 洗澡 | 一起睡觉 | 一起 | 多大 | 姐姐 | 糖 | 嗦 | 牛子 | 🐂子 | 🐮子 | 嫌弃 | 紧 | baka | 笨蛋 | 插 | 插进来 | 屁股 | 翘 | 翘起来 | 抬 | 抬起 | 爸 | 傲娇 | rua | 咕噜咕噜 | 咕噜 | 上床 | 做爱 | 吃掉 | 吃 | 揪 | 种草莓 | 种草 | 掀 | 妹 | 病娇 | 嘻
+    - [x] @Bot mua | 啾咪 | 摸 | 上你 | 傻 | 裸 | 贴 | 老婆 | 抱 | 亲 | 一下 | 咬 | 操 | 123 | 进去 | 调教 | 搓 | 让 | 捏 | 挤 | 略 | 呐 | 原味 | 胖次
+      | 内裤 | 内衣 | 衣服 | ghs | 批 | 憨批 | kkp | 咕 | 骚 | 喜欢 | suki | 好き | 看 | 不能 | 砸了 | 透 | 口我 | 草我 | 自慰 | onani | オナニー | 炸了
+      | 色图 | 涩图 | 告白 | 对不起 | 回来 | 吻 | 软 | 壁咚 | 掰开 | 女友 | 是 | 喵 | 嗷呜 | 叫 | 拜 | 佬 | awsl | 臭 | 香 | 腿 | 张开 | 脚 | 脸 | 头发 | 手
+      | pr | 舔 | 小穴 | 腰 | 诶嘿嘿 | 可爱 | 扭蛋 | 鼻 | 眼 | 色气 | 推 | 床 | 举 | 手冲 | 饿 | 变 | 敲 | 爬 | 怕 | 冲 | 射 | 不穿 | 迫害 | 猫粮 | 揪尾巴 |
+      薄荷 | 早 | 晚安 | 揉 | 榨 | 掐 | 胸 | 奶子 | 欧派 | 嫩 | 蹭 | 牵手 | 握手 | 拍照 | w | 睡不着 | 欧尼酱 | 哥 | 爱你 | 过来 | 自闭 | 打不过 | 么么哒 | 很懂 |
+      膝枕 | 累了 | 安慰 | 洗澡 | 一起睡觉 | 一起 | 多大 | 姐姐 | 糖 | 嗦 | 牛子 | 🐂子 | 🐮子 | 嫌弃 | 紧 | baka | 笨蛋 | 插 | 插进来 | 屁股 | 翘 | 翘起来 | 抬
+      | 抬起 | 爸 | 傲娇 | rua | 咕噜咕噜 | 咕噜 | 上床 | 做爱 | 吃掉 | 吃 | 揪 | 种草莓 | 种草 | 掀 | 妹 | 病娇 | 嘻
 - **ATRI** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_atri"`
     - [x] 具体指令看 /用法 atri
     - 注：本插件基于 [ATRI](https://github.com/Kyomotoi/ATRI) ，为 Golang 移植版
@@ -105,10 +116,11 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [ ] 撤回[@xxx] [xxx]
     - [ ] 警告[@xxx]
     - [x] run[xxx]
-    - 注：使用gist加群自动审批，请在群介绍添加以下说明，同时开启`需要回答问题并由管理员审核`：加群请在github新建一个gist，其文件名为本群群号的字符串的md5(小写)，内容为一行，是当前unix时间戳(10分钟内有效)。然后请将您的用户名和gist哈希(小写)按照username/gisthash的格式填写到回答即可。
+    - 注：使用gist加群自动审批，请在群介绍添加以下说明，同时开启`需要回答问题并由管理员审核`：加群请在github新建一个gist，其文件名为本群群号的字符串的md5(小写)，内容为一行，是当前unix时间戳(10分钟内有效)
+      。然后请将您的用户名和gist哈希(小写)按照username/gisthash的格式填写到回答即可。
 - **GitHub仓库搜索** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_github"`
-    - [x] >github [xxx]
-    - [x] >github -p [xxx]
+    - [x] > github [xxx]
+    - [x] > github -p [xxx]
 - **在线代码运行** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_runcode"`
     - [x] > runcode [language] help
     - [x] > runcode [language] [code block]
@@ -173,8 +185,8 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 求签 | 占卜
     - [x] 解签
 - **bilibili** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili"`
-    - [x] >vup info [名字 | uid]
-    - [x] >user info [名字 | uid]
+    - [x] > vup info [名字 | uid]
+    - [x] > user info [名字 | uid]
     - [x] /开启粉丝日报
 - **嘉然** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_diana"`
     - [x] 小作文
@@ -218,7 +230,7 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] reborn
     - 注：本插件来源于[tgbot](https://github.com/YukariChiba/tgbot/blob/main/modules/Reborn.py)
 - **翻译** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_translation"`
-    - [x] >TL 你好
+    - [x] > TL 你好
 - **vtb语录** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation"`
     - [x] vtb语录
     - [x] 随机vtb
@@ -260,13 +272,33 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 取消动态订阅[uid]
     - [x] 取消直播订阅[uid]
     - [x] 推送列表
-- **TODO...**
+- **苏联笑话** `_ "github.com/FloatTech/ZeroBot-Plugin/plugin_sulian"`
+    - [x] 苏联笑话
+- **剑网三相关** `_ "github.com/FloatTech/ZeroBot-Plugin/plugin_jx3"`
+    - [x] 日常任务xxx(eg 日常任务绝代天骄)
+    - [x] 开服检查xxx(eg 开服检查绝代天骄)
+    - [x] 金价查询xxx(eg 金价查询绝代天骄)
+    - [x] 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)
+    - [x] 小药
+    - [x] 配装xxx(eg 配装分山劲)
+    - [x] 奇穴xxx(eg 奇穴分山劲)
+    - [x] 宏xxx(eg 宏分山劲)
+    - [x] 沙盘xxx(eg 沙盘绝代天骄)
+    - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
+    - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
+    - [x] 奇遇攻略xxx(eg 奇遇攻略三山四海)
+    - [x] 维护公告
+    - [x] JX骚话（不区分大小写)
+    - [x] 舔狗
 
 ## 使用方法
 
 ### 使用稳定版/测试版 (推荐)
 
-可以前往[Release](https://github.com/FloatTech/ZeroBot-Plugin/releases)页面下载对应系统版本可执行文件，编译时开启了全部插件。您还可以选择 [gocqzbp](https://github.com/FloatTech/gocqzbp) 的 [Release](https://github.com/FloatTech/gocqzbp/releases) 或 [Package](https://github.com/FloatTech/gocqzbp/pkgs/container/gocqzbp)，它是 [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp) 与本插件的合体。
+可以前往[Release](https://github.com/FloatTech/ZeroBot-Plugin/releases)页面下载对应系统版本可执行文件，编译时开启了全部插件。您还可以选择 [gocqzbp](https://github.com/FloatTech/gocqzbp)
+的 [Release](https://github.com/FloatTech/gocqzbp/releases)
+或 [Package](https://github.com/FloatTech/gocqzbp/pkgs/container/gocqzbp)，它是 [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
+与本插件的合体。
 
 ### 本地直接运行
 
