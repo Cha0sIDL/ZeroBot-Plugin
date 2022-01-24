@@ -33,7 +33,7 @@ import (
 
 	// 娱乐类
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin_wtf"       // 鬼东西
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_false"     // 服务器监控
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_false"     // 服务器监控
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_book_review"  // 哀伤雪刃吧推书记录
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_cangtoushi"   // 藏头诗
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_choose"       // 选择困难症帮手
@@ -45,15 +45,15 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_gif"          // 制图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_hs"           // 炉石
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_juejuezi"     // 绝绝子生成器
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_minecraft"    // MCSManager
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu"         // 摸鱼
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_music"        // 点歌
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_novel"        // 铅笔小说网搜索
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_omikuji"      // 浅草寺求签
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_reborn"       // 投胎
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_score"        // 分数
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shadiao"      // 沙雕app
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shindan"      // 测定
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_minecraft"    // MCSManager
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu"    // 摸鱼
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_music"   // 点歌
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_novel"   // 铅笔小说网搜索
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_omikuji" // 浅草寺求签
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_reborn"  // 投胎
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_score"   // 分数
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shadiao" // 沙雕app
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shindan" // 测定
 
 	// b站相关
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili" // 查询b站用户信息
@@ -113,7 +113,7 @@ func init() {
 	// 直接写死 URL 时，请更改下面第二个参数
 	url = flag.String("u", "ws://127.0.0.1:6700", "Set Url of WSClient.")
 	// 默认昵称
-	adana = flag.String("n", "椛椛", "Set default nickname.")
+	adana = flag.String("n", "Cortana", "Set default nickname.")
 	prefix = flag.String("p", "/", "Set command prefix.")
 	poolkey = flag.String("pk", "", "Set imgpool key and enable listening.")
 
@@ -166,7 +166,7 @@ func getKanban() string {
 func main() {
 	printBanner()
 	// 帮助
-	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单"}, zero.OnlyToMe).SetBlock(true).
+	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单", "help"}, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Text(banner, "\n可发送\"/服务列表\"查看 bot 功能"))
 		})
@@ -179,9 +179,9 @@ func main() {
 			NickName:      append([]string{*adana}, nicks...),
 			CommandPrefix: *prefix,
 			// SuperUsers 某些功能需要主人权限，可通过以下两种方式修改
-			// SuperUsers: []string{"12345678", "87654321"}, // 通过代码写死的方式添加主人账号
-			SuperUsers: flag.Args(), // 通过命令行参数的方式添加主人账号
-			Driver:     []zero.Driver{driver.NewWebSocketClient(*url, *token)},
+			SuperUsers: []string{"605116618"}, // 通过代码写死的方式添加主人账号
+			//SuperUsers: flag.Args(), // 通过命令行参数的方式添加主人账号
+			Driver: []zero.Driver{driver.NewWebSocketClient(*url, *token)},
 		},
 	)
 }

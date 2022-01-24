@@ -1,13 +1,12 @@
 package jx3
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	log "github.com/sirupsen/logrus"
-	"github.com/smallnest/rpcx/client"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -25,12 +24,6 @@ type jinjia struct {
 	wanbaolou []float64
 	tieba     []float64
 	qita      []float64
-}
-
-type Args struct {
-	Method string
-	Url    string
-	Body   []byte
 }
 
 func init() {
@@ -57,7 +50,7 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			str := ctx.State["regex_matched"].([]string)[1]
 			log.Errorln("日常任务")
-			data, err := sendHttp(url+"daily", []byte(getMental(strings.Replace(str, " ", "", -1))))
+			data, err := util.SendHttp(url+"daily", []byte(getMental(strings.Replace(str, " ", "", -1))))
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 				ctx.SendChain(message.Text("出错了！！！可能是参数不对"))
@@ -77,7 +70,7 @@ func init() {
 			str := ctx.State["regex_matched"].([]string)[1]
 			data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
 			reqbody, err := json.Marshal(data)
-			rsp, err := sendHttp(url+"check", reqbody)
+			rsp, err := util.SendHttp(url+"check", reqbody)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -104,7 +97,7 @@ func init() {
 			} else {
 				data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"demon", reqbody)
+				rsp, err := util.SendHttp(url+"demon", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -147,7 +140,7 @@ func init() {
 			} else {
 				data := map[string]string{"server": strings.Replace(server, " ", "", -1), "flower": flower, "map": homeMap}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"flower", reqbody)
+				rsp, err := util.SendHttp(url+"flower", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -175,7 +168,7 @@ func init() {
 			} else {
 				data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"sand", reqbody)
+				rsp, err := util.SendHttp(url+"sand", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -195,7 +188,7 @@ func init() {
 			name := ctx.State["regex_matched"].([]string)[2]
 			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
 			reqbody, err := json.Marshal(data)
-			rsp, err := sendHttp(url+"furniture", reqbody)
+			rsp, err := util.SendHttp(url+"furniture", reqbody)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -218,7 +211,7 @@ func init() {
 			name := ctx.State["regex_matched"].([]string)[1]
 			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
 			reqbody, err := json.Marshal(data)
-			rsp, err := sendHttp(url+"require", reqbody)
+			rsp, err := util.SendHttp(url+"require", reqbody)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -239,7 +232,7 @@ func init() {
 			name := ctx.State["regex_matched"].([]string)[1]
 			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
 			reqbody, err := json.Marshal(data)
-			rsp, err := sendHttp(url+"heighten", reqbody)
+			rsp, err := util.SendHttp(url+"heighten", reqbody)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -252,14 +245,13 @@ func init() {
 		})
 	en.OnRegex(`^配装(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			//TODO 模糊查询
 			name := ctx.State["regex_matched"].([]string)[1]
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("请输入职业！！！！"))
 			} else {
 				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"equip", reqbody)
+				rsp, err := util.SendHttp(url+"equip", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -282,7 +274,7 @@ func init() {
 			} else {
 				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"qixue", reqbody)
+				rsp, err := util.SendHttp(url+"qixue", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -307,7 +299,7 @@ func init() {
 			} else {
 				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"macro", reqbody)
+				rsp, err := util.SendHttp(url+"macro", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -325,7 +317,7 @@ func init() {
 			} else {
 				data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
 				reqbody, err := json.Marshal(data)
-				rsp, err := sendHttp(url+"strategy", reqbody)
+				rsp, err := util.SendHttp(url+"strategy", reqbody)
 				if err != nil {
 					log.Errorln("jx3daily:", err)
 				}
@@ -339,7 +331,7 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			data := map[string]string{"limit": "3"}
 			reqbody, err := json.Marshal(data)
-			rsp, err := sendHttp(url+"announce", reqbody)
+			rsp, err := util.SendHttp(url+"announce", reqbody)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -352,7 +344,7 @@ func init() {
 		})
 	en.OnRegex(`^(?i)jx骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			rsp, err := sendHttp(url+"random", nil)
+			rsp, err := util.SendHttp(url+"random", nil)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -361,7 +353,7 @@ func init() {
 		})
 	en.OnRegex(`^舔狗(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			rsp, err := sendHttp("https://www.jx3api.com/share/random", nil)
+			rsp, err := util.SendHttp("https://www.jx3api.com/share/random", nil)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -392,38 +384,4 @@ func min(l []float64) (min float64) {
 
 func appendAny(a interface{}, b interface{}) string {
 	return fmt.Sprintf("%v", a) + "-" + fmt.Sprintf("%v", b)
-}
-
-func sendHttp(httpUrl string, body []byte) ([]byte, error) {
-	d, _ := client.NewPeer2PeerDiscovery("tcp@"+"www.cha0sidl.xyz:8888", "")
-	option := client.DefaultOption
-	option.Heartbeat = true
-	option.HeartbeatInterval = time.Second
-	option.MaxWaitForHeartbeat = 2 * time.Second
-	option.IdleTimeout = 3 * time.Second
-	xclient := client.NewXClient("Http", client.Failtry, client.RandomSelect, d, option)
-	defer xclient.Close()
-	args := &Args{
-		Method: "GET",
-		Url:    httpUrl,
-		Body:   body,
-	}
-	var Reply []byte
-	err := xclient.Call(context.Background(), "Send", args, &Reply)
-	if err != nil {
-		log.Fatalf("failed to call: %v", err)
-	}
-	return Reply, err
-	//req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))
-	//if err != nil {
-	//	panic("request error")
-	//}
-	//client := &http.Client{}
-	//req.Header.Set("User-Agent", "User-Agent, Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)")
-	//response, err := client.Do(req)
-	//log.Errorln(response.Body, response.StatusCode)
-	//if response.StatusCode != http.StatusOK {
-	//	panic("请求失败")
-	//}
-	//return io.ReadAll(response.Body)
 }
