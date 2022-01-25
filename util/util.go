@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	"time"
@@ -14,7 +15,7 @@ type Args struct {
 }
 
 func SendHttp(httpUrl string, body []byte) ([]byte, error) {
-	d, _ := client.NewPeer2PeerDiscovery("tcp@"+"www.cha0sidl.xyz:8888", "")
+	d, _ := client.NewPeer2PeerDiscovery("tcp@"+config.Cfg.RpcHost, "")
 	option := client.DefaultOption
 	option.Heartbeat = true
 	option.HeartbeatInterval = time.Second

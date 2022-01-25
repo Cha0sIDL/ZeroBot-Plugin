@@ -49,7 +49,6 @@ func init() {
 	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			str := ctx.State["regex_matched"].([]string)[1]
-			log.Errorln("日常任务")
 			data, err := util.SendHttp(url+"daily", []byte(getMental(strings.Replace(str, " ", "", -1))))
 			if err != nil {
 				log.Errorln("jx3daily:", err)

@@ -3,6 +3,7 @@ package aireply
 import (
 	"encoding/json"
 	"github.com/FloatTech/AnimeAPI/aireply"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
@@ -10,22 +11,8 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"io/ioutil"
 	"time"
 )
-
-var (
-	dbpath = "data/tts/"
-	dbfile = dbpath + "tts.json"
-	login  = time.Now().Unix()
-)
-
-type cfg struct {
-	Appkey string   `json:"appkey"`
-	Access string   `json:"access"`
-	Secret string   `json:"secret"`
-	Voice  []string `json:"voice"`
-}
 
 //func init() {
 //	limit := rate.NewManager(time.Second*10, 1)
@@ -58,7 +45,7 @@ func init() {
 			msg := ctx.ExtractPlainText()
 			r := aireply.NewAIReply(getReplyMode(ctx))
 			arg := getCfg()
-			data := map[string]string{"appkey": arg.Appkey, "access": arg.Access, "secret": arg.Secret, "voice": getVoice(arg), "text": r.TalkPlain(msg)}
+			data := map[string]string{"appkey": arg.TTS.Appkey, "access": arg.TTS.Access, "secret": arg.TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
 			reqbody, _ := json.Marshal(data)
 			rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
 			json := gjson.ParseBytes(rsp)
@@ -70,17 +57,14 @@ func init() {
 		})
 }
 
-func getCfg() cfg {
-	tmp, err := ioutil.ReadFile(dbfile)
-	if err != nil {
-		panic("读取文件失败")
-	}
-	c := new(cfg)
-	json.Unmarshal(tmp, c)
-	return *c
+func getCfg() config.Config {
+	return config.Cfg
 }
 
-func getVoice(c cfg) string {
-	today := (time.Now().Unix() - login) / 86400 % int64(len(c.Voice))
-	return c.Voice[today]
+func getVoice() string {
+	timeLayout := config.Cfg.TTS.Start
+	tmp, _ := time.Parse("2006-01-02", timeLayout)
+	login := tmp.Unix()
+	today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))
+	return config.Cfg.TTS.Voice[today]
 }

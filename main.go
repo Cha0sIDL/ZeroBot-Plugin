@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -88,7 +89,7 @@ var (
 		"* OneBot + ZeroBot + Golang",
 		"* Version 1.2.4 - 2022-01-14 20:05:43 +0800 CST",
 		"* Copyright © 2020 - 2021 FloatTech. All Rights Reserved.",
-		"* Project: https://github.com/FloatTech/ZeroBot-Plugin",
+		"* Project: https://github.com/Cha0sIDL/ZeroBot-Plugin",
 	}
 	nicks   = []string{"ATRI", "atri", "亚托莉", "アトリ"}
 	banner  = strings.Join(contents, "\n")
@@ -165,15 +166,16 @@ func getKanban() string {
 
 func main() {
 	printBanner()
+	config.Init()
 	// 帮助
 	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单", "help"}, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Text(banner, "\n可发送\"/服务列表\"查看 bot 功能"))
 		})
-	zero.OnFullMatch("查看zbp公告", zero.OnlyToMe, zero.AdminPermission).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text(getKanban()))
-		})
+	//zero.OnFullMatch("查看zbp公告", zero.OnlyToMe, zero.AdminPermission).SetBlock(true).
+	//	Handle(func(ctx *zero.Ctx) {
+	//		ctx.SendChain(message.Text(getKanban()))
+	//	})
 	zero.RunAndBlock(
 		zero.Config{
 			NickName:      append([]string{*adana}, nicks...),
