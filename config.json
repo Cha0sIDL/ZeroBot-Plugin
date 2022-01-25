@@ -1,0 +1,16 @@
+{
+  "rpc_host": "cha0sidl.xyz:8888",
+  "tts": {
+    "appkey": "frdgUt9XOb3t1Nmk",
+    "access": "LTAI5tRuydNYCGk9AnJx57rM",
+    "secret": "cnYOycyZHNuYBVuaKpdMMIAbirzxh5",
+    "voice": [
+      "chuangirl",
+      "xiaobei",
+      "aibao",
+      "aida",
+      "aiqi"
+    ],
+    "start": "2022-01-25"
+  }
+}

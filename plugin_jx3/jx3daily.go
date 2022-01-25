@@ -120,9 +120,9 @@ func init() {
 				dateStr := time.Now().Format("2006/01/02 15:04:05")
 				ctx.SendChain(message.Text(
 					"服务器: ", jin.server, "\n",
-					"万宝楼: ", appendAny(min(jin.wanbaolou), max(jin.wanbaolou)), "\n",
-					"贴吧: ", appendAny(min(jin.tieba), max(jin.tieba)), "\n",
-					"其他平台: ", appendAny(min(jin.qita), max(jin.qita)), "\n",
+					"万宝楼: ", util.AppendAny(util.Min(jin.wanbaolou), util.Max(jin.wanbaolou)), "\n",
+					"贴吧: ", util.AppendAny(util.Min(jin.tieba), util.Max(jin.tieba)), "\n",
+					"其他平台: ", util.AppendAny(util.Min(jin.qita), util.Max(jin.qita)), "\n",
 					"时间：", dateStr, "\n",
 				))
 			}
@@ -236,7 +236,6 @@ func init() {
 				log.Errorln("jx3daily:", err)
 			}
 			json := gjson.ParseBytes(rsp)
-			log.Errorln(json)
 			ctx.SendChain(
 				message.Image(
 					json.Get("data.url").String()),
@@ -278,7 +277,6 @@ func init() {
 					log.Errorln("jx3daily:", err)
 				}
 				json := gjson.ParseBytes(rsp)
-				log.Errorln(json)
 				ctx.SendChain(
 					message.Text("通用：\n"),
 					message.Image(
@@ -359,28 +357,4 @@ func init() {
 			json := gjson.ParseBytes(rsp)
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
 		})
-}
-
-func max(l []float64) (max float64) {
-	max = l[0]
-	for _, v := range l {
-		if v > max {
-			max = v
-		}
-	}
-	return
-}
-
-func min(l []float64) (min float64) {
-	min = l[0]
-	for _, v := range l {
-		if v < min {
-			min = v
-		}
-	}
-	return
-}
-
-func appendAny(a interface{}, b interface{}) string {
-	return fmt.Sprintf("%v", a) + "-" + fmt.Sprintf("%v", b)
 }

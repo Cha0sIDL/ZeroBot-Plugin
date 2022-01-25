@@ -2,6 +2,7 @@ package util
 
 import (
 	"context"
+	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
@@ -46,4 +47,28 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	//	panic("请求失败")
 	//}
 	//return io.ReadAll(response.Body)
+}
+
+func Max(l []float64) (max float64) {
+	max = l[0]
+	for _, v := range l {
+		if v > max {
+			max = v
+		}
+	}
+	return
+}
+
+func Min(l []float64) (min float64) {
+	min = l[0]
+	for _, v := range l {
+		if v < min {
+			min = v
+		}
+	}
+	return
+}
+
+func AppendAny(a interface{}, b interface{}) string {
+	return fmt.Sprintf("%v", a) + "-" + fmt.Sprintf("%v", b)
 }
