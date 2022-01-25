@@ -54,4 +54,5 @@ const (
 	PrioCurse
 	PrioMockingBird
 	PrioAIReply
+        PrioWangYiYun
 )
