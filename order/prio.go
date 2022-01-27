@@ -52,7 +52,7 @@ const (
 	PrioWtf
 
 	PrioCurse
+	PrioWangYiYun
 	PrioMockingBird
 	PrioAIReply
-        PrioWangYiYun
 )

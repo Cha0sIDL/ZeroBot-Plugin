@@ -1,17 +1,24 @@
 package aireply
 
 import (
-	"encoding/json"
 	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/tidwall/gjson"
+	"github.com/FloatTech/zbputils/file"
+	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"os"
+	"strconv"
 	"time"
+)
+
+const (
+	cachePath = dbpath + "cache/"
+	dbpath    = "data/ai/"
 )
 
 //func init() {
@@ -33,6 +40,9 @@ import (
 //}
 
 func init() {
+	if file.IsNotExist(cachePath) {
+		os.Mkdir(cachePath, 0755)
+	}
 	limit := rate.NewManager(time.Second*10, 1)
 
 	control.Register("ai", order.PrioMockingBird, &control.Options{
@@ -44,16 +54,24 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
 			r := aireply.NewAIReply(getReplyMode(ctx))
-			arg := getCfg()
-			data := map[string]string{"appkey": arg.TTS.Appkey, "access": arg.TTS.Access, "secret": arg.TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
-			reqbody, _ := json.Marshal(data)
-			rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
-			json := gjson.ParseBytes(rsp)
-			if json.Get("code").Int() != 200 {
+			arg := nls.DefaultSpeechSynthesisParam()
+			arg.Voice = getVoice()
+			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
+			err := util.TTS(VoiceFile, r.TalkPlain(msg), arg, getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
+			if err != nil {
+				//data := map[string]string{"appkey": getCfg().TTS.Appkey, "access": getCfg().TTS.Access, "secret": getCfg().TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
+				//reqbody, _ := json.Marshal(data)
+				// JX3 api 已弃用
+				//rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
+				//json := gjson.ParseBytes(rsp)
+				//if json.Get("code").Int() != 200 {
+				//	ctx.SendChain(message.Text(r.TalkPlain(msg)))
+				//} else {
+				//	ctx.SendChain(message.Record(json.Get("data.url").String()))
+				//}
 				ctx.SendChain(message.Text(r.TalkPlain(msg)))
-			} else {
-				ctx.SendChain(message.Record(json.Get("data.url").String()))
 			}
+			ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
 		})
 }
 
