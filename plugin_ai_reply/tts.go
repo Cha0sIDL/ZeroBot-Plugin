@@ -41,7 +41,7 @@ const (
 
 func init() {
 	if file.IsNotExist(cachePath) {
-		os.Mkdir(cachePath, 0755)
+		os.MkdirAll(cachePath, 0755)
 	}
 	limit := rate.NewManager(time.Second*10, 1)
 
