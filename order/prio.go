@@ -50,7 +50,6 @@ const (
 	PrioTraceMoe
 	PrioTranslation
 	PrioVtbQuotation
-	PrioWangYiYun
 	PrioWtf
 
 	PrioCurse
