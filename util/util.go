@@ -32,7 +32,7 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	var Reply []byte
 	err := xclient.Call(context.Background(), "Send", args, &Reply)
 	if err != nil {
-		log.Fatalf("failed to call: %v", err)
+		log.Errorln("failed to call: %v", err)
 	}
 	return Reply, err
 	//req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))

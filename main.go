@@ -47,15 +47,15 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_hs"           // 炉石
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_juejuezi"     // 绝绝子生成器
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_minecraft"    // MCSManager
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu"    // 摸鱼
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_music"   // 点歌
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_novel"   // 铅笔小说网搜索
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_omikuji" // 浅草寺求签
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_reborn"  // 投胎
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_score"   // 分数
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shadiao" // 沙雕app
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shindan" // 测定
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_wangyiyun"    // 网易云音乐热评
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu"      // 摸鱼
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_music"     // 点歌
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_novel"     // 铅笔小说网搜索
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_omikuji"   // 浅草寺求签
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_reborn"    // 投胎
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_score"     // 分数
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shadiao"   // 沙雕app
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_shindan"   // 测定
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_wangyiyun" // 网易云音乐热评
 
 	// b站相关
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili" // 查询b站用户信息
@@ -88,8 +88,8 @@ import (
 var (
 	contents = []string{
 		"* OneBot + ZeroBot + Golang",
-		"* Version 1.2.4 - 2022-01-14 20:05:43 +0800 CST",
-		"* Copyright © 2020 - 2021 FloatTech. All Rights Reserved.",
+		"* Version 1.2.4 - 2022-01-30 20:05:43 +0800 CST",
+		"* Copyright © 2020 - 2022 FloatTech. All Rights Reserved.",
 		"* Project: https://github.com/Cha0sIDL/ZeroBot-Plugin",
 	}
 	nicks   = []string{"ATRI", "atri", "亚托莉", "アトリ"}

@@ -93,5 +93,5 @@ func getReplyMode(ctx *zero.Ctx) (name string) {
 			return modes[index]
 		}
 	}
-	return "青云客"
+	return "小爱"
 }
