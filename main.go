@@ -16,9 +16,6 @@ import (
 	// webctrl "github.com/FloatTech/zbputils/control/web" // web 后端控制
 
 	// 词库类
-	"github.com/FloatTech/AnimeAPI/imgpool"
-	"github.com/FloatTech/zbputils/control"
-
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_reply" // 人工智能回复
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_atri"     // ATRI词库
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_chat"     // 基础词库
@@ -58,7 +55,9 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_wangyiyun" // 网易云音乐热评
 
 	// b站相关
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili" // 查询b站用户信息
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili"       // 查询b站用户信息
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili_parse" // b站视频链接解析
+
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili_push" // b站推送
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_diana" // 嘉心糖发病
 
@@ -88,18 +87,17 @@ import (
 var (
 	contents = []string{
 		"* OneBot + ZeroBot + Golang",
-		"* Version 1.2.4 - 2022-01-30 20:05:43 +0800 CST",
+		"* Version 1.2.5 - 2022-01-30 20:06:00 +0800 CST",
 		"* Copyright © 2020 - 2022 FloatTech. All Rights Reserved.",
 		"* Project: https://github.com/Cha0sIDL/ZeroBot-Plugin",
 	}
-	nicks   = []string{"ATRI", "atri", "亚托莉", "アトリ"}
-	banner  = strings.Join(contents, "\n")
-	token   *string
-	url     *string
-	adana   *string
-	prefix  *string
-	poolkey *string
-	reg     = registry.NewRegReader("reilia.fumiama.top:32664", "fumiama")
+	nicks  = []string{"ATRI", "atri", "亚托莉", "アトリ"}
+	banner = strings.Join(contents, "\n")
+	token  *string
+	url    *string
+	adana  *string
+	prefix *string
+	reg    = registry.NewRegReader("reilia.fumiama.top:32664", "fumiama")
 )
 
 func init() {
@@ -117,7 +115,6 @@ func init() {
 	// 默认昵称
 	adana = flag.String("n", "Cortana", "Set default nickname.")
 	prefix = flag.String("p", "/", "Set command prefix.")
-	poolkey = flag.String("pk", "", "Set imgpool key and enable listening.")
 
 	flag.Parse()
 	if *h {
@@ -132,10 +129,6 @@ func init() {
 		if *w {
 			logrus.SetLevel(logrus.WarnLevel)
 		}
-	}
-
-	if *poolkey != "" {
-		imgpool.RegisterListener(*poolkey, control.Register("imgpool", 1, &control.Options{}))
 	}
 
 	// 启用 gui

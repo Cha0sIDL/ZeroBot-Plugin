@@ -13,6 +13,7 @@ const (
 	PrioAIWife
 	PrioBase14
 	PrioBilibili
+	PrioBiliBiliParse
 	PrioBilibiliPush
 	PrioBookReview
 	PrioCangTouShi
@@ -49,6 +50,7 @@ const (
 	PrioTraceMoe
 	PrioTranslation
 	PrioVtbQuotation
+	PrioWangYiYun
 	PrioWtf
 
 	PrioCurse
