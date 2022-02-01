@@ -1,6 +1,7 @@
 package aireply
 
 import (
+	"fmt"
 	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
@@ -45,10 +46,22 @@ func init() {
 	}
 	limit := rate.NewManager(time.Second*10, 1)
 
-	control.Register("ai", order.PrioMockingBird, &control.Options{
+	en := control.Register("ai", order.PrioMockingBird, &control.Options{
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
-	}).OnMessage(zero.OnlyToMe, func(ctx *zero.Ctx) bool {
+	})
+	en.OnPrefix("复读机").SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			text := ctx.State["args"]
+			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
+			err := util.TTS(VoiceFile, fmt.Sprintf("%v", text), nls.DefaultSpeechSynthesisParam(), getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
+			if err != nil {
+				ctx.SendChain(message.Text("Ali NLS 调用失败"))
+			} else {
+				ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
+			}
+		})
+	en.OnMessage(zero.OnlyToMe, func(ctx *zero.Ctx) bool {
 		return limit.Load(ctx.Event.UserID).Acquire()
 	}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
