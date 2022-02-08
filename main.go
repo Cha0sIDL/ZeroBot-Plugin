@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"os"
 	"strings"
 	// 注：以下插件均可通过前面加 // 注释，注释后停用并不加载插件
@@ -79,6 +78,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_sulian"
 
 	// 以下为内置依赖，勿动
+	_ "github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
@@ -90,7 +90,7 @@ import (
 var (
 	contents = []string{
 		"* OneBot + ZeroBot + Golang",
-		"* Version 1.2.5 - 2022-01-30 20:06:00 +0800 CST",
+		"* Version 1.2.5 - 2022-02-08 10:37:00 +0800 CST",
 		"* Copyright © 2020 - 2022 FloatTech. All Rights Reserved.",
 		"* Project: https://github.com/Cha0sIDL/ZeroBot-Plugin",
 	}
@@ -164,7 +164,6 @@ func getKanban() string {
 func main() {
 	order.Wait()
 	printBanner()
-	config.Init()
 	// 帮助
 	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单", "help"}, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {

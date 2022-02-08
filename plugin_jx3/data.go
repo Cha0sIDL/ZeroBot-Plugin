@@ -11,7 +11,7 @@ import (
 const (
 	dbpath  = "data/jx3/"
 	dbfile  = dbpath + "robotData.db"
-	fileUrl = "https://raw.githubusercontent.com/Cha0sIDL/data/main/robotData.db"
+	fileUrl = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/robotData.db"
 )
 
 var db = &sql.Sqlite{DBPath: dbfile}

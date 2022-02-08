@@ -27,16 +27,17 @@ type jinjia struct {
 }
 
 func init() {
-	en := control.Register("jx3", order.PrioJx3, &control.Options{
+	go startWs()
+	en := control.Register("jx", order.PrioJx3, &control.Options{
 		DisableOnDefault: false,
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +
 			"- 开服检查xxx(eg 开服检查绝代天骄)\n" +
 			"- 金价查询xxx(eg 金价查询绝代天骄)\n" +
 			"- 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)\n" +
 			"- 小药\n" +
-			"- 配装xxx(eg 配装分山劲)\n" +
-			"- 奇穴xxx(eg 奇穴分山劲)\n" +
-			"- 宏xxx(eg 宏分山劲)\n" +
+			"- xxx配装(eg 分山劲配装)\n" +
+			"- xxx奇穴(eg 分山劲奇穴)\n" +
+			"- xxx宏(eg 分山劲宏)\n" +
 			"- 沙盘xxx(eg 沙盘绝代天骄)\n" +
 			"- 装饰属性|装饰xxx(eg 装饰混沌此生)\n" +
 			"- 奇遇条件xxx(eg 奇遇条件三山四海)\n" +
@@ -44,6 +45,7 @@ func init() {
 			"- 维护公告\n" +
 			"- JX骚话（不区分大小写）\n" +
 			"- 舔狗\n" +
+			"（开启|关闭）jx推送\n" +
 			"TODO:宏转图片",
 	})
 	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
@@ -226,10 +228,10 @@ func init() {
 					json.Get("data.upload").String()),
 			)
 		})
-	en.OnRegex(`^小药(.*)`).SetBlock(true).
+	en.OnSuffix("小药").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
-			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
+			name := ctx.State["args"].(string)
+			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 			reqbody, err := json.Marshal(data)
 			rsp, err := util.SendHttp(url+"heighten", reqbody)
 			if err != nil {
@@ -241,9 +243,9 @@ func init() {
 					json.Get("data.url").String()),
 			)
 		})
-	en.OnRegex(`^配装(.*)`).SetBlock(true).
+	en.OnSuffix("配装").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
+			name := ctx.State["args"].(string)
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("请输入职业！！！！"))
 			} else {
@@ -264,9 +266,9 @@ func init() {
 				)
 			}
 		})
-	en.OnRegex(`^奇穴(.*)`).SetBlock(true).
+	en.OnSuffix("奇穴").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
+			name := ctx.State["args"].(string)
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("请输入职业！！！！"))
 			} else {
@@ -287,10 +289,10 @@ func init() {
 				)
 			}
 		})
-	en.OnRegex(`^宏(.*)`).SetBlock(true).
+	en.OnSuffix("宏").SetBlock(true).
 		//TODO 图片
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
+			name := ctx.State["args"].(string)
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("请输入职业！！！！"))
 			} else {
@@ -339,7 +341,7 @@ func init() {
 			})
 			ctx.SendChain(message.Text(text))
 		})
-	en.OnRegex(`^(?i)jx骚话(.*)`).SetBlock(true).
+	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			rsp, err := util.SendHttp(url+"random", nil)
 			if err != nil {
@@ -357,4 +359,66 @@ func init() {
 			json := gjson.ParseBytes(rsp)
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
 		})
+	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			m, ok := control.Lookup("jx")
+			if ok {
+				if m.IsEnabledIn(ctx.Event.GroupID) {
+					ctx.Send(message.Text("已启用！"))
+				} else {
+					m.Enable(ctx.Event.GroupID)
+					ctx.Send(message.Text("添加成功！"))
+				}
+			} else {
+				ctx.Send(message.Text("找不到该服务！"))
+			}
+		})
+	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			m, ok := control.Lookup("jx")
+			if ok {
+				if m.IsEnabledIn(ctx.Event.GroupID) {
+					m.Disable(ctx.Event.GroupID)
+					ctx.Send(message.Text("删除成功！"))
+				} else {
+					ctx.Send(message.Text("未启用！"))
+				}
+			} else {
+				ctx.Send(message.Text("找不到该服务！"))
+			}
+		})
+}
+
+func sendNotice(payload gjson.Result) {
+	m, ok := control.Lookup("jx")
+	if ok {
+		var rsp []message.MessageSegment
+		switch payload.Get("type").Int() {
+		case 2011:
+			rsp = []message.MessageSegment{
+				message.Text(payload.Get("data.server").String() + "开服啦！！\n"),
+			}
+		case 2012:
+			rsp =
+				[]message.MessageSegment{
+					message.Text("有新的资讯请查收:\n"),
+					message.Text(payload.Get("data.type").String() + "\n" + payload.Get("data.title").String() + "\n" +
+						payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
+				}
+		}
+		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+			for _, g := range ctx.GetGroupList().Array() {
+				grp := g.Get("group_id").Int()
+				if m.IsEnabledIn(grp) && len(rsp) != 0 {
+					ctx.SendGroupMessage(grp, rsp)
+				}
+			}
+			return true
+		})
+		if !ok {
+			log.Errorln("JX推送失败")
+			//Sid, _ := strconv.ParseInt(zero.BotConfig.SuperUsers[0], 10, 64)
+			//message.At(Sid)
+		}
+	}
 }

@@ -12,6 +12,7 @@ const config = "config.json"
 type Config struct {
 	RpcHost string `json:"rpc_host"`
 	TTS     *TTS   `json:"tts"`
+	WsUrl   string `json:"ws_url"`
 }
 
 type TTS struct {
@@ -24,12 +25,12 @@ type TTS struct {
 
 var Cfg Config
 
-func Init() {
+func init() {
 	tmp, err := ioutil.ReadFile(config)
 	if err != nil {
 		panic("读取文件失败")
 	}
 	Cfg = Config{TTS: &TTS{Start: time.Now().Format("2006-01-02")}}
 	json.Unmarshal(tmp, &Cfg)
-	log.Println("读取配置成功\n", Cfg.RpcHost, "\n", Cfg.TTS)
+	log.Println("读取配置成功\n", Cfg.RpcHost, "\n", Cfg.TTS, "\n", Cfg.WsUrl)
 }

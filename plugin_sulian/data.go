@@ -10,7 +10,7 @@ import (
 const (
 	dbpath  = "data/sulian/"
 	dbfile  = dbpath + "sulian.json"
-	fileUrl = "https://raw.githubusercontent.com/Cha0sIDL/sulian/main/sulian.json"
+	fileUrl = "https://raw.githubusercontent.com/Cha0sIDL/data/master/sulian/sulian.json"
 )
 
 // 加载数据库

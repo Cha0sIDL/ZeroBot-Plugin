@@ -132,7 +132,7 @@ func init() { // 插件主体
 		})
 
 	// 查询数据库涩图数量
-	engine.OnFullMatchGroup([]string{">setu status"}).SetBlock(true).
+	engine.OnFullMatchGroup([]string{"setu status"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			state := []string{"[SetuTime]"}
 			for _, imgtype := range pool.List() {

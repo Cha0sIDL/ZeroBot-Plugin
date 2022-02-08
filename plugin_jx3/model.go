@@ -2,7 +2,6 @@ package jx3
 
 import (
 	"fmt"
-	"log"
 )
 
 type mental struct {
@@ -21,6 +20,5 @@ func getMental(mentalName string) string {
 	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
 	db.Find("ns_mental", &mental, arg)
 	defer db.Close()
-	log.Println(mental)
 	return mental.Name
 }
