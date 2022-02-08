@@ -4,9 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
-	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/driver"
-	"github.com/wdvxdr1123/ZeroBot/message"
 	"os"
 	"strings"
 	// 注：以下插件均可通过前面加 // 注释，注释后停用并不加载插件
@@ -82,13 +79,12 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_sulian"
 
 	// 以下为内置依赖，勿动
+	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
 	"github.com/wdvxdr1123/ZeroBot/message"
-
-	"github.com/FloatTech/ZeroBot-Plugin/order"
 )
 
 var (
