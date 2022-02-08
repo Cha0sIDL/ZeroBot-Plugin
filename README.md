@@ -65,6 +65,8 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] /还原 xxx (在发送的群/用户还原xxx的开启状态到初始状态)
     - [x] /禁止 service qq1 qq2... (禁止 qqs 使用服务 service)
     - [x] /允许 service qq1 qq2... (重新允许 qqs 使用服务 service)
+    - [x] /封禁 qq1 qq2... (禁止 qqs 使用全部服务)
+    - [x] /解封 qq1 qq2... (允许 qqs 使用全部服务)
     - [x] /用法 xxx
     - [x] /服务列表
     - [x] /服务详情
@@ -161,6 +163,9 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 刷新所有本地setu
     - [x] 所有本地setu分类
     - 注：刷新文件夹较慢，请耐心等待刷新完成，会提示“成功”。
+- **nsfw图片识别** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_nsfw"`
+    - [x] nsfw打分[图片]
+    - [x] 当图片属于非 neutral 类别时自动发送评价(默认禁用，启用输入 /启用 nsfwauto)
 - **lolicon** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_lolicon"`
     - [x] 来份萝莉
 - **搜图** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_saucenao"`
@@ -176,6 +181,8 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 评价图片(发送一张图片让bot评分)
 - **DeepDanbooru二次元图标签识别** `import _ github.com/FloatTech/ZeroBot-Plugin/plugin_danbooru`
     - [x] 鉴赏图片[图片]
+- **叔叔的AI二次元图片放大** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_scale"`
+    - [x] 放大图片[图片]
 - **每日运势** `import _ github.com/FloatTech/ZeroBot-Plugin/plugin_fortune`
     - [x] 运势 | 抽签
     - [x] 设置底图[车万 DC4 爱因斯坦 星空列车 樱云之恋 富婆妹 李清歌 公主连结 原神 明日方舟 碧蓝航线 碧蓝幻想 战双 阴阳师 赛马娘]

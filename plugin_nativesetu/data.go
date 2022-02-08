@@ -16,6 +16,8 @@ import (
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/process"
 	"github.com/FloatTech/zbputils/sql"
+
+	"github.com/FloatTech/ZeroBot-Plugin/order"
 )
 
 // setuclass holds setus in a folder, which is the class name.
@@ -25,10 +27,11 @@ type setuclass struct {
 	Path  string `db:"path"`  // Path 图片路径
 }
 
-var ns *nsetu
+var ns = &nsetu{db: &sql.Sqlite{DBPath: dbfile}}
 
 func init() {
 	go func() {
+		defer order.DoneOnExit()()
 		process.SleepAbout1sTo2s()
 		err := os.MkdirAll(datapath, 0755)
 		if err != nil {
@@ -41,7 +44,6 @@ func init() {
 				logrus.Println("[nsetu] set setu dir to", setupath)
 			}
 		}
-		ns = &nsetu{db: &sql.Sqlite{DBPath: dbfile}}
 	}()
 }
 

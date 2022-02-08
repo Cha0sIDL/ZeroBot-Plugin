@@ -62,18 +62,20 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_diana" // 嘉心糖发病
 
 	// 二次元图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_acgimage"     // 随机图片与AI点评
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_aiwife"       // 随机老婆
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_coser"        // 三次元小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_danbooru"     // DeepDanbooru二次元图标签识别
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_image_finder" // 关键字搜图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_lolicon"      // lolicon 随机图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativesetu"   // 本地涩图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativewife"   // 本地老婆
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_saucenao"     // 以图搜图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_setutime"     // 来份涩图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_tracemoe"     // 搜番
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation" // vtb语录
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_acgimage"      // 随机图片与AI点评
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_aiwife"        // 随机老婆
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_coser"         // 三次元小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_danbooru"      // DeepDanbooru二次元图标签识别
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_image_finder"  // 关键字搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_lolicon"       // lolicon 随机图片
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativesetu"    // 本地涩图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nativewife"    // 本地老婆
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_nsfw"          // nsfw图片识别
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_saucenao"      // 以图搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_scale"         // 叔叔的AI二次元图片放大
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_setutime"      // 来份涩图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_tracemoe"      // 搜番
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation" // vtb语录
 
 	//其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_jx3"
@@ -82,6 +84,11 @@ import (
 	// 以下为内置依赖，勿动
 	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
+	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/driver"
+	"github.com/wdvxdr1123/ZeroBot/message"
+
+	"github.com/FloatTech/ZeroBot-Plugin/order"
 )
 
 var (
@@ -159,6 +166,7 @@ func getKanban() string {
 }
 
 func main() {
+	order.Wait()
 	printBanner()
 	config.Init()
 	// 帮助
