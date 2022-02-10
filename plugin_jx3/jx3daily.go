@@ -45,7 +45,7 @@ func init() {
 			"- 维护公告\n" +
 			"- JX骚话（不区分大小写）\n" +
 			"- 舔狗\n" +
-			"（开启|关闭）jx推送\n" +
+			"-（开启|关闭）jx推送\n" +
 			"TODO:宏转图片",
 	})
 	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
@@ -361,64 +361,53 @@ func init() {
 		})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			m, ok := control.Lookup("jx")
-			if ok {
-				if m.IsEnabledIn(ctx.Event.GroupID) {
-					ctx.Send(message.Text("已启用！"))
-				} else {
-					m.Enable(ctx.Event.GroupID)
-					ctx.Send(message.Text("添加成功！"))
-				}
+			area := enable(ctx.Event.GroupID)
+			if len(area) == 0 {
+				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定"))
 			} else {
-				ctx.Send(message.Text("找不到该服务！"))
+				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			m, ok := control.Lookup("jx")
-			if ok {
-				if m.IsEnabledIn(ctx.Event.GroupID) {
-					m.Disable(ctx.Event.GroupID)
-					ctx.Send(message.Text("删除成功！"))
-				} else {
-					ctx.Send(message.Text("未启用！"))
-				}
-			} else {
-				ctx.Send(message.Text("找不到该服务！"))
-			}
+			disable(ctx.Event.GroupID)
+			ctx.Send(message.Text("关闭成功"))
+		})
+	en.OnPrefix("绑定区服", zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			area := ctx.State["args"].(string)
+			bindArea(ctx.Event.GroupID, area)
+			ctx.Send(message.Text("绑定成功"))
 		})
 }
 
 func sendNotice(payload gjson.Result) {
-	m, ok := control.Lookup("jx")
-	if ok {
-		var rsp []message.MessageSegment
-		switch payload.Get("type").Int() {
-		case 2011:
-			rsp = []message.MessageSegment{
-				message.Text(payload.Get("data.server").String() + "开服啦！！\n"),
-			}
-		case 2012:
-			rsp =
-				[]message.MessageSegment{
-					message.Text("有新的资讯请查收:\n"),
-					message.Text(payload.Get("data.type").String() + "\n" + payload.Get("data.title").String() + "\n" +
-						payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
+	var rsp []message.MessageSegment
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		for _, g := range ctx.GetGroupList().Array() {
+			grp := g.Get("group_id").Int()
+			isEnable, bindArea := isEnable(grp)
+			switch payload.Get("type").Int() {
+			case 2011:
+				if bindArea == payload.Get("data.server").String() {
+					rsp = []message.MessageSegment{
+						message.Text(payload.Get("data.server").String() + "开服啦！！\n"),
+					}
+				} else {
+					rsp = []message.MessageSegment{}
 				}
-		}
-		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-			for _, g := range ctx.GetGroupList().Array() {
-				grp := g.Get("group_id").Int()
-				if m.IsEnabledIn(grp) && len(rsp) != 0 {
-					ctx.SendGroupMessage(grp, rsp)
-				}
+			case 2012:
+				rsp =
+					[]message.MessageSegment{
+						message.Text("有新的资讯请查收:\n"),
+						message.Text(payload.Get("data.type").String() + "\n" + payload.Get("data.title").String() + "\n" +
+							payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
+					}
 			}
-			return true
-		})
-		if !ok {
-			log.Errorln("JX推送失败")
-			//Sid, _ := strconv.ParseInt(zero.BotConfig.SuperUsers[0], 10, 64)
-			//message.At(Sid)
+			if isEnable && len(rsp) != 0 {
+				ctx.SendGroupMessage(grp, rsp)
+			}
 		}
-	}
+		return true
+	})
 }
