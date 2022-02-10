@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/FloatTech/AnimeAPI v1.2.5-beta10
 	github.com/FloatTech/zbputils v1.2.5-beta7
+	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v0.0.1
 	github.com/antchfx/htmlquery v1.2.4
 	github.com/corona10/goimagehash v1.0.3
@@ -26,7 +27,6 @@ require (
 )
 
 require (
-	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.0 // indirect
