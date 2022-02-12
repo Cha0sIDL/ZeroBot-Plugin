@@ -134,7 +134,6 @@ func init() {
 			logrus.SetLevel(logrus.WarnLevel)
 		}
 	}
-
 	// 启用 gui
 	// webctrl.InitGui(*g)
 }
