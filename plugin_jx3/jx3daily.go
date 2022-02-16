@@ -363,7 +363,13 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			area := enable(ctx.Event.GroupID)
 			if len(area) == 0 {
-				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定"))
+				var server []string
+				rsp, _ := util.SendHttp(url+"check", nil)
+				json := gjson.ParseBytes(rsp)
+				for _, value := range json.Get("data").Array() {
+					server = append(server, value.Get("server").String())
+				}
+				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定，可选服务器有：\n" + fmt.Sprint(server)))
 			} else {
 				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
@@ -375,9 +381,20 @@ func init() {
 		})
 	en.OnPrefix("绑定区服", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			area := ctx.State["args"].(string)
-			bindArea(ctx.Event.GroupID, area)
-			ctx.Send(message.Text("绑定成功"))
+			area := strings.Replace(ctx.State["args"].(string), " ", "", -1)
+			server := make(map[string]int64)
+			rsp, _ := util.SendHttp(url+"check", nil)
+			json := gjson.ParseBytes(rsp)
+			for _, value := range json.Get("data").Array() {
+				server[value.Get("server").String()] = value.Get("id").Int()
+			}
+			log.Errorln(server)
+			if _, ok := server[area]; ok {
+				bindArea(ctx.Event.GroupID, area)
+				ctx.Send(message.Text("绑定成功"))
+			} else {
+				ctx.Send(message.Text("区服输入有误"))
+			}
 		})
 }
 
