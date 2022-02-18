@@ -10,9 +10,10 @@ import (
 const config = "config.json"
 
 type Config struct {
-	RpcHost string `json:"rpc_host"`
-	TTS     *TTS   `json:"tts"`
-	WsUrl   string `json:"ws_url"`
+	RpcHost string  `json:"rpc_host"`
+	TTS     *TTS    `json:"tts"`
+	WsUrl   string  `json:"ws_url"`
+	At      []int64 `json:"at"`
 }
 
 type TTS struct {
@@ -32,5 +33,5 @@ func init() {
 	}
 	Cfg = Config{TTS: &TTS{Start: time.Now().Format("2006-01-02")}}
 	json.Unmarshal(tmp, &Cfg)
-	log.Println("读取配置成功\n", Cfg.RpcHost, "\n", Cfg.TTS, "\n", Cfg.WsUrl)
+	log.Println("读取配置成功\n", Cfg.RpcHost, "\n", Cfg.TTS, "\n", Cfg.WsUrl, "\n", Cfg.At)
 }

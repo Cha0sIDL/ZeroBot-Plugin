@@ -379,7 +379,14 @@ func init() { // 插件主体
 				if err == nil {
 					ctx.SendChain(message.Text(w.Msg))
 				} else {
-					ctx.SendChain(message.Text("欢迎~"))
+					Info := ctx.GetStrangerInfo(ctx.Event.UserID, true)
+					if Info.Get("sex").String() == "female" { //性别女
+						ctx.SendChain(message.At(ctx.Event.UserID), message.Text("本群规则：女发照片男自强"))
+						time.Sleep(10 * time.Second)
+						ctx.SendChain(message.AtAll(), message.Text("\nlsp们出来接客了\n"))
+					} else { //其余的不管了
+						ctx.SendChain(message.Text("欢迎~~"))
+					}
 				}
 				c, ok := control.Lookup("manager")
 				if ok {
@@ -507,9 +514,9 @@ func init() { // 插件主体
 	// 加群请在github新建一个gist，其文件名为本群群号的字符串的md5(小写)，内容为一行，是当前unix时间戳(10分钟内有效)。
 	// 然后请将您的用户名和gist哈希(小写)按照username/gisthash的格式填写到回答即可。
 	engine.OnRequest().SetBlock(false).Handle(func(ctx *zero.Ctx) {
-		/*if ctx.Event.RequestType == "friend" {
+		if ctx.Event.RequestType == "friend" {
 			ctx.SetFriendAddRequest(ctx.Event.Flag, true, "")
-		}*/
+		}
 		c, ok := control.Lookup("manager")
 		if ok && c.GetData(ctx.Event.GroupID)&0x10 == 0x10 && ctx.Event.RequestType == "group" && ctx.Event.SubType == "add" {
 			// gist 文件名是群号的 ascii 编码的 md5
@@ -533,4 +540,9 @@ func init() { // 插件主体
 			}
 		}
 	})
+	engine.OnFullMatch(`测试`, zero.SuperUserPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			Info := ctx.GetStrangerInfo(605116618, true)
+			logrus.Errorln(Info)
+		})
 }

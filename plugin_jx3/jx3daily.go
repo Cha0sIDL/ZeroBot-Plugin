@@ -3,6 +3,7 @@ package jx3
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
@@ -358,6 +359,12 @@ func init() {
 			}
 			json := gjson.ParseBytes(rsp)
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
+		})
+	en.OnKeyword(`渣男`).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			for _, QQ := range config.Cfg.At {
+				ctx.SendChain(message.At(QQ))
+			}
 		})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
