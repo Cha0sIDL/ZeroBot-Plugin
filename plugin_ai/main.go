@@ -2,6 +2,7 @@ package ai
 
 import (
 	"errors"
+	"github.com/FloatTech/zbputils/control/order"
 	"time"
 
 	"github.com/FloatTech/AnimeAPI/aireply"
@@ -9,8 +10,6 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 	"github.com/wdvxdr1123/ZeroBot/message"
-
-	"github.com/FloatTech/ZeroBot-Plugin/order"
 )
 
 const (
@@ -21,7 +20,7 @@ var modes = [...]string{"青云客", "小爱"}
 
 func init() { // 插件主体
 	bucket := rate.NewManager(time.Minute, 20) // 接口回复限速器
-	engine := control.Register(serviceName, order.PrioAIReply, &control.Options{
+	engine := control.Register(serviceName, order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help: "人工智能回复\n" +
 			"- @Bot 任意文本(任意一句话回复)\n- 设置回复模式[青云客  |  小爱]\n- ",
@@ -34,11 +33,11 @@ func init() { // 插件主体
 				// 频繁触发，不回复
 				return
 			}
-			reply := aireply.Talk(ctx.ExtractPlainText())
+			reply := aireply.Talk(ctx.ExtractPlainText(), zero.BotConfig.NickName[0])
 			// 回复
 			time.Sleep(time.Second * 1)
 			if zero.OnlyPublic(ctx) {
-				reply = append(reply, message.Reply(ctx.Event.MessageID))
+				reply := message.ParseMessageFromString(aireply.Talk(ctx.ExtractPlainText(), zero.BotConfig.NickName[0]))
 				ctx.Send(reply)
 				return
 			}

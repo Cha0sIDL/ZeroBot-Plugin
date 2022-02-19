@@ -2,8 +2,8 @@ package sulian
 
 import (
 	"encoding/json"
-	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/file"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -12,7 +12,7 @@ import (
 )
 
 func init() { // 插件主体
-	engine := control.Register("sulian", order.PrioSulian, &control.Options{
+	engine := control.Register("sulian", order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help:             "苏联笑话\n",
 	})

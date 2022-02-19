@@ -27,5 +27,6 @@ func down() {
 		if err != nil {
 			panic(err)
 		}
+		logrus.Infoln("[sulian]加载成功")
 	}
 }

@@ -8,11 +8,10 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/FloatTech/zbputils/web"
+	_ "github.com/fumiama/sqlite3" // import sql
 	"github.com/jinzhu/gorm"
-	_ "github.com/logoove/sqlite" // import sql
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 )
@@ -160,7 +159,6 @@ func (vdb *VtbDB) GetThirdCategory(firstIndex, secondIndex, thirdIndex int) Thir
 // RandomVtb ...
 func (vdb *VtbDB) RandomVtb() ThirdCategory {
 	db := (*gorm.DB)(vdb)
-	rand.Seed(time.Now().UnixNano())
 	var count int
 	var tc ThirdCategory
 	db.Model(&ThirdCategory{}).Count(&count).Offset(rand.Intn(count)).Take(&tc)

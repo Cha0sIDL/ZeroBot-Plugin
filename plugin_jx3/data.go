@@ -1,9 +1,9 @@
 package jx3
 
 import (
+	sql "github.com/FloatTech/sqlite"
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/process"
-	"github.com/FloatTech/zbputils/sql"
 	"github.com/sirupsen/logrus"
 	"os"
 )

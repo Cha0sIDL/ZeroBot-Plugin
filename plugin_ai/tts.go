@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/file"
 	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -46,7 +46,7 @@ func init() {
 	}
 	limit := rate.NewManager(time.Second*10, 1)
 
-	en := control.Register("ai", order.PrioMockingBird, &control.Options{
+	en := control.Register("ai", order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
 	})
@@ -70,7 +70,7 @@ func init() {
 			arg := nls.DefaultSpeechSynthesisParam()
 			arg.Voice = getVoice()
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
-			err := util.TTS(VoiceFile, r.TalkPlain(msg), arg, getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
+			err := util.TTS(VoiceFile, r.TalkPlain(msg, zero.BotConfig.NickName[0]), arg, getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
 			if err != nil {
 				//data := map[string]string{"appkey": getCfg().TTS.Appkey, "access": getCfg().TTS.Access, "secret": getCfg().TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
 				//reqbody, _ := json.Marshal(data)
@@ -82,7 +82,7 @@ func init() {
 				//} else {
 				//	ctx.SendChain(message.Record(json.Get("data.url").String()))
 				//}
-				ctx.SendChain(message.Text(r.TalkPlain(msg)))
+				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 			ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
 		})
