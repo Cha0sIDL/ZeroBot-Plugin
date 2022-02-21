@@ -413,9 +413,16 @@ func sendNotice(payload gjson.Result) {
 			isEnable, bindArea := isEnable(grp)
 			switch payload.Get("type").Int() {
 			case 2011:
+				var status string
 				if bindArea == payload.Get("data.server").String() {
+					switch payload.Get("data.status").Int() {
+					case 1:
+						status = "开服啦！！！，快上游戏了\n"
+					case 0:
+						status = "停服了！！！，该干活干活了，该睡觉睡觉了\n"
+					}
 					rsp = []message.MessageSegment{
-						message.Text(payload.Get("data.server").String() + "开服啦！！\n"),
+						message.Text(payload.Get("data.server").String() + status),
 					}
 				} else {
 					rsp = []message.MessageSegment{}
