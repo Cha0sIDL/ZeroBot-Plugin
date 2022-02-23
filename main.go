@@ -99,6 +99,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_vtb_quotation"  // vtb语录
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_wangyiyun"      // 网易云音乐热评
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai"
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin_wtf"            // 鬼东西
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili_push"  // b站推送
 	//其他
@@ -125,7 +126,7 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_curse" // 骂人
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_reply" // 人工智能回复
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin_ai_reply" // 人工智能回复
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
