@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/order"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/control/order"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -29,7 +29,7 @@ type jinjia struct {
 
 func init() {
 	go startWs()
-	en := control.Register("jx", order.PrioJx3, &control.Options{
+	en := control.Register("jx", order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +
 			"- 开服检查xxx(eg 开服检查绝代天骄)\n" +
