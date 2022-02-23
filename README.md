@@ -146,6 +146,9 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
 - **摸鱼** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu"`
     - [x] /启用 moyu
     - [x] /禁用 moyu
+- **摸鱼人日历** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_moyu_calendar"`
+    - [x] /启用 moyucalendar
+    - [x] /禁用 moyucalendar
 - **涩图** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_setutime"`
     - [x] 来份[涩图/二次元/风景/车万]
     - [x] 添加[涩图/二次元/风景/车万][P站图片ID]
@@ -192,6 +195,9 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] @BOT 创建频道 xxx
     - [x] 跳入(频道)海中
     - [x] 注：不显式限制时，私聊发送可在所有群抽到，群聊发送仅可在本群抽到，默认频道为 global
+- **猜单词** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_wordle"`
+    - [x] 个人猜单词
+    - [x] 团队猜单词
 - **bilibili** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili"`
     - [x] >vup info [名字 | uid]
     - [x] >user info [名字 | uid]
@@ -286,7 +292,7 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
 - **网易云音乐热评** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_wangyiyun"`
     - [x] 来份网易云热评
 - **b站视频链接解析** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_bilibili_parse"`
-    - [x] https://www.bilibili.com/video/BV1xx411c7BF | https://www.bilibili.com/video/av1605 | https://b23.tv/I8uzWCA
+    - [x] https://www.bilibili.com/video/BV1xx411c7BF | https://www.bilibili.com/video/av1605 | https://b23.tv/I8uzWCA | https://www.bilibili.com/video/bv1xx411c7BF
 - **煎蛋网无聊图** `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_jandan"`
     - [x] 来份屌图
     - [x] 更新屌图
