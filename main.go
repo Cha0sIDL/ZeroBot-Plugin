@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math/rand"
 	"os"
 	"strings"
@@ -226,6 +227,7 @@ func getKanban() string {
 }
 
 func main() {
+	util.ConfigLocalFilesystemLogger("./log", "log", 3*time.Hour*24, time.Hour*24)
 	order.Wait()
 	printBanner()
 	rand.Seed(time.Now().UnixNano()) // 全局 seed，其他插件无需再 seed
