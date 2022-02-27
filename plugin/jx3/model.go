@@ -35,6 +35,16 @@ func getMental(mentalName string) string {
 	return mental.Name
 }
 
+func getData(mentalName string) mental {
+	var m mental
+	var rwMutex sync.RWMutex
+	rwMutex.RLock()
+	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
+	db.Find("ns_mental", &m, arg)
+	rwMutex.RUnlock()
+	return m
+}
+
 func isEnable(Gid int64) (bool, string) {
 	var control jxControl
 	var rwMutex sync.RWMutex

@@ -12,6 +12,8 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
+	"io/ioutil"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -297,16 +299,23 @@ func init() {
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("请输入职业！！！！"))
 			} else {
-				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"macro", reqbody)
+				//data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
+				//reqbody, err := json.Marshal(data)
+				//rsp, err := util.SendHttp(url+"macro", reqbody)
+				//if err != nil {
+				//	log.Errorln("jx3daily:", err)
+				//}
+				//json := gjson.ParseBytes(rsp)
+				//ctx.SendChain(
+				//	message.Text("奇穴：\n", json.Get("data.qixue").String(), "\n", "宏：\n", json.Get("data.macro").String()),
+				//)
+				mental := getData(strings.Replace(name, " ", "", -1))
+				b, err := ioutil.ReadFile(dbpath + "macro/" + strconv.FormatUint(mental.ID, 10))
 				if err != nil {
-					log.Errorln("jx3daily:", err)
+					ctx.SendChain(message.Text("请检查参数或通知管理员更新数据"))
+				} else {
+					ctx.SendChain(message.Text(string(b)))
 				}
-				json := gjson.ParseBytes(rsp)
-				ctx.SendChain(
-					message.Text("奇穴：\n", json.Get("data.qixue").String(), "\n", "宏：\n", json.Get("data.macro").String()),
-				)
 			}
 		})
 	en.OnRegex(`^奇遇攻略(.*)`).SetBlock(true).
