@@ -17,7 +17,7 @@ func init() {
 		DisableOnDefault: false,
 		Help: "baidu\n" +
 			"- 百度下[xxx]",
-	}).OnPrefix("百度下").SetBlock(true).Limit(ctxext.LimitByGroup).
+	}).OnPrefixGroup([]string{"百度下", "百度"}).SetBlock(true).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {
 			txt := ctx.State["args"].(string)
 			if txt != "" {
