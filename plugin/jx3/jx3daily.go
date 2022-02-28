@@ -20,6 +20,10 @@ import (
 
 const url = "https://www.jx3api.com/app/"
 
+const realizeUrl = "https://www.jx3api.com/realize/"
+
+const cloudUrl = "https://www.jx3api.com/cloud/"
+
 var method = "GET"
 
 type jinjia struct {
@@ -242,8 +246,8 @@ func init() {
 			}
 			json := gjson.ParseBytes(rsp)
 			ctx.SendChain(
-				message.Image(
-					json.Get("data.url").String()),
+				message.Text(
+					json.Get("data").String()),
 			)
 		})
 	en.OnSuffix("配装").SetBlock(true).
@@ -362,7 +366,7 @@ func init() {
 		})
 	en.OnRegex(`^舔狗(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			rsp, err := util.SendHttp("https://www.jx3api.com/share/random", nil)
+			rsp, err := util.SendHttp(realizeUrl+"random", nil)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 			}
@@ -389,6 +393,18 @@ func init() {
 			} else {
 				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
+		})
+	en.OnFullMatch("更新内容").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			data := map[string]string{"robot": zero.BotConfig.NickName[0]}
+			reqbody, err := json.Marshal(data)
+			if err != nil {
+				log.Errorln("jx3daily:", err)
+			}
+			rsp, _ := util.SendHttp(cloudUrl+"content", reqbody)
+			json := gjson.ParseBytes(rsp)
+			ctx.Send(message.Image(json.Get("data.url").String()))
+
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
