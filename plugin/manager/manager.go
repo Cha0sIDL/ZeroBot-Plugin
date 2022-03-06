@@ -386,11 +386,14 @@ func init() { // 插件主体
 				} else {
 					Info := ctx.GetStrangerInfo(ctx.Event.UserID, true)
 					if Info.Get("sex").String() == "female" { //性别女
-						ctx.SendChain(message.At(ctx.Event.UserID), message.Text("本群规则：女发照片男自强"))
+						ctx.SendChain(message.At(ctx.Event.UserID), message.Text(fmt.Sprintf("十秒之内不发照片，%s就要把你踢出去了哦~", zero.BotConfig.NickName[0])))
 						time.Sleep(10 * time.Second)
 						ctx.SendChain(message.AtAll(), message.Text("\nlsp们出来接客了\n"))
-					} else { //其余的不管了
-						ctx.SendChain(message.Text("欢迎~~"))
+					} else if Info.Get("sex").String() == "male" { //性别男
+						ctx.SendChain(message.Text("你JB谁啊！！！"),
+							message.At(ctx.Event.UserID))
+					} else {
+						ctx.SendChain(message.Text("欢迎！！！"))
 					}
 				}
 				c, ok := control.Lookup("manager")
