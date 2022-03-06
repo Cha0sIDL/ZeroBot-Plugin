@@ -13,6 +13,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"io/ioutil"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -404,6 +405,12 @@ func init() {
 			rsp, _ := util.SendHttp(cloudUrl+"content", reqbody)
 			json := gjson.ParseBytes(rsp)
 			ctx.Send(message.Image(json.Get("data.url").String()))
+
+		})
+	en.OnFullMatch("/roll").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			rand.Seed(time.Now().Unix())
+			ctx.Send(message.Text(fmt.Sprintf("%s 投出了%d点。", ctx.Event.Sender.NickName, rand.Intn(100))))
 
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).

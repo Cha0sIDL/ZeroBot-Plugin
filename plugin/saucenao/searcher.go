@@ -111,9 +111,8 @@ func init() { // 插件主体
 				if result, err := yandex.Yandex(pic); err != nil {
 					ctx.SendChain(message.Text("ERROR: ", err))
 				} else {
-					// 返回SauceNAO的结果
 					ctx.SendChain(
-						message.Text("我有把握是这个！"),
+						message.Text("也许是这个？"),
 						message.Text(
 							"\n",
 							"标题：", result.Title, "\n",
@@ -123,36 +122,24 @@ func init() { // 插件主体
 							"直链：", "https://pixivel.moe/detail?id=", result.Pid,
 						),
 					)
-					continue
 				}
+				// 不论结果如何都执行 ascii2d 搜索
 				if result, err := ascii2d.Ascii2d(pic); err != nil {
 					ctx.SendChain(message.Text("ERROR: ", err))
 					continue
 				} else {
-					var msg message.Message = []message.MessageSegment{
-						message.CustomNode(
-							ctx.Event.Sender.Name(),
-							ctx.Event.UserID,
-							"ascii2d搜图结果",
-						)}
+					msg := message.Message{ctxext.FakeSenderForwardNode(ctx, message.Text("ascii2d搜图结果"))}
 					for i := 0; i < len(result) && i < 5; i++ {
-						msg = append(
-							msg,
-							message.CustomNode(
-								ctx.Event.Sender.Name(),
-								ctx.Event.UserID,
-								[]message.MessageSegment{
-									message.Image(result[i].Thumb),
-									message.Text(fmt.Sprintf(
-										"标题：%s\n图源：%s\n画师：%s\n画师链接：%s\n图片链接：%s",
-										result[i].Name,
-										result[i].Type,
-										result[i].AuthNm,
-										result[i].Author,
-										result[i].Link,
-									)),
-								},
-							),
+						msg = append(msg, ctxext.FakeSenderForwardNode(ctx,
+							message.Image(result[i].Thumb),
+							message.Text(fmt.Sprintf(
+								"标题：%s\n图源：%s\n画师：%s\n画师链接：%s\n图片链接：%s",
+								result[i].Name,
+								result[i].Type,
+								result[i].AuthNm,
+								result[i].Author,
+								result[i].Link,
+							))),
 						)
 					}
 					if id := ctx.SendGroupForwardMessage(

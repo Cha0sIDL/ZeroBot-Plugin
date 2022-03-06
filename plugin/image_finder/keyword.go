@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"math/rand"
+	"net/url"
 	"strings"
 
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -59,7 +60,7 @@ func init() {
 			err = pool.SendImageFromPool(n, f, func() error {
 				// 下载图片
 				return illust.DownloadToCache(0)
-			}, ctxext.Send(ctx), ctxext.GetMessage(ctx))
+			}, ctxext.SendFakeForwardToGroup(ctx), ctxext.GetFirstMessageInForward(ctx))
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR: ", err))
 				return
@@ -69,8 +70,7 @@ func init() {
 
 // soutuapi 请求api
 func soutuapi(keyword string) (r resultjson, err error) {
-	url := "https://api.pixivel.moe/v2/pixiv/illust/search/" + keyword + "?page=0"
-	data, err := web.ReqWith(url, "GET", "https://pixivel.moe/", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36")
+	data, err := web.GetData("https://copymanga.azurewebsites.net/api/pixivel?" + url.QueryEscape(keyword) + "?page=0")
 	if err != nil {
 		return
 	}

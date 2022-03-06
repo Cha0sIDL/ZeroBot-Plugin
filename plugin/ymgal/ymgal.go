@@ -2,7 +2,6 @@
 package ymgal
 
 import (
-	"log"
 	"strings"
 
 	"github.com/FloatTech/zbputils/control"
@@ -24,7 +23,6 @@ func init() {
 		defer order.DoneOnExit()()
 		_, _ = file.GetLazyData(dbfile, false, false)
 		gdb = initialize(dbfile)
-		log.Println("[ymgal]加载月幕gal数据库")
 	}()
 	engine.OnRegex("^随机gal(CG|表情包)$").Limit(ctxext.LimitByUser).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -64,29 +62,12 @@ func sendYmgal(y ymgal, ctx *zero.Ctx) {
 		ctx.SendChain(message.Text(zero.BotConfig.NickName[0] + "暂时没有这样的图呢"))
 		return
 	}
-	m := message.Message{
-		message.CustomNode(
-			ctx.Event.Sender.NickName,
-			ctx.Event.UserID,
-			y.Title,
-		)}
+	m := message.Message{ctxext.FakeSenderForwardNode(ctx, message.Text(y.Title))}
 	if y.PictureDescription != "" {
-		m = append(m,
-			message.CustomNode(
-				ctx.Event.Sender.NickName,
-				ctx.Event.UserID,
-				y.PictureDescription,
-			))
+		m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Text(y.PictureDescription)))
 	}
 	for _, v := range strings.Split(y.PictureList, ",") {
-		m = append(m,
-			message.CustomNode(
-				ctx.Event.Sender.NickName,
-				ctx.Event.UserID,
-				[]message.MessageSegment{
-					message.Image(v),
-				}),
-		)
+		m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Image(v)))
 	}
 	if id := ctx.SendGroupForwardMessage(
 		ctx.Event.GroupID,

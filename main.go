@@ -77,6 +77,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"             // 炉石
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder"   // 关键字搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"         // 煎蛋网无聊图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/job"            // 定时指令触发器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"       // 绝绝子生成器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"        // lolicon 随机图片
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moyu"           // 摸鱼
@@ -107,7 +108,7 @@ import (
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
 	//其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"
 
@@ -146,6 +147,7 @@ import (
 	//                                                                  //
 	// -----------------------以下为内置依赖，勿动------------------------ //
 	"github.com/FloatTech/zbputils/control/order"
+	"github.com/FloatTech/zbputils/process"
 	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -167,7 +169,7 @@ var (
 	url    *string
 	adana  *string
 	prefix *string
-	reg    = registry.NewRegReader("reilia.fumiama.top:32664", "fumiama")
+	reg    = registry.NewRegReader("reilia.westeurope.cloudapp.azure.com:32664", "fumiama")
 )
 
 func init() {
@@ -241,7 +243,7 @@ func main() {
 	//	Handle(func(ctx *zero.Ctx) {
 	//		ctx.SendChain(message.Text(getKanban()))
 	//	})
-	zero.RunAndBlock(
+	zero.Run(
 		zero.Config{
 			NickName:      append([]string{*adana}, nicks...),
 			CommandPrefix: *prefix,
@@ -251,4 +253,6 @@ func main() {
 			Driver: []zero.Driver{driver.NewWebSocketClient(*url, *token)},
 		},
 	)
+	process.GlobalInitMutex.Unlock()
+	select {}
 }

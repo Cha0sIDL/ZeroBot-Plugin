@@ -392,7 +392,7 @@ func init() { // 插件主体
 					} else if Info.Get("sex").String() == "male" { //性别男
 						ctx.SendChain(message.Text("你JB谁啊！！！"),
 							message.At(ctx.Event.UserID))
-					} else {
+					} else { //没有设置性别
 						ctx.SendChain(message.Text("欢迎！！！"))
 					}
 				}
