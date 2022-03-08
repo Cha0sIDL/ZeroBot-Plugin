@@ -6,6 +6,7 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
+	"math/rand"
 	"time"
 )
 
@@ -71,4 +72,12 @@ func Min(l []float64) (min float64) {
 
 func AppendAny(a interface{}, b interface{}) string {
 	return fmt.Sprintf("%v", a) + "-" + fmt.Sprintf("%v", b)
+}
+
+func Rand(min, max int) int {
+	rand.Seed(time.Now().Unix())
+	if min >= max || min == 0 || max == 0 {
+		return max
+	}
+	return rand.Intn(max-min) + min
 }

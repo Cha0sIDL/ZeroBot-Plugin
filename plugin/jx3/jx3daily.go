@@ -13,7 +13,6 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"io/ioutil"
-	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -51,9 +50,10 @@ func init() {
 			"- 奇遇条件xxx(eg 奇遇条件三山四海)\n" +
 			"- 奇遇攻略xxx(eg 奇遇攻略三山四海)\n" +
 			"- 维护公告\n" +
-			"- JX骚话（不区分大小写）\n" +
+			"- 骚话（不区分大小写）\n" +
 			"- 舔狗\n" +
 			"-（开启|关闭）jx推送\n" +
+			"- /roll随机roll点\n" +
 			"TODO:宏转图片",
 	})
 	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
@@ -242,14 +242,18 @@ func init() {
 			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 			reqbody, err := json.Marshal(data)
 			rsp, err := util.SendHttp(url+"heighten", reqbody)
+			json := gjson.ParseBytes(rsp)
 			if err != nil {
 				log.Errorln("jx3daily:", err)
+			} else {
+				ctx.SendChain(
+					message.Text(
+						"辅助食品：", json.Get("data.auxiliary_food"), "\n",
+						"辅助药品：", json.Get("data.auxiliary_drug"), "\n",
+						"增强食品：", json.Get("data.heighten_food"), "\n",
+						"增强药品：", json.Get("data.heighten_drug"), "\n",
+					))
 			}
-			json := gjson.ParseBytes(rsp)
-			ctx.SendChain(
-				message.Text(
-					json.Get("data").String()),
-			)
 		})
 	en.OnSuffix("配装").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -301,8 +305,8 @@ func init() {
 		//TODO 图片
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
-			if len(name) == 0 {
-				ctx.SendChain(message.Text("请输入职业！！！！"))
+			if len(name) > 5 {
+				log.Println("name len max")
 			} else {
 				//data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
 				//reqbody, err := json.Marshal(data)
@@ -316,9 +320,7 @@ func init() {
 				//)
 				mental := getData(strings.Replace(name, " ", "", -1))
 				b, err := ioutil.ReadFile(dbpath + "macro/" + strconv.FormatUint(mental.ID, 10))
-				if err != nil {
-					ctx.SendChain(message.Text("请检查参数或通知管理员更新数据"))
-				} else {
+				if err == nil {
 					ctx.SendChain(message.Text(string(b)))
 				}
 			}
@@ -409,9 +411,7 @@ func init() {
 		})
 	en.OnFullMatch("/roll").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			rand.Seed(time.Now().Unix())
-			ctx.Send(message.Text(fmt.Sprintf("%s 投出了%d点。", ctx.Event.Sender.NickName, rand.Intn(100))))
-
+			ctx.SendChain(message.Text(fmt.Sprintf("%s 投出了%d点。", ctx.Event.Sender.NickName, util.Rand(1, 100))), message.Reply(ctx.Event.MessageID))
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -444,7 +444,7 @@ func sendNotice(payload gjson.Result) {
 			grp := g.Get("group_id").Int()
 			isEnable, bindArea := isEnable(grp)
 			switch payload.Get("type").Int() {
-			case 2011:
+			case 2001:
 				var status string
 				if bindArea == payload.Get("data.server").String() {
 					switch payload.Get("data.status").Int() {
@@ -459,7 +459,7 @@ func sendNotice(payload gjson.Result) {
 				} else {
 					rsp = []message.MessageSegment{}
 				}
-			case 2012:
+			case 2002:
 				rsp =
 					[]message.MessageSegment{
 						message.Text("有新的资讯请查收:\n"),

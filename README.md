@@ -318,7 +318,7 @@ zerobot [-h] [-t token] [-u url] [-n nickname] [-p prefix] [-d|w] [-g 监听地�
     - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
     - [x] 奇遇攻略xxx(eg 奇遇攻略三山四海)
     - [x] 维护公告
-    - [x] JX骚话（不区分大小写)
+    - [x] 骚话（不区分大小写)
     - [x] 舔狗
 - **TODO...**
 
