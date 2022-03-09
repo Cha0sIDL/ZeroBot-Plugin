@@ -6,8 +6,9 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math/rand"
 	"os"
-	"strings"
 	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/kanban" // 在最前打印 banner
 
 	// ---------以下插件均可通过前面加 // 注释，注释后停用并不加载插件--------- //
 	// ----------------------插件优先级按顺序从高到低---------------------- //
@@ -146,9 +147,7 @@ import (
 	//                                                                  //
 	//                                                                  //
 	// -----------------------以下为内置依赖，勿动------------------------ //
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/process"
-	"github.com/fumiama/go-registry"
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
@@ -157,19 +156,11 @@ import (
 )
 
 var (
-	contents = []string{
-		"* OneBot + ZeroBot + Golang",
-		"* Version 1.3.0 - 2022-02-09 14:31:34 +0800 CST",
-		"* Copyright © 2020 - 2022 FloatTech. All Rights Reserved.",
-		"* Project: https://github.com/Cha0sIDL/ZeroBot-Plugin",
-	}
 	nicks  = []string{"ATRI", "atri", "亚托莉", "アトリ"}
-	banner = strings.Join(contents, "\n")
 	token  *string
 	url    *string
 	adana  *string
 	prefix *string
-	reg    = registry.NewRegReader("reilia.westeurope.cloudapp.azure.com:32664", "fumiama")
 )
 
 func init() {
@@ -190,7 +181,7 @@ func init() {
 
 	flag.Parse()
 	if *h {
-		printBanner()
+		kanban.PrintBanner()
 		fmt.Println("Usage:")
 		flag.PrintDefaults()
 		os.Exit(0)
@@ -206,43 +197,18 @@ func init() {
 	// webctrl.InitGui(*g)
 }
 
-func printBanner() {
-	fmt.Print(
-		"\n======================[ZeroBot-Plugin]======================",
-		"\n", banner, "\n",
-		"----------------------[ZeroBot-公告栏]----------------------",
-		"\n", getKanban(), "\n",
-		"============================================================\n",
-	)
-}
-
-func getKanban() string {
-	err := reg.Connect()
-	if err != nil {
-		return err.Error()
-	}
-	defer reg.Close()
-	text, err := reg.Get("ZeroBot-Plugin/kanban")
-	if err != nil {
-		return err.Error()
-	}
-	return text
-}
-
 func main() {
 	util.ConfigLocalFilesystemLogger("./log", "log", 3*time.Hour*24, time.Hour*24)
-	order.Wait()
-	printBanner()
 	rand.Seed(time.Now().UnixNano()) // 全局 seed，其他插件无需再 seed
 	// 帮助
-	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单", "help"}, zero.OnlyToMe).SetBlock(true).
+	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单"}, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text(banner, "\n可发送\"/服务列表\"查看 bot 功能"))
+			ctx.SendChain(message.Text(kanban.Banner, "\n可发送\"/服务列表\"查看 bot 功能"))
 		})
-	//zero.OnFullMatch("查看zbp公告", zero.OnlyToMe, zero.AdminPermission).SetBlock(true).
-	//	Handle(func(ctx *zero.Ctx) {
-	//		ctx.SendChain(message.Text(getKanban()))
-	//	})
+	zero.OnFullMatch("查看zbp公告", zero.OnlyToMe, zero.AdminPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text(kanban.Kanban()))
+		})
 	zero.Run(
 		zero.Config{
 			NickName:      append([]string{*adana}, nicks...),
