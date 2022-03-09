@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 )
 
 const url = "https://www.jx3api.com/app/"
@@ -305,7 +306,7 @@ func init() {
 		//TODO 图片
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
-			if len(name) > 5 {
+			if utf8.RuneCountInString(name) > 5 {
 				log.Println("name len max")
 			} else {
 				//data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
