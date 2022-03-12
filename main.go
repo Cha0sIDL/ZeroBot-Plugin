@@ -36,6 +36,8 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus" // 词典匹配回复
 
+	_ "github.com/FloatTech/zbputils/job" // 定时指令触发器
+
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^高优先级区^^^^^^^                      //
@@ -71,14 +73,15 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/diana"          // 嘉心糖发病
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/drift_bottle"   // 漂流瓶
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/emojimix"       // 合成emoji
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/epidemic"       // 城市疫情查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/fortune"        // 运势
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/funny"          // 笑话
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/gif"            // 制图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/github"         // 搜索GitHub仓库
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"             // 炉石
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder"   // 关键字搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"         // 注入指令
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"         // 煎蛋网无聊图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/job"            // 定时指令触发器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"       // 绝绝子生成器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"        // lolicon 随机图片
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moyu"           // 摸鱼
@@ -104,6 +107,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wangyiyun"      // 网易云音乐热评
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wordle"         // 猜单词
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"          // 月幕galgame
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"         // 早报
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
