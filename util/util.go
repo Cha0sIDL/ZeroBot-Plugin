@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -80,4 +81,9 @@ func Rand(min, max int) int {
 		return max
 	}
 	return rand.Intn(max-min) + min
+}
+
+func Decimal(value float64, num int) float64 {
+	value, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(num)+"f", value), 64)
+	return value
 }

@@ -17,6 +17,7 @@ type Config struct {
 	TTS     *TTS    `json:"tts"`
 	WsUrl   string  `json:"ws_url"`
 	At      []int64 `json:"at"`
+	Weather string  `json:"weather"`
 }
 
 type TTS struct {
