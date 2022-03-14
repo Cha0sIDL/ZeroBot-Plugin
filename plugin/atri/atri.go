@@ -150,7 +150,7 @@ func init() { // 插件主体
 			case now >= 11 && now < 15:
 				ctx.SendChain(message.Reply(ctx.Event.MessageID), randText(
 					"午安w",
-					"午觉要好好睡哦，ATRI会陪伴在你身旁的w",
+					"午觉要好好睡哦",
 					"嗯哼哼~睡吧，就像平常一样安眠吧~o(≧▽≦)o",
 					"睡你午觉去！哼唧！！",
 				))
@@ -229,7 +229,7 @@ func init() { // 插件主体
 			process.SleepAbout1sTo2s()
 			switch rand.Intn(5) {
 			case 0:
-				ctx.SendChain(randText("?", "？", "嗯？", "(。´・ω・)ん?", "ん？"))
+				ctx.SendChain(randText("?", "？", "嗯？", "(。´・ω・)?"))
 			case 1, 2:
 				ctx.SendChain(randImage("WH.jpg", "WH1.jpg", "WH2.jpg", "WH3.jpg"))
 			}

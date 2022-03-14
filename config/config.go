@@ -33,7 +33,7 @@ func init() {
 	control.Register("config", order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help:             "- 加载配置文件",
-	}).OnFullMatch("加载配置文件").SetBlock(true).
+	}).OnKeyword("配置").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			initConfig()
 		})

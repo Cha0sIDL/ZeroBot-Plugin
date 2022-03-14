@@ -12,6 +12,7 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"math/rand"
 	"os"
 	"strconv"
 	"time"
@@ -93,9 +94,10 @@ func getCfg() config.Config {
 }
 
 func getVoice() string {
-	timeLayout := config.Cfg.TTS.Start
-	tmp, _ := time.Parse("2006-01-02", timeLayout)
-	login := tmp.Unix()
-	today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))
-	return config.Cfg.TTS.Voice[today]
+	//timeLayout := config.Cfg.TTS.Start
+	//tmp, _ := time.Parse("2006-01-02", timeLayout)
+	//login := tmp.Unix()
+	//today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))
+	rand.Seed(time.Now().Unix())
+	return config.Cfg.TTS.Voice[rand.Intn(len(config.Cfg.TTS.Voice))]
 }

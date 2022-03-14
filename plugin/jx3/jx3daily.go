@@ -326,6 +326,22 @@ func init() {
 				}
 			}
 		})
+	en.OnSuffix("阵眼").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			name := ctx.State["args"].(string)
+			if utf8.RuneCountInString(name) > 5 {
+				log.Println("name len max")
+			} else {
+				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
+				reqbody, err := json.Marshal(data)
+				rsp, err := util.SendHttp(url+"matrix", reqbody)
+				if err != nil {
+					log.Errorln("jx3daily:", err)
+				}
+				//	json := gjson.ParseBytes(rsp)
+				log.Errorln(string(rsp))
+			}
+		})
 	en.OnRegex(`^奇遇攻略(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["regex_matched"].([]string)[1]

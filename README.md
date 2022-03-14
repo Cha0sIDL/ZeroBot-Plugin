@@ -381,7 +381,7 @@ print("run[CQ:image,file="+j["img"]+"]")
     - [x] 小药
     - [x] 配装xxx(eg 配装分山劲)
     - [x] 奇穴xxx(eg 奇穴分山劲)
-    - [x] 宏xxx(eg 宏分山劲)
+    - [x] 宏xxx(eg 分山劲宏)
     - [x] 沙盘xxx(eg 沙盘绝代天骄)
     - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
     - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
