@@ -53,6 +53,7 @@ func init() { // 插件主体
 							continue
 						}
 						logrus.Debugln("[sausenao]开始下载", n)
+						logrus.Debugln("[sausenao]urls:", illust.ImageUrls)
 						err1 := illust.DownloadToCache(i)
 						if err1 == nil {
 							m.SetFile(f)
@@ -83,7 +84,7 @@ func init() { // 插件主体
 			}
 		})
 	// 以图搜图
-	engine.OnKeywordGroup([]string{"以图搜图", "搜索图片", "以图识图"}, zero.OnlyGroup, ctxext.MustProvidePicture).SetBlock(true).
+	engine.OnKeywordGroup([]string{"以图搜图", "搜索图片", "以图识图"}, zero.OnlyGroup, zero.MustProvidePicture).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			// 开始搜索图片
 			ctx.SendChain(message.Text("少女祈祷中......"))
