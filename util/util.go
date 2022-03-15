@@ -76,7 +76,6 @@ func AppendAny(a interface{}, b interface{}) string {
 }
 
 func Rand(min, max int) int {
-	rand.Seed(time.Now().Unix())
 	if min >= max || min == 0 || max == 0 {
 		return max
 	}
