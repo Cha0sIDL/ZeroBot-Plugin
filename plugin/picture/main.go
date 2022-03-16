@@ -25,7 +25,7 @@ func init() {
 		DisableOnDefault: false,
 		Help:             "- xxx表情\n" + "可能会偶尔抽风",
 	})
-	engine.OnSuffix("表情").SetBlock(true).Limit(ctxext.LimitByUser).
+	engine.OnSuffixGroup([]string{"表情", "表情包"}).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			arg := ctx.State["args"].(string)
 			if arg == "" {
@@ -37,6 +37,10 @@ func init() {
 				ctx.SendChain(message.Text("服务出错了请稍后重试！"))
 			}
 			Items := gjson.Get(binary.BytesToString(data), "items").Array()
+			if len(Items) <= 0 {
+				ctx.SendChain(message.Text("请重试！"))
+				return
+			}
 			ctx.SendChain(message.Image(Items[rand.Intn(len(Items))].Get("url").String()))
 		})
 }
