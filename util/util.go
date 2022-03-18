@@ -2,12 +2,18 @@ package util
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	"math/rand"
+	"os"
+	"path"
+	"path/filepath"
+	"runtime"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -85,4 +91,56 @@ func Rand(min, max int) int {
 func Decimal(value float64, num int) float64 {
 	value, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(num)+"f", value), 64)
 	return value
+}
+
+func JsonToMap(jsonStr string) map[string]interface{} {
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(jsonStr), &m)
+	if err != nil {
+		fmt.Printf("Unmarshal with error: %+v\n", err)
+		return nil
+	}
+	return m
+}
+
+func MergeMap(mObj ...map[string]interface{}) map[string]interface{} {
+	newObj := make(map[string]interface{})
+	for _, m := range mObj {
+		for k, v := range m {
+			newObj[k] = v
+		}
+	}
+	return newObj
+}
+
+func GetCurrentAbPath() string {
+	dir := getCurrentAbPathByExecutable()
+	tmpDir, _ := filepath.EvalSymlinks(os.TempDir())
+	if strings.Contains(dir, tmpDir) {
+		return getCurrentAbPathByCaller()
+	}
+	return dir
+}
+
+func getCurrentAbPathByExecutable() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
+	return res
+}
+
+func getCurrentAbPathByCaller() string {
+	var abPath string
+	_, filename, _, ok := runtime.Caller(0)
+	if ok {
+		abPath = path.Dir(filename)
+	}
+	return abPath
+}
+
+func TodayFileName() string {
+	t := time.Now()
+	return fmt.Sprint(t.Format("2006-01-02"))
 }
