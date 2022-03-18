@@ -22,7 +22,8 @@ func Html2pic(dataPath string, fileName string, pageName string, html string) (f
 	pw, err := playwright.Run()
 	finName = ""
 	if err != nil {
-		return
+		playwright.Install()
+		playwright.Run()
 	}
 	defer pw.Stop()
 	browser, err := pw.Chromium.Launch()
