@@ -3,7 +3,8 @@ package epidemic
 
 import (
 	"encoding/json"
-
+	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"github.com/FloatTech/zbputils/file"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
@@ -51,7 +52,9 @@ func init() {
 		DisableOnDefault: false,
 		Help: "城市疫情查询\n" +
 			"- xxx疫情\n",
+		PublicDataFolder: "Epidemic",
 	})
+	datapath := file.BOTPATH + "/" + engine.DataFolder()
 	engine.OnSuffix("疫情").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			city := ctx.State["args"].(string)
@@ -68,16 +71,20 @@ func init() {
 				ctx.SendChain(message.Text("没有找到【", city, "】城市的疫情数据."))
 				return
 			}
+			d := map[string]interface{}{"NowConfirm": data.Total.NowConfirm, "Confirm": data.Today.Confirm, "Heal": data.Total.Heal, "deadCount": data.Total.Dead, "Grade": data.Total.Grade, "name": data.Name, "time": time}
+			html := util.Template2html("yiqing.html", d)
+			finName, err := util.Html2pic(datapath, util.TodayFileName(), "yiqing.html", html)
 			ctx.SendChain(
-				message.Text(
-					"【", data.Name, "】疫情数据\n",
-					"新增：", data.Today.Confirm, " ,",
-					"现有确诊：", data.Total.NowConfirm, " ,",
-					"治愈：", data.Total.Heal, " ,",
-					"死亡：", data.Total.Dead, " ", data.Total.Grade, "\n",
-					"更新时间：", time, "\n",
-					"温馨提示：请大家做好防疫工作，出门带好口罩！",
-				),
+				//message.Text(
+				//	"【", data.Name, "】疫情数据\n",
+				//	"新增：", data.Today.Confirm, " ,",
+				//	"现有确诊：", data.Total.NowConfirm, " ,",
+				//	"治愈：", data.Total.Heal, " ,",
+				//	"死亡：", data.Total.Dead, " ", data.Total.Grade, "\n",
+				//	"更新时间：", time, "\n",
+				//	"温馨提示：请大家做好防疫工作，出门带好口罩！",
+				//),
+				message.Image("file:///" + finName),
 			)
 		})
 }
