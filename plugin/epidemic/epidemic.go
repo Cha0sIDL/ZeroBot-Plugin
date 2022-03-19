@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/file"
+	"github.com/playwright-community/playwright-go"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
@@ -73,7 +74,14 @@ func init() {
 			}
 			d := map[string]interface{}{"NowConfirm": data.Total.NowConfirm, "Confirm": data.Today.Confirm, "Heal": data.Total.Heal, "deadCount": data.Total.Dead, "Grade": data.Total.Grade, "name": data.Name, "time": time}
 			html := util.Template2html("yiqing.html", d)
-			finName, err := util.Html2pic(datapath, util.TodayFileName(), "yiqing.html", html)
+			Clip := util.PageScreenshotOptionsClip(
+				playwright.PageScreenshotOptionsClip{
+					X:      playwright.Float(10),
+					Y:      playwright.Float(0),
+					Width:  playwright.Float(1100),
+					Height: playwright.Float(450),
+				})
+			finName, err := util.Html2pic(datapath, util.TodayFileName(), "yiqing.html", html, Clip)
 			ctx.SendChain(
 				//message.Text(
 				//	"【", data.Name, "】疫情数据\n",
