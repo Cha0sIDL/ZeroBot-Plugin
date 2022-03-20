@@ -7,6 +7,5 @@ go-zero*
 nohup.out
 zerobot
 config.json
-data/
 log/
 main
