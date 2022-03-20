@@ -231,11 +231,7 @@ func tagsAnalysis(tags []string) (tagResults []tagResult) {
 }
 
 func init() {
-	var err error
-	Fonts, err = gg.LoadFontFace(text.FontFile, 18)
-	if err != nil {
-		panic(err)
-	}
+	Fonts, _ = gg.LoadFontFace(text.FontFile, 18)
 	engine := control.Register("arknight", order.AcquirePrio(), &control.Options{
 		DisableOnDefault: false,
 		Help:             "查公招\n",

@@ -281,7 +281,7 @@ func init() { // 插件主体
 			dateStrs := ctx.State["regex_matched"].([]string)
 			ts := timer.GetFilledTimer(dateStrs, ctx.Event.SelfID, ctx.Event.GroupID, false)
 			if ts.En() {
-				go clock.RegisterTimer(ts, true)
+				go clock.RegisterTimer(ts, true, false)
 				ctx.SendChain(message.Text("记住了~"))
 			} else {
 				ctx.SendChain(message.Text("参数非法:" + ts.Alert))
@@ -294,7 +294,7 @@ func init() { // 插件主体
 			var url, alert string
 			switch len(dateStrs) {
 			case 4:
-				url = dateStrs[2]
+				url = strings.TrimPrefix(dateStrs[2], "用")
 				alert = dateStrs[3]
 			case 3:
 				alert = dateStrs[2]
@@ -304,7 +304,7 @@ func init() { // 插件主体
 			}
 			logrus.Debugln("[manager] cron:", dateStrs[1])
 			ts := timer.GetFilledCronTimer(dateStrs[1], alert, url, ctx.Event.SelfID, ctx.Event.GroupID)
-			if clock.RegisterTimer(ts, true) {
+			if clock.RegisterTimer(ts, true, false) {
 				ctx.SendChain(message.Text("记住了~"))
 			} else {
 				ctx.SendChain(message.Text("参数非法:" + ts.Alert))
