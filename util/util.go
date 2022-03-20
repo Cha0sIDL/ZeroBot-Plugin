@@ -1,12 +1,16 @@
 package util
 
 import (
+	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
+	"image"
+	"image/jpeg"
 	"math/rand"
 	"os"
 	"path"
@@ -197,4 +201,17 @@ func strval(value interface{}) string {
 		key = string(newValue)
 	}
 	return key
+}
+
+func Image2Base64(image image.Image) []byte {
+	buffer := new(bytes.Buffer)
+	encoder := base64.NewEncoder(base64.StdEncoding, buffer)
+	var opt jpeg.Options
+	opt.Quality = 95
+	_ = jpeg.Encode(encoder, image, &opt)
+	err := encoder.Close()
+	if err != nil {
+		return nil
+	}
+	return buffer.Bytes()
 }
