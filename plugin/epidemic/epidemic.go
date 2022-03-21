@@ -37,6 +37,7 @@ type area struct {
 	Name  string `json:"name"`
 	Today struct {
 		Confirm int `json:"confirm"`
+		Wzzadd  int `json:"wzz_add"`
 	} `json:"today"`
 	Total struct {
 		NowConfirm int    `json:"nowConfirm"`
@@ -44,6 +45,7 @@ type area struct {
 		Dead       int    `json:"dead"`
 		Heal       int    `json:"heal"`
 		Grade      string `json:"grade"`
+		Wzz        int    `json:"wzz"`
 	} `json:"total"`
 	Children []*area `json:"children"`
 }
@@ -72,7 +74,16 @@ func init() {
 				ctx.SendChain(message.Text("没有找到【", city, "】城市的疫情数据."))
 				return
 			}
-			d := map[string]interface{}{"NowConfirm": data.Total.NowConfirm, "Confirm": data.Today.Confirm, "Heal": data.Total.Heal, "deadCount": data.Total.Dead, "Grade": data.Total.Grade, "name": data.Name, "time": time}
+			d := map[string]interface{}{
+				"NowConfirm": data.Total.NowConfirm, //现有确诊
+				"Confirm":    data.Today.Confirm,    //新增人数
+				"Heal":       data.Total.Heal,       //累计确诊
+				"deadCount":  data.Total.Dead,       //死亡人数
+				"Grade":      data.Total.Grade,      //
+				"name":       data.Name,
+				"time":       time,
+				"Wzz":        data.Total.Wzz,    //无症状人数
+				"Wzzadd":     data.Today.Wzzadd} //新增无症状
 			html := util.Template2html("yiqing.html", d)
 			Clip := util.PageScreenshotOptionsClip(
 				playwright.PageScreenshotOptionsClip{
@@ -85,12 +96,14 @@ func init() {
 			ctx.SendChain(
 				//message.Text(
 				//	"【", data.Name, "】疫情数据\n",
-				//	"新增：", data.Today.Confirm, " ,",
-				//	"现有确诊：", data.Total.NowConfirm, " ,",
-				//	"治愈：", data.Total.Heal, " ,",
-				//	"死亡：", data.Total.Dead, " ", data.Total.Grade, "\n",
-				//	"更新时间：", time, "\n",
-				//	"温馨提示：请大家做好防疫工作，出门带好口罩！",
+				//	"新增人数：", data.Today.Confirm, "\n",
+				//	"现有确诊：", data.Total.NowConfirm, "\n",
+				//	"累计确诊：", data.Total.Confirm, "\n",
+				//	"治愈人数：", data.Total.Heal, "\n",
+				//	"死亡人数：", data.Total.Dead, "\n",
+				//	"无症状人数：", data.Total.Wzz, "\n",
+				//	"新增无症状：", data.Today.Wzzadd, "\n",
+				//	"更新时间：\n『", time, "』",
 				//),
 				message.Image("file:///" + finName),
 			)
