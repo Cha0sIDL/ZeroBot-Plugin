@@ -583,7 +583,7 @@ func init() {
 			}
 			err := newLeader(ctx.Event.UserID, ctx.Event.Sender.NickName, permission, teamName)
 			if err == 0 {
-				ctx.SendChain(message.Text("申请团长成功，请管理员同意审批。"))
+				ctx.SendChain(message.Text("申请团长成功。"))
 			}
 			if err == -1 {
 				ctx.SendChain(message.Text("贵人多忘事，你已经申请过了"))
