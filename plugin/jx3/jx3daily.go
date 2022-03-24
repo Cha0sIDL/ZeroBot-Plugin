@@ -476,7 +476,7 @@ func init() {
 			dungeon := commandPart[1]
 			comment := commandPart[2]
 			leaderId := ctx.Event.UserID
-			teamId, err := createNewTeam(startTime, dungeon, comment, leaderId)
+			teamId, err := createNewTeam(startTime, dungeon, comment, leaderId, ctx.Event.GroupID)
 			if err != nil {
 				ctx.SendChain(message.Text("Error :", err))
 				return
@@ -504,7 +504,7 @@ func init() {
 				return
 			}
 			Team := getTeamInfo(teamId)
-			if carbon.Now().TimestampWithSecond() >= Team.StartTime {
+			if carbon.Now().TimestampWithSecond() >= Team.StartTime || Team.GroupId != ctx.Event.GroupID {
 				ctx.SendChain(message.Text("当前团队已过期或团队不存在。"))
 				return
 			}
@@ -528,6 +528,10 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
+			if !isBelongGroup(teamId, ctx.Event.GroupID) {
+				ctx.SendChain(message.Text("参数输入有误。"))
+				return
+			}
 			deleteMember(teamId, ctx.Event.UserID)
 			ctx.SendChain(message.Text("撤销成功"), message.Reply(ctx.Event.MessageID))
 			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
@@ -538,7 +542,7 @@ func init() {
 			var InfoTeam []Team
 			for _, d := range SignUp {
 				Team := getEfficientTeamInfo(
-					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d'", d, carbon.Now().TimestampWithSecond()))
+					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d' AND groupId = '%d'", d, carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
 				if len(Team) > 0 {
 					InfoTeam = append(InfoTeam, Team[0])
 				}
@@ -553,7 +557,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			InfoSlice := getEfficientTeamInfo(
-				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d'", ctx.Event.UserID, carbon.Now().TimestampWithSecond()))
+				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d' AND groupId = '%d'", ctx.Event.UserID, carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
 			out := ""
 			for _, data := range InfoSlice {
 				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
@@ -566,6 +570,10 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
+			if !isBelongGroup(teamId, ctx.Event.GroupID) {
+				ctx.SendChain(message.Text("参数输入有误。"))
+				return
+			}
 			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
 	//申请团长 团牌
@@ -597,7 +605,7 @@ func init() {
 				ctx.SendChain(message.Text("撤销开团参数有误"))
 			}
 			teamId, err := strconv.Atoi(commandPart[0])
-			if err != nil {
+			if err != nil || !isBelongGroup(teamId, ctx.Event.GroupID) {
 				ctx.SendChain(message.Text("团队id输入有误"))
 				return
 			}

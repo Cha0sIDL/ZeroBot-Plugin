@@ -35,6 +35,7 @@ type Team struct {
 	Dungeon   string `db:"dungeon"`   //副本名
 	StartTime int64  `db:"startTime"` //团开始时间
 	Comment   string `db:"comment"`   //备注信息
+	GroupId   int64  `db:"groupId"`   //团所属群组
 }
 
 type Leader struct {
@@ -65,7 +66,7 @@ func getMental(mentalName string) string {
 }
 
 func createNewTeam(time int64, dungeon string,
-	comment string, leaderID int64) (int, error) {
+	comment string, leaderID int64, groupId int64) (int, error) {
 	var Mutex sync.Mutex
 	Mutex.Lock()
 	all, err := db.Count(dbTeam)
@@ -75,6 +76,7 @@ func createNewTeam(time int64, dungeon string,
 		Dungeon:   dungeon,
 		StartTime: time,
 		Comment:   comment,
+		GroupId:   groupId,
 	})
 	Mutex.Unlock()
 	return all, err
@@ -89,6 +91,11 @@ func getTeamInfo(teamId int) Team {
 func isInTeam(teamId int, qq int64) bool {
 	arg := fmt.Sprintf("WHERE team_id = '%d' ADN member_qq = '%d'", teamId, qq)
 	return db.CanFind(dbMember, arg)
+}
+
+func isBelongGroup(teamId int, groupId int64) bool {
+	arg := fmt.Sprintf("WHERE team_id = '%d' ADN groupId = '%d'", teamId, groupId)
+	return db.CanFind(dbTeam, arg)
 }
 
 //返回未过期的团
