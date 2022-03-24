@@ -3,6 +3,7 @@ module github.com/FloatTech/ZeroBot-Plugin
 go 1.18
 
 require (
+	github.com/DanPlayer/timefinder v1.1.110
 	github.com/FloatTech/AnimeAPI v1.3.2-0.20220319114940-c6c7d308c43b
 	github.com/FloatTech/sqlite v0.2.1
 	github.com/FloatTech/zbputils v1.3.2-0.20220319114731-e5088958ce00
@@ -35,6 +36,7 @@ require (
 )
 
 require (
+	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.0 // indirect
@@ -61,6 +63,7 @@ require (
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
+	github.com/golang-module/carbon/v2 v2.0.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
@@ -75,6 +78,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.9.6 // indirect
+	github.com/huichen/sego v0.0.0-20180617034105-3f3c8a8cfacc // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/jonboulle/clockwork v0.2.2 // indirect

@@ -3,15 +3,22 @@ package jx3
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/DanPlayer/timefinder"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/control/order"
+	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/FloatTech/zbputils/img/text"
+	"github.com/FloatTech/zbputils/math"
+	"github.com/fogleman/gg"
+	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
+	"image"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -56,7 +63,10 @@ func init() {
 			"-（开启|关闭）jx推送\n" +
 			"- /roll随机roll点\n" +
 			"TODO:宏转图片",
-	})
+	}).ApplySingle(ctxext.DefaultSingle)
+	go func() {
+		initialize()
+	}()
 	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			str := ctx.State["regex_matched"].([]string)[1]
@@ -319,7 +329,7 @@ func init() {
 				//ctx.SendChain(
 				//	message.Text("奇穴：\n", json.Get("data.qixue").String(), "\n", "宏：\n", json.Get("data.macro").String()),
 				//)
-				mental := getData(strings.Replace(name, " ", "", -1))
+				mental := getMentalData(strings.Replace(name, " ", "", -1))
 				b, err := ioutil.ReadFile(dbpath + "macro/" + strconv.FormatUint(mental.ID, 10))
 				if err == nil {
 					ctx.SendChain(message.Text(string(b)))
@@ -452,6 +462,161 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
+	//开团 时间 副本名 备注
+	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, func(ctx *zero.Ctx) bool {
+		return isOk(ctx.Event.UserID)
+	}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) != 3 {
+				ctx.SendChain(message.Text("开团参数输入有误！"))
+				return
+			}
+			startTime := parseDate(commandPart[0])
+			dungeon := commandPart[1]
+			comment := commandPart[2]
+			leaderId := ctx.Event.UserID
+			teamId, err := createNewTeam(startTime, dungeon, comment, leaderId)
+			if err != nil {
+				ctx.SendChain(message.Text("Error :", err))
+				return
+			}
+			ctx.SendChain(message.Text("开团成功，团队id为：", teamId))
+		})
+	//报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序
+	en.OnPrefixGroup([]string{"报名", "报团", "报名团队"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			double := 0
+			if len(commandPart) == 3 {
+				double = 0
+			} else if len(commandPart) == 4 {
+				double, _ = strconv.Atoi(commandPart[3])
+			} else {
+				ctx.SendChain(message.Text("报团参数有误。"))
+				return
+			}
+			teamId, _ := strconv.Atoi(commandPart[0])
+			mental := getMentalData(commandPart[1])
+			nickName := commandPart[2]
+			if mental.ID == 0 {
+				ctx.SendChain(message.Text("心法输入有误"))
+				return
+			}
+			Team := getTeamInfo(teamId)
+			if carbon.Now().TimestampWithSecond() >= Team.StartTime {
+				ctx.SendChain(message.Text("当前团队已过期或团队不存在。"))
+				return
+			}
+			if isInTeam(teamId, ctx.Event.UserID) {
+				ctx.SendChain(message.Text("你已经在团队中了。"))
+				return
+			}
+			var member = Member{
+				TeamId:         teamId,
+				MemberQQ:       ctx.Event.UserID,
+				MemberNickName: nickName,
+				MentalId:       mental.ID,
+				Double:         double,
+				SignUp:         carbon.Now().TimestampWithSecond(),
+			}
+			addMember(&member)
+			ctx.SendChain(message.Text("报团成功"), message.Reply(ctx.Event.MessageID))
+			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
+		})
+	en.OnPrefixGroup([]string{"撤销报团"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			teamId, _ := strconv.Atoi(commandPart[0])
+			deleteMember(teamId, ctx.Event.UserID)
+			ctx.SendChain(message.Text("撤销成功"), message.Reply(ctx.Event.MessageID))
+			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
+		})
+	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			SignUp := util.RemoveRepByMap(getSignUp(ctx.Event.UserID))
+			var InfoTeam []Team
+			for _, d := range SignUp {
+				Team := getEfficientTeamInfo(
+					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d'", d, carbon.Now().TimestampWithSecond()))
+				if len(Team) > 0 {
+					InfoTeam = append(InfoTeam, Team[0])
+				}
+			}
+			out := ""
+			for _, data := range InfoTeam {
+				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
+					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			}
+			ctx.SendChain(message.Text(out))
+		})
+	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			InfoSlice := getEfficientTeamInfo(
+				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d'", ctx.Event.UserID, carbon.Now().TimestampWithSecond()))
+			out := ""
+			for _, data := range InfoSlice {
+				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
+					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			}
+			ctx.SendChain(message.Text(out))
+		})
+	//查看团队 teamid
+	en.OnPrefixGroup([]string{"查看团队", "查询团队", "查团"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			teamId, _ := strconv.Atoi(commandPart[0])
+			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
+		})
+	//申请团长 团牌
+	en.OnPrefixGroup([]string{"申请团长"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			permission := 0
+			var teamName string
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) == 1 {
+				teamName = commandPart[0]
+			}
+			if ctx.Event.Sender.Role != "member" {
+				permission = 1
+			}
+			teamName = ""
+			err := newLeader(ctx.Event.UserID, ctx.Event.Sender.NickName, permission, teamName)
+			if err == 0 {
+				ctx.SendChain(message.Text("申请团长成功，请管理员同意审批。"))
+			}
+			if err == -1 {
+				ctx.SendChain(message.Text("贵人多忘事，你已经申请过了"))
+			}
+		})
+	//取消开团 团队id
+	en.OnPrefixGroup([]string{"取消开团", "删除团队", "撤销团队", "撤销开团"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) < 1 {
+				ctx.SendChain(message.Text("撤销开团参数有误"))
+			}
+			teamId, err := strconv.Atoi(commandPart[0])
+			if err != nil {
+				ctx.SendChain(message.Text("团队id输入有误"))
+				return
+			}
+			status := delTeam(teamId, ctx.Event.UserID)
+			switch status {
+			case -1:
+				ctx.SendChain(message.Text("这个团不是你的。无法删除"))
+			case 0:
+				ctx.SendChain(message.Text("删除成功"))
+			}
+		})
+	//同意审批@qq
+	en.OnRegex(`^同意审批.*?(\d+)`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1])
+			teamName := acceptLeader(qq)
+			ctx.SendChain(message.At(qq), message.Text("已成为团长,团队名称为："),
+				message.Text(teamName))
+		})
 }
 
 func sendNotice(payload gjson.Result) {
@@ -490,4 +655,67 @@ func sendNotice(payload gjson.Result) {
 		}
 		return true
 	})
+}
+
+func parseDate(msg string) int64 {
+	extract := timefinder.New().TimeExtract(msg)
+	return carbon.Time2Carbon(extract[0]).TimestampWithSecond()
+}
+
+func drawTeam(teamId int) image.Image {
+	Fonts, err := gg.LoadFontFace(text.FontFile, 50)
+	if err != nil {
+		panic(err)
+	}
+	const W = 1200
+	const H = 1200
+	dc := gg.NewContext(W, H)
+	dc.SetRGB(1, 1, 1)
+	dc.Clear()
+	//画直线
+	for i := 0; i < 1200; {
+		dc.SetRGBA(255, 255, 255, 11)
+		dc.SetLineWidth(1)
+		dc.DrawLine(0, float64(i), 1200, float64(i))
+		dc.Stroke()
+		i += 200
+	}
+	//画直线
+	for i := 200; i < 1200; {
+		//dc.SetRGBA(255, 255, 255, 11)
+		//dc.SetLineWidth(1)
+		dc.DrawLine(float64(i), 200, float64(i), 1200)
+		dc.Stroke()
+		i += 200
+	}
+	dc.SetFontFace(Fonts)
+	//队伍
+	for i := 1; i < 6; i++ {
+		dc.DrawString(strconv.Itoa(i)+"队", 40, float64(100+200*i))
+	}
+	//标题
+	team := getTeamInfo(teamId)
+	title := strconv.Itoa(team.TeamId) + " " + team.Dungeon
+	_, th := dc.MeasureString("哈")
+	t := 1200/2 - (float64(len([]rune(title))) / 2)
+	dc.DrawStringAnchored(title, t, th, 0.5, 0.5)
+	dc.DrawStringAnchored(team.Comment, 1200/2-float64(len([]rune(team.Comment)))/2, 3*th, 0.5, 0.5)
+	//团队
+	mSlice := getMemberInfo(teamId)
+	dc.LoadFontFace(text.FontFile, 30)
+	_, th = dc.MeasureString("哈")
+	start := 200
+	for idx, m := range mSlice {
+		x := float64(start + idx%5*200 + 10)
+		y := float64(start+idx/5*200) + th*2
+		dc.DrawString(m.MemberNickName, x, y)
+		double := "单修"
+		if m.Double == 1 {
+			double = "双修"
+		}
+		dc.DrawString(double, x, y+th*2)
+		back, _ := gg.LoadImage(iconfile + strconv.Itoa(int(m.MentalId)) + ".png")
+		dc.DrawImage(back, int(x), int(y+th*3))
+	}
+	return dc.Image()
 }
