@@ -184,6 +184,13 @@ func acceptLeader(qq int64) string {
 	return c.TeamName
 }
 
+func deleteLeader(qq int64) {
+	err := db.Del(dbLeader, "WHERE id = "+fmt.Sprintln(qq))
+	if err != nil {
+		log.Errorln(err)
+	}
+}
+
 func getMemberInfo(teamId int) (mSlice []Member) {
 	var c Member
 	arg := fmt.Sprintf("WHERE team_id = '%d'", teamId)

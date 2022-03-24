@@ -617,6 +617,12 @@ func init() {
 			ctx.SendChain(message.At(qq), message.Text("已成为团长,团队名称为："),
 				message.Text(teamName))
 		})
+	en.OnRegex(`^删除团长.*?(\d+)`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1])
+			deleteLeader(qq)
+			ctx.SendChain(message.At(qq), message.Text("删除成功"))
+		})
 }
 
 func sendNotice(payload gjson.Result) {
