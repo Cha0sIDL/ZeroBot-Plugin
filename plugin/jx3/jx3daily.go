@@ -574,13 +574,13 @@ func init() {
 			permission := 0
 			var teamName string
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			teamName = ""
 			if len(commandPart) == 1 {
 				teamName = commandPart[0]
 			}
 			if ctx.Event.Sender.Role != "member" {
 				permission = 1
 			}
-			teamName = ""
 			err := newLeader(ctx.Event.UserID, ctx.Event.Sender.NickName, permission, teamName)
 			if err == 0 {
 				ctx.SendChain(message.Text("申请团长成功，请管理员同意审批。"))

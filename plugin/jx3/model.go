@@ -166,7 +166,7 @@ func newLeader(QQ int64, nickName string, permission int, teamName ...string) in
 		Id:       QQ,
 		NickName: nickName,
 		TeamName: name,
-		IsOk:     permission, //新团长默认没有权限
+		IsOk:     1, //新团长默认没有权限
 	})
 	return 0
 }
