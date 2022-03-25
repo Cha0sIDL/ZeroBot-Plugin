@@ -551,11 +551,6 @@ func init() { // 插件主体
 			}
 		}
 	})
-	engine.OnFullMatch(`测试`, zero.SuperUserPermission).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			Info := ctx.GetStrangerInfo(605116618, true)
-			logrus.Errorln(Info)
-		})
 }
 
 // 传入 ctx 和 welcome格式string 返回cq格式string  使用方法:welcometocq(ctx,w.Msg)

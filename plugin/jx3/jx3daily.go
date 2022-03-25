@@ -482,7 +482,7 @@ func init() {
 			}
 			ctx.SendChain(message.Text("开团成功，团队id为：", teamId))
 		})
-	//报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序
+	//报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
 	en.OnPrefixGroup([]string{"报名", "报团", "报名团队"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
@@ -563,6 +563,36 @@ func init() {
 					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
 			}
 			ctx.SendChain(message.Text(out))
+		})
+	en.OnFullMatchGroup([]string{"全团显示"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			InfoSlice := getEfficientTeamInfo(
+				fmt.Sprintf("WHERE startTime > '%d' AND groupId = '%d'", carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
+			out := ""
+			for _, data := range InfoSlice {
+				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
+					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			}
+			ctx.SendChain(message.Text(out))
+		})
+	en.OnPrefixGroup([]string{"准备进本"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			teamId, err := strconv.Atoi(commandPart[0])
+			if err != nil {
+				return
+			}
+			if !isBelongGroup(teamId, ctx.Event.GroupID) {
+				ctx.SendChain(message.Text("参数输入有误。"))
+				return
+			}
+			var at message.Message
+			mSlice := getMemberInfo(teamId)
+			for _, m := range mSlice {
+				at = append(at, message.At(m.MemberQQ))
+			}
+			at = append(at, message.Text("\n准备进本啦！！"))
+			ctx.Send(at)
 		})
 	//查看团队 teamid
 	en.OnPrefixGroup([]string{"查看团队", "查询团队", "查团"}, zero.OnlyGroup).SetBlock(true).
