@@ -94,7 +94,7 @@ func isInTeam(teamId int, qq int64) bool {
 }
 
 func isBelongGroup(teamId int, groupId int64) bool {
-	arg := fmt.Sprintf("WHERE teamID = '%d' ADN groupId = '%d'", teamId, groupId)
+	arg := fmt.Sprintf("WHERE teamID = '%d' AND groupId = '%d'", teamId, groupId)
 	return db.CanFind(dbTeam, arg)
 }
 
