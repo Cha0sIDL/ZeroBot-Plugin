@@ -73,6 +73,7 @@ func init() {
 			if err != nil {
 				log.Errorln("jx3daily:", err)
 				ctx.SendChain(message.Text("出错了！！！可能是参数不对"))
+				return
 			}
 			json := gjson.ParseBytes(data)
 			ctx.SendChain(message.Text(
@@ -364,6 +365,7 @@ func init() {
 					log.Errorln("jx3daily:", err)
 				}
 				json := gjson.ParseBytes(rsp)
+				log.Errorln(string(rsp))
 				ctx.SendChain(
 					message.Image(json.Get("data.url").String()),
 				)
