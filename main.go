@@ -122,9 +122,6 @@ import (
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" //活跃度自动插话
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"
-
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //
@@ -144,6 +141,9 @@ import (
 	//                               vvvv                               //
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/curse" // 骂人
+
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" //活跃度自动插话
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"
 
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
 
