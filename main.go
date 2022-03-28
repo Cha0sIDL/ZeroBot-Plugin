@@ -122,6 +122,7 @@ import (
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" //活跃度自动插话
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"
 
 	//                               ^^^^                               //
