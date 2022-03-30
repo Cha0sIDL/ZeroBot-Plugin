@@ -10,6 +10,7 @@ import (
 	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
+	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -35,7 +36,7 @@ func init() {
 		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx)
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			if zero.IsPicExists(ctx) {
+			if zero.HasPicture(ctx) {
 				for _, elem := range ctx.Event.Message {
 					if elem.Type == "image" {
 						ocrTags := make([]string, 0)
@@ -47,6 +48,7 @@ func init() {
 						url := pictureUrl + fmt.Sprintf("pageNum=%d&pageSize=%d&keyword=", 1, util.Rand(1, 100)) + url.QueryEscape(text)
 						data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
 						if err != nil {
+							log.Errorln("Active Err :", err)
 							return
 						}
 						Items := gjson.Get(binary.BytesToString(data), "items").Array()
