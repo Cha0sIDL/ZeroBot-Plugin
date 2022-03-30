@@ -2,17 +2,27 @@ package active
 
 import (
 	"errors"
+	"fmt"
 	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/FloatTech/zbputils/web"
+	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"math/rand"
+	"net/url"
 	"strconv"
+	"strings"
 )
 
-const serviceName = "active"
+const (
+	serviceName = "active"
+	pictureUrl  = "https://doutu.lccyy.com/doutu/items?"
+)
 
 func init() {
 	en := control.Register(serviceName, order.AcquirePrio(), &control.Options{
@@ -25,9 +35,29 @@ func init() {
 		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx)
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			msg := ctx.ExtractPlainText()
-			r := aireply.NewAIReply("青云客")
-			ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
+			if zero.IsPicExists(ctx) {
+				for _, elem := range ctx.Event.Message {
+					if elem.Type == "image" {
+						ocrTags := make([]string, 0)
+						ocrResult := ctx.OCRImage(elem.Data["file"]).Get("texts.#.text").Array()
+						for _, text := range ocrResult {
+							ocrTags = append(ocrTags, text.Str)
+						}
+						text := fmt.Sprintf("%s", strings.Join(ocrTags, ""))
+						url := pictureUrl + fmt.Sprintf("pageNum=%d&pageSize=%d&keyword=", 1, util.Rand(1, 100)) + url.QueryEscape(text)
+						data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
+						if err != nil {
+							return
+						}
+						Items := gjson.Get(binary.BytesToString(data), "items").Array()
+						ctx.SendChain(message.Image(Items[rand.Intn(len(Items))].Get("url").String()))
+					}
+				}
+			} else {
+				msg := ctx.ExtractPlainText()
+				r := aireply.NewAIReply("青云客")
+				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
+			}
 		})
 	en.OnRegex(`设置活跃度(\d+)`, zero.SuperUserPermission, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
