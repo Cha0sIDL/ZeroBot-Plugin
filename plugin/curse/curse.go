@@ -41,7 +41,7 @@ func init() {
 		logrus.Infoln("[curse]加载", c, "条骂人语录")
 	}()
 
-	engine.OnRegex(`^骂他.*?(\d+)`, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
+	engine.OnRegex(`^骂(他|它|她).*?(\d+)`, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		process.SleepAbout1sTo2s()
 		qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1]) // 被骂的人的qq
 		for _, su := range zero.BotConfig.SuperUsers {
