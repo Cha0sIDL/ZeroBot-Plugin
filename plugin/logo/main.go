@@ -3,7 +3,6 @@ package logo
 import (
 	"fmt"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -18,7 +17,7 @@ const (
 //https://avatars.dicebear.com/
 
 func init() {
-	engine := control.Register(servicename, order.AcquirePrio(), &control.Options{
+	engine := control.Register(servicename, &control.Options{
 		DisableOnDefault: false,
 		Help:             "- 头像\n",
 	})

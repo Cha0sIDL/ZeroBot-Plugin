@@ -6,7 +6,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/web"
@@ -37,7 +36,7 @@ const (
 )
 
 func init() {
-	engine := control.Register(servicename, order.AcquirePrio(), &control.Options{
+	engine := control.Register(servicename, &control.Options{
 		DisableOnDefault: false,
 		Help:             "- xxx天气\n",
 		PublicDataFolder: "Weather",

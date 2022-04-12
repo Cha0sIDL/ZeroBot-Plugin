@@ -5,7 +5,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
 	"github.com/tidwall/gjson"
@@ -21,7 +20,7 @@ const (
 )
 
 func init() {
-	engine := control.Register(servicename, order.AcquirePrio(), &control.Options{
+	engine := control.Register(servicename, &control.Options{
 		DisableOnDefault: false,
 		Help:             "- xxx表情\n" + "可能会偶尔抽风",
 	})

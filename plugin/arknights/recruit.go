@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/img/text"
 	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -236,7 +235,7 @@ func init() {
 	//if err != nil {
 	//	panic(err)
 	//}
-	engine := control.Register("arknight", order.AcquirePrio(), &control.Options{
+	engine := control.Register("arknight", &control.Options{
 		DisableOnDefault: false,
 		Help:             "查公招\n",
 	})

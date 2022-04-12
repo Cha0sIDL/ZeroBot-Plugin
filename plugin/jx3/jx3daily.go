@@ -7,7 +7,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/img/text"
 	"github.com/FloatTech/zbputils/math"
 	"github.com/fogleman/gg"
@@ -42,7 +41,7 @@ type jinjia struct {
 
 func init() {
 	go startWs()
-	en := control.Register("jx", order.AcquirePrio(), &control.Options{
+	en := control.Register("jx", &control.Options{
 		DisableOnDefault: false,
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +
 			"- 开服检查xxx(eg 开服检查绝代天骄)\n" +

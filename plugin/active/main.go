@@ -7,7 +7,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
 	log "github.com/sirupsen/logrus"
@@ -26,7 +25,7 @@ const (
 )
 
 func init() {
-	en := control.Register(serviceName, order.AcquirePrio(), &control.Options{
+	en := control.Register(serviceName, &control.Options{
 		DisableOnDefault: false,
 		Help: "自动插话\n" +
 			"- 设置活跃度 xx\n" +

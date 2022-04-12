@@ -6,7 +6,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	"github.com/FloatTech/zbputils/file"
 	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -47,7 +46,7 @@ func init() {
 	}
 	limit := rate.NewManager(time.Second*10, 1)
 
-	en := control.Register("ai", order.AcquirePrio(), &control.Options{
+	en := control.Register("ai", &control.Options{
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
 	})

@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/control/order"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"io/ioutil"
 	"log"
@@ -31,7 +30,7 @@ type TTS struct {
 var Cfg Config
 
 func init() {
-	control.Register("config", order.AcquirePrio(), &control.Options{
+	control.Register("config", &control.Options{
 		DisableOnDefault: false,
 		Help:             "- 加载配置文件",
 	}).OnKeyword("配置").SetBlock(true).
