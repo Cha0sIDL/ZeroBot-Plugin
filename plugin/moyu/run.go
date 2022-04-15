@@ -18,7 +18,7 @@ var (
 
 func init() { // 插件主体
 	control.Register("moyu", &control.Options{
-		DisableOnDefault: true,
+		DisableOnDefault: false,
 		Help: "moyu\n" +
 			"- /启用 moyu\n" +
 			"- /禁用 moyu\n" +

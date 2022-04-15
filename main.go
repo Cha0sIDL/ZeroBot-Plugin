@@ -117,6 +117,7 @@ import (
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
 	//其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"

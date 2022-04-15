@@ -2,6 +2,7 @@
 package baidu
 
 import (
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/playwright-community/playwright-go"
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -29,7 +30,15 @@ func init() {
 		func(ctx *zero.Ctx) {
 			txt := ctx.State["args"].(string)
 			if txt != "" {
-				pic := screenshot("https://zh.wikipedia.org/wiki/" + url.QueryEscape(txt))
+				pic := screenshot("https://zh.wikipedia.org/zh-cn/" + url.QueryEscape(txt))
+				ctx.SendChain(message.ImageBytes(pic))
+			}
+		})
+	en.OnPrefixGroup([]string{"百度百科"}).SetBlock(true).Limit(ctxext.LimitByGroup).Handle(
+		func(ctx *zero.Ctx) {
+			txt := ctx.State["args"].(string)
+			if txt != "" {
+				pic := screenshot("https://baike.baidu.com/item/" + url.QueryEscape(txt))
 				ctx.SendChain(message.ImageBytes(pic))
 			}
 		})
@@ -54,9 +63,17 @@ func screenshot(url string) []byte {
 	}); err != nil {
 		log.Errorf("could not goto: %v", err)
 	}
+	Clip := util.PageScreenshotOptionsClip(
+		playwright.PageScreenshotOptionsClip{
+			X:      playwright.Float(10),
+			Y:      playwright.Float(0),
+			Width:  playwright.Float(1500),
+			Height: playwright.Float(1400),
+		})
 	if pic, err = page.Screenshot(playwright.PageScreenshotOptions{
+		Clip:     Clip,
 		Type:     playwright.ScreenshotTypeJpeg,
-		Quality:  playwright.Int(70),
+		Quality:  playwright.Int(100),
 		FullPage: playwright.Bool(true),
 	}); err != nil {
 		log.Errorf("could not create screenshot: %v", err)
