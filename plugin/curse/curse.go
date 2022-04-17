@@ -26,20 +26,27 @@ func init() {
 		PublicDataFolder: "Curse",
 	})
 
-	go func() {
+	getdb := ctxext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		dbpath := engine.DataFolder()
 		db.DBPath = dbpath + "curse.db"
 		_, err := file.GetLazyData(db.DBPath, false, true)
 		if err != nil {
-			panic(err)
+			ctx.SendChain(message.Text("ERROR:", err))
+			return false
 		}
 		err = db.Create("curse", &curse{})
 		if err != nil {
-			panic(err)
+			ctx.SendChain(message.Text("ERROR:", err))
+			return false
 		}
-		c, _ := db.Count("curse")
+		c, err := db.Count("curse")
+		if err != nil {
+			ctx.SendChain(message.Text("ERROR:", err))
+			return false
+		}
 		logrus.Infoln("[curse]加载", c, "条骂人语录")
-	}()
+		return true
+	})
 
 	engine.OnRegex(`^骂(他|它|她).*?(\d+)`, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		process.SleepAbout1sTo2s()
