@@ -6,10 +6,10 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/file"
 	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"math/rand"
 	"os"
@@ -44,8 +44,6 @@ func init() {
 	if file.IsNotExist(cachePath) {
 		os.MkdirAll(cachePath, 0755)
 	}
-	limit := rate.NewManager(time.Second*10, 1)
-
 	en := control.Register("ai", &control.Options{
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
@@ -61,9 +59,7 @@ func init() {
 				ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
 			}
 		})
-	en.OnMessage(zero.OnlyToMe, func(ctx *zero.Ctx) bool {
-		return limit.Load(ctx.Event.UserID).Acquire()
-	}).SetBlock(true).
+	en.OnMessage(zero.OnlyToMe).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
 			r := aireply.NewAIReply(getReplyMode(ctx))
