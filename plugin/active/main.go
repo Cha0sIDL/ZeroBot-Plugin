@@ -108,3 +108,4 @@ func getActive(ctx *zero.Ctx) (active int) {
 	}
 	return 0
 }
+
