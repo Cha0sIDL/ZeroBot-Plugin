@@ -61,7 +61,7 @@ func init() { // 插件主体
 			process.SleepAbout1sTo2s()
 			ctx.SendChain(randImage("FN.jpg", "WQ.jpg", "WQ1.jpg"))
 		})
-	engine.OnFullMatchGroup([]string{"早哇", "早上好呀", "早上好", "ohayo", "哦哈哟", "お早う", "早好", "早", "早早早"}).SetBlock(true).
+	engine.OnFullMatchGroup([]string{"早哇", "早上好呀", "早上好", "ohayo", "哦哈哟", "お早う", "早好", "早", "早早早"}).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
 			now := time.Now().Hour()
 			process.SleepAbout1sTo2s()
@@ -114,7 +114,7 @@ func init() { // 插件主体
 				))
 			}
 		})
-	engine.OnFullMatchGroup([]string{"晚安", "oyasuminasai", "おやすみなさい", "晚好", "晚上好", "晚安！"}).SetBlock(true).
+	engine.OnFullMatchGroup([]string{"晚安", "oyasuminasai", "おやすみなさい", "晚好", "晚上好", "晚安！"}).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
 			now := time.Now().Hour()
 			process.SleepAbout1sTo2s()
