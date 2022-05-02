@@ -11,7 +11,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/FloatTech/ZeroBot-Plugin?style=flat-square&logo=go)](https://goreportcard.com/report/github.com/github.com/FloatTech/ZeroBot-Plugin)
 [![Badge](https://img.shields.io/badge/onebot-v11-black?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAMAAADxPgR5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAxQTFRF////29vbr6+vAAAAk1hCcwAAAAR0Uk5T////AEAqqfQAAAKcSURBVHja7NrbctswDATQXfD//zlpO7FlmwAWIOnOtNaTM5JwDMa8E+PNFz7g3waJ24fviyDPgfhz8fHP39cBcBL9KoJbQUxjA2iYqHL3FAnvzhL4GtVNUcoSZe6eSHizBcK5LL7dBr2AUZlev1ARRHCljzRALIEog6H3U6bCIyqIZdAT0eBuJYaGiJaHSjmkYIZd+qSGWAQnIaz2OArVnX6vrItQvbhZJtVGB5qX9wKqCMkb9W7aexfCO/rwQRBzsDIsYx4AOz0nhAtWu7bqkEQBO0Pr+Ftjt5fFCUEbm0Sbgdu8WSgJ5NgH2iu46R/o1UcBXJsFusWF/QUaz3RwJMEgngfaGGdSxJkE/Yg4lOBryBiMwvAhZrVMUUvwqU7F05b5WLaUIN4M4hRocQQRnEedgsn7TZB3UCpRrIJwQfqvGwsg18EnI2uSVNC8t+0QmMXogvbPg/xk+Mnw/6kW/rraUlvqgmFreAA09xW5t0AFlHrQZ3CsgvZm0FbHNKyBmheBKIF2cCA8A600aHPmFtRB1XvMsJAiza7LpPog0UJwccKdzw8rdf8MyN2ePYF896LC5hTzdZqxb6VNXInaupARLDNBWgI8spq4T0Qb5H4vWfPmHo8OyB1ito+AysNNz0oglj1U955sjUN9d41LnrX2D/u7eRwxyOaOpfyevCWbTgDEoilsOnu7zsKhjRCsnD/QzhdkYLBLXjiK4f3UWmcx2M7PO21CKVTH84638NTplt6JIQH0ZwCNuiWAfvuLhdrcOYPVO9eW3A67l7hZtgaY9GZo9AFc6cryjoeFBIWeU+npnk/nLE0OxCHL1eQsc1IciehjpJv5mqCsjeopaH6r15/MrxNnVhu7tmcslay2gO2Z1QfcfX0JMACG41/u0RrI9QAAAABJRU5ErkJggg==)](https://github.com/howmanybots/onebot)
-[![Badge](https://img.shields.io/badge/zerobot-v1.5.0-black?style=flat-square&logo=go)](https://github.com/wdvxdr1123/ZeroBot)
+[![Badge](https://img.shields.io/badge/zerobot-v1.5.1-black?style=flat-square&logo=go)](https://github.com/wdvxdr1123/ZeroBot)
 [![License](https://img.shields.io/github/license/FloatTech/ZeroBot-Plugin.svg?style=flat-square&logo=gnu)](https://raw.githubusercontent.com/FloatTech/ZeroBot-Plugin/master/LICENSE)
 [![qq group](https://img.shields.io/badge/group-1048452984-red?style=flat-square&logo=tencent-qq)](https://jq.qq.com/?_wv=1027&k=QMb7x1mM)
 
@@ -27,6 +27,8 @@ takayama |
 </div>
 
 > 如果您不知道什么是 [OneBot](https://github.com/howmanybots/onebot) 或不希望运行多个程序，还可以直接前往 [gocqzbp](https://github.com/FloatTech/gocqzbp) 的 [Release](https://github.com/FloatTech/gocqzbp/releases) 页面下载单一可执行文件或前往 [Packages](https://github.com/FloatTech/gocqzbp/pkgs/container/gocqzbp) 页面使用`docker`，运行后按提示登录即可。
+
+> 如果您对开发插件感兴趣，欢迎加入[ZeroBot-Plugin-Playground](https://github.com/FloatTech/ZeroBot-Plugin-Playground)
 
 ## 命令行参数
 > `[]`代表是可选参数
@@ -319,22 +321,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 ### *中优先级*
 
 <details>
-  <summary>随机图片与AI点评</summary>
-
-  `import _ github.com/FloatTech/ZeroBot-Plugin/plugin/acgimage`
-
-  - [x] 随机图片(评级大于6的图将私发)
-
-  - [x] 直接随机(无r18检测，务必小心，仅管理可用)
-
-  - [x] 设置随机图片网址[url]
-
-  - [x] 太涩了(撤回最近发的图)
-
-  - [x] 评价图片(发送一张图片让bot评分)
-
-</details>
-<details>
   <summary>AIfalse</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_false"`
@@ -532,7 +518,7 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/funny"`
 
-  - [x] 讲个笑话[@xxx] | 讲个笑话[qq号]
+  - [x] 讲个笑话[@xxx|qq号|人名] | 夸夸[@xxx|qq号|人名]
 
 </details>
 <details>
@@ -631,6 +617,7 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"`
 
   - [x] 来份萝莉
+  - [x] 设置随机图片地址[http...]
 
 </details>
 <details>
@@ -787,7 +774,15 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 放大图片[图片]
 
 </details>
+<details>
+  <summary>​签到得分</summary>
 
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_score"` 
+
+  - [x] 签到
+  - [x] 获得签到背景[@xxx] | 获得签到背景
+
+</details>
 <details>
   <summary>shindan</summary>
 
@@ -925,6 +920,8 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 取消b站直播订阅[uid]
 
   - [x] b站推送列表
+
+  - 注：由于需要安装Chrome，默认注释，具体看[这里](https://www.yuque.com/xiangrikuidezhongzi/zerobot/qrwxth)
 
 </details>
 

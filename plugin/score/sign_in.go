@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	backgroundURL = "https://iw233.cn/API/pc.php?type=json"
+	backgroundURL = "https://iw233.cn/api.php?sort=pc&type=json"
 	referer       = "https://iw233.cn/main.html"
 	ua            = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
 	signinMax     = 1
@@ -42,7 +42,7 @@ func init() {
 	})
 	cachePath := engine.DataFolder() + "cache/"
 	go func() {
-		os.RemoveAll(cachePath)
+		_ = os.RemoveAll(cachePath)
 		err := os.MkdirAll(cachePath, 0755)
 		if err != nil {
 			panic(err)
@@ -234,7 +234,7 @@ func init() {
 			err = graph.Render(chart.PNG, f)
 			_ = f.Close()
 			if err != nil {
-				os.Remove(drawedFile)
+				_ = os.Remove(drawedFile)
 				ctx.SendChain(message.Text("ERROR:", err))
 				return
 			}
