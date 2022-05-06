@@ -4,7 +4,6 @@ package curse
 import (
 	control "github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/math"
 	"github.com/FloatTech/zbputils/process"
 	"github.com/sirupsen/logrus"
@@ -19,7 +18,7 @@ const (
 
 func init() {
 	engine := control.Register("curse", &control.Options{
-		DisableOnDefault: true,
+		DisableOnDefault: false,
 		Help:             "骂他@qq(求骂,自卫)",
 		PublicDataFolder: "Curse",
 	})
@@ -47,7 +46,7 @@ func init() {
 
 	engine.OnRegex(`^骂(他|它|她).*?(\d+)`, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		process.SleepAbout1sTo2s()
-		qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1]) // 被骂的人的qq
+		qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[2]) // 被骂的人的qq
 		for _, su := range zero.BotConfig.SuperUsers {
 			if su == qq {
 				return

@@ -587,6 +587,28 @@ func init() { // 插件主体
 			}
 		}
 	})
+	engine.OnMessage(func(ctx *zero.Ctx) bool {
+		msg := ctx.Event.Message
+		if msg[0].Type != "reply" {
+			return false
+		}
+		for _, elem := range msg {
+			if elem.Type == "text" {
+				text := elem.Data["text"]
+				text = strings.ReplaceAll(text, " ", "")
+				text = strings.ReplaceAll(text, "\r", "")
+				text = strings.ReplaceAll(text, "\n", "")
+				if text == "撤回" {
+					return true
+				}
+			}
+		}
+		return false
+	}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
+		func(ctx *zero.Ctx) {
+			ctx.DeleteMessage(message.NewMessageIDFromString(ctx.Event.Message[0].Data["id"]))
+			return
+		})
 }
 
 // 传入 ctx 和 welcome格式string 返回cq格式string  使用方法:welcometocq(ctx,w.Msg)
