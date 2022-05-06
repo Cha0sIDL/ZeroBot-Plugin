@@ -4,8 +4,11 @@ package bilibili
 import (
 	"encoding/binary"
 	"fmt"
+	"image"
 	"image/color"
 	"os"
+	"path"
+	"regexp"
 	"sort"
 	"strconv"
 	"time"
@@ -33,6 +36,7 @@ var engine = control.Register("bilibili", &control.Options{
 		"- 更新vup",
 	PublicDataFolder: "Bilibili",
 })
+var re = regexp.MustCompile(`^\d+$`)
 
 // 查成分的
 func init() {
@@ -41,9 +45,8 @@ func init() {
 	_ = os.MkdirAll(cachePath, 0755)
 	var getdb = ctxext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		var err error
-		dbfile := engine.DataFolder() + "bilibili.db"
-		_, _ = file.GetLazyData(dbfile, false, false)
-		vdb, err = initialize(dbfile)
+		_, _ = engine.GetLazyData("bilibili.db", false)
+		vdb, err = initialize(engine.DataFolder() + "bilibili.db")
 		if err != nil {
 			ctx.SendChain(message.Text("ERROR:", err))
 			return false
@@ -103,15 +106,9 @@ func init() {
 			))
 		})
 
-	engine.OnRegex(`^查成分\s?(.{1,25})$`, getdb).SetBlock(true).
+	engine.OnRegex(`^查成分\s?(.{1,25})$`, getdb, getPara).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			keyword := ctx.State["regex_matched"].([]string)[1]
-			searchRes, err := search(keyword)
-			if err != nil {
-				ctx.SendChain(message.Text("ERROR:", err))
-				return
-			}
-			id := strconv.FormatInt(searchRes[0].Mid, 10)
+			id := ctx.State["uid"].(string)
 			today := time.Now().Format("20060102")
 			drawedFile := cachePath + id + today + "vupLike.png"
 			if file.IsExist(drawedFile) {
@@ -153,35 +150,36 @@ func init() {
 					i--
 				}
 			}
-			facePath := cachePath + id + "vupFace.png"
-			err = initFacePic(facePath, u.Face)
-			if err != nil {
-				ctx.SendChain(message.Text("ERROR:", err))
-				return
+			facePath := cachePath + id + "vupFace" + path.Ext(u.Face)
+			backX := 500
+			backY := 500
+			var back image.Image
+			if path.Ext(u.Face) != ".webp" {
+				err = initFacePic(facePath, u.Face)
+				if err != nil {
+					ctx.SendChain(message.Text("ERROR:", err))
+					return
+				}
+				back, err = gg.LoadImage(facePath)
+				if err != nil {
+					ctx.SendChain(message.Text("ERROR:", err))
+					return
+				}
+				back = img.Size(back, backX, backY).Im
 			}
-			var backX int
-			var backY int
-			back, err := gg.LoadImage(facePath)
-			if err != nil {
-				ctx.SendChain(message.Text("ERROR:", err))
-				return
-			}
-			back = img.Limit(back, 500, 500)
-			backX = back.Bounds().Size().X
-			backY = back.Bounds().Size().Y
 			if len(vups) > 50 {
 				ctx.SendChain(message.Text(u.Name + "关注的up主太多了，只展示前50个up"))
 				vups = vups[:50]
 			}
-			canvas := gg.NewContext(backX*3, int(float64(backY)*(1.1+float64(len(vups))/3)))
-			fontSize := float64(backX) * 0.1
+			canvas := gg.NewContext(1500, int(500*(1.1+float64(len(vups))/3)))
+			fontSize := 50.0
 			canvas.SetColor(color.White)
 			canvas.Clear()
 			if back != nil {
 				canvas.DrawImage(back, 0, 0)
 			}
 			canvas.SetColor(color.Black)
-			_, err = file.GetLazyData(text.BoldFontFile, false, true)
+			_, err = file.GetLazyData(text.BoldFontFile, true)
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR:", err))
 			}
@@ -192,16 +190,18 @@ func init() {
 			sl, _ := canvas.MeasureString("好")
 			length, h := canvas.MeasureString(u.Mid)
 			n, _ := canvas.MeasureString(u.Name)
-			canvas.DrawString(u.Name, float64(backX)*1.1, float64(backY)/3-h)
-			canvas.DrawRoundedRectangle(float64(backX)*1.2+n-length*0.1, float64(backY)/3-h*2.5, length*1.2, h*2, fontSize*0.2)
+			canvas.DrawString(u.Name, 550, 160-h)
+			canvas.DrawRoundedRectangle(600+n-length*0.1, 160-h*2.5, length*1.2, h*2, fontSize*0.2)
 			canvas.SetRGB255(221, 221, 221)
 			canvas.Fill()
 			canvas.SetColor(color.Black)
-			canvas.DrawString(u.Mid, float64(backX)*1.2+n, float64(backY)/3-h)
-			canvas.DrawString(fmt.Sprintf("粉丝：%d", u.Fans), float64(backX)*1.1, float64(backY)/3*2-2.5*h)
-			canvas.DrawString(fmt.Sprintf("关注：%d", len(u.Attentions)), float64(backX)*2, float64(backY)/3*2-2.5*h)
-			canvas.DrawString(fmt.Sprintf("管人痴成分：%.2f%%（%d/%d）", float64(vupLen)/float64(len(u.Attentions))*100, vupLen, len(u.Attentions)), float64(backX)*1.1, float64(backY)-4*h)
-			canvas.DrawString("日期："+time.Now().Format("2006-01-02"), float64(backX)*1.1, float64(backY)-h)
+			canvas.DrawString(u.Mid, 600+n, 160-h)
+			canvas.DrawString(fmt.Sprintf("粉丝：%d", u.Fans), 550, 240-h)
+			canvas.DrawString(fmt.Sprintf("关注：%d", len(u.Attentions)), 1000, 240-h)
+			canvas.DrawString(fmt.Sprintf("管人痴成分：%.2f%%（%d/%d）", float64(vupLen)/float64(len(u.Attentions))*100, vupLen, len(u.Attentions)), 550, 320-h)
+			regtime := time.Unix(u.Regtime, 0).Format("2006-01-02 15:04:05")
+			canvas.DrawString("注册日期："+regtime, 550, 400-h)
+			canvas.DrawString("查询日期："+time.Now().Format("2006-01-02"), 550, 480-h)
 			for i, v := range vups {
 				if i%2 == 1 {
 					canvas.SetRGB255(245, 245, 245)
@@ -221,9 +221,9 @@ func init() {
 					mnl, _ := canvas.MeasureString(m.MedalName)
 					grad := gg.NewLinearGradient(nl+ml-sl/2+float64(backX)*0.4, float64(backY)*1.1+float64(i+1)*float64(backY)/3-3.5*h, nl+ml+mnl+sl/2+float64(backX)*0.4, float64(backY)*1.1+float64(i+1)*float64(backY)/3-1.5*h)
 					r, g, b := int2rbg(m.MedalColorStart)
-					grad.AddColorStop(0, color.RGBA{uint8(r), uint8(g), uint8(b), 255})
+					grad.AddColorStop(0, color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255})
 					r, g, b = int2rbg(m.MedalColorEnd)
-					grad.AddColorStop(1, color.RGBA{uint8(r), uint8(g), uint8(b), 255})
+					grad.AddColorStop(1, color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: 255})
 					canvas.SetFillStyle(grad)
 					canvas.SetLineWidth(4)
 					canvas.MoveTo(nl+ml-sl/2+float64(backX)*0.4, float64(backY)*1.1+float64(i+1)*float64(backY)/3-3.5*h)
@@ -306,4 +306,52 @@ func int2rbg(t int64) (int64, int64, int64) {
 	binary.LittleEndian.PutUint64(buf[:], uint64(t))
 	b, g, r := int64(buf[0]), int64(buf[1]), int64(buf[2])
 	return r, g, b
+}
+
+func getPara(ctx *zero.Ctx) bool {
+	keyword := ctx.State["regex_matched"].([]string)[1]
+	if !re.MatchString(keyword) {
+		searchRes, err := search(keyword)
+		if err != nil {
+			ctx.SendChain(message.Text("ERROR:", err))
+			return false
+		}
+		ctx.State["uid"] = strconv.FormatInt(searchRes[0].Mid, 10)
+		return true
+	}
+	next := zero.NewFutureEvent("message", 999, false, ctx.CheckSession())
+	recv, cancel := next.Repeat()
+	defer cancel()
+	ctx.SendChain(message.Text("输入为纯数字，请选择查询uid还是用户名，输入对应序号：\n0. 查询uid\n1. 查询用户名"))
+	for {
+		select {
+		case <-time.After(time.Second * 10):
+			ctx.SendChain(message.Text("时间太久啦！", zero.BotConfig.NickName[0], "帮你选择查询uid"))
+			ctx.State["uid"] = keyword
+			return true
+		case c := <-recv:
+			msg := c.Event.Message.ExtractPlainText()
+			num, err := strconv.Atoi(msg)
+			if err != nil {
+				ctx.SendChain(message.Text("请输入数字!"))
+				continue
+			}
+			if num < 0 || num > 1 {
+				ctx.SendChain(message.Text("序号非法!"))
+				continue
+			}
+			if num == 0 {
+				ctx.State["uid"] = keyword
+				return true
+			} else if num == 1 {
+				searchRes, err := search(keyword)
+				if err != nil {
+					ctx.SendChain(message.Text("ERROR:", err))
+					return false
+				}
+				ctx.State["uid"] = strconv.FormatInt(searchRes[0].Mid, 10)
+				return true
+			}
+		}
+	}
 }
