@@ -48,7 +48,7 @@ func init() {
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
 	})
-	en.OnPrefix("复读机").SetBlock(true).Handle(
+	en.OnPrefix("说话").SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {
 			text := ctx.State["args"]
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
