@@ -7,6 +7,7 @@ import (
 	"github.com/FloatTech/zbputils/process"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"math/rand"
 	"os"
 	"time"
 )
@@ -55,17 +56,21 @@ func init() { // 插件主体
 			var msg string
 			var d drink
 			var dSlice []drink
-			db.Find("drink", &d, "WHERE kind = temperature ORDER BY RANDOM() limit 1") //温度
+			db.Find("drink", &d, "WHERE kind='temperature' ORDER BY RANDOM() limit 1") //温度
 			msg += d.Drink + "/"
-			db.Find("drink", &d, "WHERE kind = sugar ORDER BY RANDOM() limit 1") //糖
+			db.Find("drink", &d, "WHERE kind = 'sugar' ORDER BY RANDOM() limit 1") //糖
 			msg += d.Drink + "/"
-			db.Find("drink", &d, "WHERE kind = body ORDER BY RANDOM() limit 1") //主体
-			msg += d.Drink
-			db.FindFor("drink", &d, "WHERE kind = addon", func() error {
+			db.FindFor("drink", &d, "WHERE kind = 'addon'", func() error {
 				dSlice = append(dSlice, d)
 				return nil
 			})
 			util.Shuffle(dSlice)
+			for i := 0; i < rand.Intn(len(dSlice)); i++ {
+				msg += dSlice[i].Drink
+			}
+			db.Find("drink", &d, "WHERE kind = 'body' ORDER BY RANDOM() limit 1") //主体
+			msg += d.Drink
+			ctx.SendChain(message.Text(msg))
 		})
 }
 
