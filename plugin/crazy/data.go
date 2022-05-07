@@ -13,3 +13,8 @@ type crazy struct {
 type menu struct {
 	Menu string `db:"menu"`
 }
+
+type drink struct {
+	Drink string `db:"drink"`
+	Kind  string `db:"kind"`
+}

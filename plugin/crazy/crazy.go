@@ -1,6 +1,7 @@
 package crazy
 
 import (
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/process"
@@ -29,6 +30,7 @@ func init() { // 插件主体
 		}
 		err := db.Create("crazy", &crazy{})
 		db.Create("menu", &menu{})
+		db.Create("drink", &drink{})
 		if err != nil {
 			panic(err)
 		}
@@ -45,6 +47,25 @@ func init() { // 插件主体
 			var t menu
 			db.Pick("menu", &t)
 			ctx.SendChain(message.Text(now() + t.Menu))
+		})
+	engine.OnKeyword("喝什么").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text("制作中...."))
+			time.Sleep(2 * time.Second)
+			var msg string
+			var d drink
+			var dSlice []drink
+			db.Find("drink", &d, "WHERE kind = temperature ORDER BY RANDOM() limit 1") //温度
+			msg += d.Drink + "/"
+			db.Find("drink", &d, "WHERE kind = sugar ORDER BY RANDOM() limit 1") //糖
+			msg += d.Drink + "/"
+			db.Find("drink", &d, "WHERE kind = body ORDER BY RANDOM() limit 1") //主体
+			msg += d.Drink
+			db.FindFor("drink", &d, "WHERE kind = addon", func() error {
+				dSlice = append(dSlice, d)
+				return nil
+			})
+			util.Shuffle(dSlice)
 		})
 }
 
