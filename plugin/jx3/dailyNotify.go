@@ -1,22 +1,26 @@
 package jx3
 
 import (
+	"fmt"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/fumiama/cron"
+	"github.com/golang-module/carbon/v2"
+	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
 const (
-	ServiceName = "dailyNotify"
+	ServiceName       = "dailyNotify"
+	notify      int64 = 10
 )
 
 var date = map[int]map[string]string{
-	1: {"10:00": "帮会跑商：阴山商路", "19:00": "阵营祭天：出征祭祀"},
-	2: {"20:00": "阵营攻防：逐鹿中原"},
-	3: {"20:00": "世界首领：少林·乱世，七秀·乱世"},
-	4: {"20:00": "阵营攻防：逐鹿中原"},
-	5: {"20:00": "世界首领：黑山林海，藏剑·乱世"},
-	6: {"12:00": "攻防前置：南屏山", "13:00": "阵营攻防：浩气盟；奇袭：恶人谷", "19:00": "阵营攻防：浩气盟；奇袭：恶人谷"},
-	7: {"12:00": "攻防前置：昆仑", "13:00": "阵营攻防：恶人谷；奇袭：浩气盟", "19:00": "阵营攻防：恶人谷；奇袭：浩气盟"},
+	1: {"10:00:00": "帮会跑商：阴山商路", "19:00:00": "阵营祭天：出征祭祀"},
+	2: {"20:00:00": "阵营攻防：逐鹿中原"},
+	3: {"20:00:00": "世界首领：少林·乱世，七秀·乱世"},
+	4: {"20:00:00": "阵营攻防：逐鹿中原"},
+	5: {"20:00:00": "世界首领：黑山林海，藏剑·乱世"},
+	6: {"12:00:00": "攻防前置：南屏山", "13:00:00": "阵营攻防：浩气盟；奇袭：恶人谷", "19:00:00": "阵营攻防：浩气盟；奇袭：恶人谷"},
+	0: {"12:00:00": "攻防前置：昆仑", "13:00:00": "阵营攻防：恶人谷；奇袭：浩气盟", "19:00:00": "阵营攻防：恶人谷；奇袭：浩气盟"},
 }
 
 //"一": "帮会跑商：阴山商路(10:00)\n阵营祭天：出征祭祀(19:00)\n",
@@ -32,5 +36,18 @@ func init() { // 插件主体
 		DisableOnDefault: false,
 		Help:             "每周日常定时推送\n",
 	})
-	cron.New().AddFunc()
+	engine.OnFullMatch("剑网活动推送").Handle(
+		sendMessage,
+	)
+}
+
+func sendMessage(ctx *zero.Ctx) {
+	week := carbon.Now().Week()
+	daily := date[week]
+	for time, msg := range daily {
+		diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
+		if diff == -notify {
+			ctx.SendChain(message.AtAll(), message.Text(fmt.Sprintf("还有%d分钟%s活动就要开始了~", notify, msg)))
+		}
+	}
 }
