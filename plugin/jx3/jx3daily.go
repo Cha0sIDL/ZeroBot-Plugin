@@ -503,7 +503,7 @@ func init() {
 				return
 			}
 			Team := getTeamInfo(teamId)
-			if carbon.Now().TimestampWithSecond() >= Team.StartTime || Team.GroupId != ctx.Event.GroupID {
+			if carbon.Now().Timestamp() >= Team.StartTime || Team.GroupId != ctx.Event.GroupID {
 				ctx.SendChain(message.Text("当前团队已过期或团队不存在。"))
 				return
 			}
@@ -517,7 +517,7 @@ func init() {
 				MemberNickName: nickName,
 				MentalId:       mental.ID,
 				Double:         double,
-				SignUp:         carbon.Now().TimestampWithSecond(),
+				SignUp:         carbon.Now().Timestamp(),
 			}
 			addMember(&member)
 			ctx.SendChain(message.Text("报团成功"), message.Reply(ctx.Event.MessageID))
@@ -541,7 +541,7 @@ func init() {
 			var InfoTeam []Team
 			for _, d := range SignUp {
 				Team := getEfficientTeamInfo(
-					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d' AND groupId = '%d'", d, carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
+					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d' AND groupId = '%d'", d, carbon.Now().Timestamp(), ctx.Event.GroupID))
 				if len(Team) > 0 {
 					InfoTeam = append(InfoTeam, Team[0])
 				}
@@ -556,7 +556,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			InfoSlice := getEfficientTeamInfo(
-				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d' AND groupId = '%d'", ctx.Event.UserID, carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
+				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d' AND groupId = '%d'", ctx.Event.UserID, carbon.Now().Timestamp(), ctx.Event.GroupID))
 			out := ""
 			for _, data := range InfoSlice {
 				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
@@ -567,7 +567,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"全团显示"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			InfoSlice := getEfficientTeamInfo(
-				fmt.Sprintf("WHERE startTime > '%d' AND groupId = '%d'", carbon.Now().TimestampWithSecond(), ctx.Event.GroupID))
+				fmt.Sprintf("WHERE startTime > '%d' AND groupId = '%d'", carbon.Now().Timestamp(), ctx.Event.GroupID))
 			out := ""
 			for _, data := range InfoSlice {
 				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
@@ -702,7 +702,7 @@ func sendNotice(payload gjson.Result) {
 
 func parseDate(msg string) int64 {
 	extract := timefinder.New().TimeExtract(msg)
-	return carbon.Time2Carbon(extract[0]).TimestampWithSecond()
+	return carbon.Time2Carbon(extract[0]).Timestamp()
 }
 
 func drawTeam(teamId int) image.Image {
