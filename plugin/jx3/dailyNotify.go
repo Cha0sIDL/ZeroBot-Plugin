@@ -47,7 +47,7 @@ func sendMessage(ctx *zero.Ctx) {
 	for time, msg := range daily {
 		diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
 		if diff == -notify {
-			ctx.SendChain(message.AtAll(), message.Text(fmt.Sprintf("还有%d分钟%s活动就要开始了~", notify, msg)))
+			ctx.SendChain(message.AtAll(), message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg)))
 		}
 	}
 }
