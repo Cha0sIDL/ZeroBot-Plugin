@@ -9,6 +9,7 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
+	zero "github.com/wdvxdr1123/ZeroBot"
 	"image"
 	"image/jpeg"
 	"math/rand"
@@ -251,6 +252,16 @@ func Shuffle(slice interface{}) { //切片乱序
 	for i := length - 1; i >= 0; i-- {
 		j := rand.Intn(length)
 		swap(i, j)
+	}
+	return
+}
+
+func Ignore(ctx *zero.Ctx) (rsp bool) {
+	rsp = true
+	for _, ignore := range config.Cfg.Ignore {
+		if ignore == ctx.ExtractPlainText() {
+			rsp = false
+		}
 	}
 	return
 }

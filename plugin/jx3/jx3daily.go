@@ -402,12 +402,6 @@ func init() {
 			json := gjson.ParseBytes(rsp)
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
 		})
-	//en.OnKeyword(`渣男`).SetBlock(true).
-	//	Handle(func(ctx *zero.Ctx) {
-	//		for _, QQ := range config.Cfg.At {
-	//			ctx.SendChain(message.At(QQ))
-	//		}
-	//	})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := enable(ctx.Event.GroupID)

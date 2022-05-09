@@ -51,7 +51,7 @@ func init() {
 			ctx.SendChain(message.Text("本群当前活跃度为:", active))
 		})
 	en.OnMessage(func(ctx *zero.Ctx) bool {
-		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx)
+		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx) && util.Ignore(ctx)
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			if zero.HasPicture(ctx) {
@@ -108,4 +108,3 @@ func getActive(ctx *zero.Ctx) (active int) {
 	}
 	return 0
 }
-

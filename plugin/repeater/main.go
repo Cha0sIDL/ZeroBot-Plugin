@@ -1,6 +1,7 @@
 package repeater
 
 import (
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -35,7 +36,10 @@ func init() {
 	})
 	instance = &autoCopy{}
 	instance.groupMsg = newGroupMsg()
-	engine.OnMessage(zero.OnlyGroup).SetBlock(false).
+	engine.OnMessage(
+		func(ctx *zero.Ctx) bool {
+			return zero.OnlyGroup(ctx) && util.Ignore(ctx)
+		}).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
 			instance.autoCopyAndJoinIn(ctx)
 		})
