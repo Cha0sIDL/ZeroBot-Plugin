@@ -259,6 +259,8 @@ func Shuffle(slice interface{}) { //切片乱序
 func Ignore(ctx *zero.Ctx) (rsp bool) {
 	rsp = true
 	for _, ignore := range config.Cfg.Ignore {
+		log.Errorln(ctx.ExtractPlainText())
+		log.Errorln(ignore)
 		if ignore == ctx.ExtractPlainText() {
 			rsp = false
 		}
