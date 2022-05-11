@@ -16,6 +16,8 @@ func init() { // 插件主体
 	engine := control.Register("crazy", &control.Options{
 		DisableOnDefault: false,
 		PublicDataFolder: "Crazy",
+		Help: "喝什么\n" +
+			"吃什么\n",
 	})
 	go func() {
 		dbpath := engine.DataFolder()

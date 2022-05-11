@@ -366,6 +366,8 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/baidu"`
 
   - [x] 百度下[xxx]
+  - [x] 维基|百科[xxx]
+  - [x] 百度百科[xxx]
 
 </details>
 <details>
@@ -958,20 +960,87 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 开服检查xxx(eg 开服检查绝代天骄)
   - [x] 金价查询xxx(eg 金价查询绝代天骄)
   - [x] 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)
-  - [x] 小药
-  - [x] 配装xxx(eg 配装分山劲)
-  - [x] 奇穴xxx(eg 奇穴分山劲)
-  - [x] 宏xxx(eg 分山劲宏)
+  - [x] xxx小药
+  - [x] xxx配装(eg 分山劲配装)
+  - [x] xxx奇穴(eg 分山劲奇穴)
+  - [x] xxx宏(eg 分山劲宏)
   - [x] 沙盘xxx(eg 沙盘绝代天骄)
   - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
   - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
   - [x] 奇遇攻略xxx(eg 奇遇攻略三山四海)
-  - [x] 维护公告
+  - [x] 维护公告|更新公告
   - [x] 骚话（不区分大小写)
   - [x] 舔狗
+  - [x] 开启jx推送
+  - [x] 更新内容
+  - [x] /roll
+  - [x] 团队相关 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
   - [x] TODO...
 
 </details>
+
+<details>
+  <summary>复读机</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"`
+
+- [x] 群内自动触发
+
+
+</details>
+
+<details>
+  <summary>明日方舟公招tag查询</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"`
+
+- [x] 查公招
+
+
+</details>
+
+<details>
+  <summary>随机食物</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"`
+
+- [x] 吃什么
+- [x] 喝什么
+
+
+</details>
+
+<details>
+  <summary>搜表情包</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"`
+
+- [x] [xxx]表情  可能会偶尔抽风
+
+
+</details>
+
+<details>
+  <summary>查天气</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"`
+
+- [x] [xxx]天气
+
+
+</details>
+
+<details>
+  <summary>随机头像生成</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"`
+
+- [x] 头像
+
+
+</details>
+
+
 
 ### *低优先级*
 
@@ -980,9 +1049,9 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/curse"`
 
-  - [x] 骂我
+  - [x] 骂(他|它|她)@qq
 
-  - [x] 大力骂我
+  - [x] 大力骂他@qq
 
 </details>
 <details>

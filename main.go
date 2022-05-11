@@ -121,13 +121,13 @@ import (
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
 	//其他
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" //明日方舟公招tag查询
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     //吃什么
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       //剑网相关
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   //搜表情包
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"   //查天气
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo" //头像生成
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
@@ -150,7 +150,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/curse" // 骂人
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" //活跃度自动插话
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"     // 人工智能回复
 
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
 
