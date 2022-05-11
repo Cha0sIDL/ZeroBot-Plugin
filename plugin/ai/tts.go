@@ -63,6 +63,10 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
 			r := aireply.NewAIReply(getReplyMode(ctx))
+			if util.Rand(1, 100) < 50 {
+				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
+				return
+			}
 			arg := nls.DefaultSpeechSynthesisParam()
 			arg.Voice = getVoice()
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
