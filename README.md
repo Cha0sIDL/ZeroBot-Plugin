@@ -223,6 +223,8 @@ zerobot [-c config.json] [-h] [-s config.json] [-t token] [-u url] [-n nickname]
 
   - [x] [开启 | 关闭]gist加群自动审批
 
+  - [x] 回复x消息 撤回
+
   - [ ] 同意好友请求
 
   - [ ] 撤回[@xxx] [xxx]
@@ -1044,6 +1046,16 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 ### *低优先级*
 
+<details>
+  <summary>随机插话</summary>
+
+`import _ ""github.com/FloatTech/ZeroBot-Plugin/plugin/active"`
+
+- [x] 设置活跃度xx
+
+- [x] 查询活跃度
+
+</details>
 <details>
   <summary>骂人</summary>
 
