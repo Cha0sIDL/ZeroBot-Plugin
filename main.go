@@ -127,7 +127,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   //搜表情包
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"   //查天气
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo" //头像生成
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     //头像生成
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" //热搜
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //

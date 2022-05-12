@@ -266,3 +266,10 @@ func Ignore(ctx *zero.Ctx) (rsp bool) {
 	}
 	return
 }
+
+// Unicode2Zh Unicode转中文
+func Unicode2Zh(sText string) []byte {
+	textQuoted := strconv.QuoteToASCII(sText)
+	str, _ := strconv.Unquote(strings.Replace(strconv.Quote(textQuoted), `\\u`, `\u`, -1))
+	return []byte(str)
+}
