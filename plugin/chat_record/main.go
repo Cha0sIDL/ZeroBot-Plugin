@@ -6,7 +6,10 @@ import (
 	"github.com/FloatTech/zbputils/file"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"os"
+	"sync"
 )
+
+var m sync.Mutex
 
 func init() { // 插件主体
 	engine := control.Register("record", &control.Options{
@@ -29,6 +32,8 @@ func init() { // 插件主体
 	}).SetBlock(false).Handle(
 		func(ctx *zero.Ctx) {
 			go func() {
+				m.Lock()
+				defer m.Unlock()
 				var dbMsg string
 				for _, msg := range ctx.Event.Message {
 					dbMsg += msg.String() + "#Split#"
