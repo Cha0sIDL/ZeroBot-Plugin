@@ -40,6 +40,8 @@ import (
 
 	_ "github.com/FloatTech/zbputils/job" // 定时指令触发器
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" //聊天记录
+
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^高优先级区^^^^^^^                      //
