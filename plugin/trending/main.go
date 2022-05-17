@@ -5,10 +5,12 @@ import (
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/web"
+	"github.com/antchfx/htmlquery"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"strconv"
+	"strings"
 )
 
 func init() { // 插件主体
@@ -75,20 +77,20 @@ func getZhihuTrending(ctx *zero.Ctx) {
 }
 
 func getGithubTrending(ctx *zero.Ctx) {
-	////rsp := "GitHub实时热榜:\n"
-	//url := "https://github.com/trending"
-	//data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
-	//if err != nil {
-	//	msg := message.Text("ERROR:", err)
-	//	ctx.SendChain(msg)
-	//	return
-	//}
-	//log.Errorln(string(data))
-	//doc, err := htmlquery.Parse(strings.NewReader(helper.BytesToString(data)))
-	//if err != nil {
-	//	return
-	//}
-	//htmlquery.Find(doc, "Box-row")
+	msg := "GitHub实时热榜:"
+	doc, err := htmlquery.LoadURL("https://github.com/trending")
+	if err != nil {
+		panic("htmlQuery error")
+	}
+	article := htmlquery.Find(doc, "//*[@id=\"js-pjax-container\"]/div[3]/div/div[2]/article[@*]")
+	for idx, a := range article {
+		titlePath := htmlquery.FindOne(a, "/h1/a")
+		title := htmlquery.SelectAttr(titlePath, "href")
+
+		msg += strconv.Itoa(idx) + "：" + title + "\n" + "地址：https://github.com" + title + "\n"
+		//introduction := htmlquery.FindOne(a, "/p[*]/text()").Data
+		//fmt.Println(introduction)
+	}
 }
 
 func getTouTiaoTrending(ctx *zero.Ctx) {
@@ -112,4 +114,12 @@ func getTouTiaoTrending(ctx *zero.Ctx) {
 	}
 	ctx.SendChain(message.Text(rsp))
 	return
+}
+
+func splitAndSplice(str string) string {
+	var r string
+	for _, msg := range strings.Split(str, "/") {
+		r += msg + "-"
+	}
+	return r
 }
