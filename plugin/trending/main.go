@@ -77,7 +77,7 @@ func getZhihuTrending(ctx *zero.Ctx) {
 }
 
 func getGithubTrending(ctx *zero.Ctx) {
-	msg := "GitHub实时热榜:"
+	msg := "GitHub实时热榜:\n"
 	doc, err := htmlquery.LoadURL("https://github.com/trending")
 	if err != nil {
 		panic("htmlQuery error")
@@ -86,11 +86,11 @@ func getGithubTrending(ctx *zero.Ctx) {
 	for idx, a := range article {
 		titlePath := htmlquery.FindOne(a, "/h1/a")
 		title := htmlquery.SelectAttr(titlePath, "href")
-
-		msg += strconv.Itoa(idx) + "：" + title + "\n" + "地址：https://github.com" + title + "\n"
+		msg += strconv.Itoa(idx+1) + "：" + strings.TrimPrefix(title, "/") + "\n" + "地址：https://github.com" + title + "\n"
 		//introduction := htmlquery.FindOne(a, "/p[*]/text()").Data
 		//fmt.Println(introduction)
 	}
+	ctx.SendChain(message.Text(msg))
 }
 
 func getTouTiaoTrending(ctx *zero.Ctx) {
@@ -114,12 +114,4 @@ func getTouTiaoTrending(ctx *zero.Ctx) {
 	}
 	ctx.SendChain(message.Text(rsp))
 	return
-}
-
-func splitAndSplice(str string) string {
-	var r string
-	for _, msg := range strings.Split(str, "/") {
-		r += msg + "-"
-	}
-	return r
 }
