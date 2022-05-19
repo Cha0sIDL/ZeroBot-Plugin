@@ -32,6 +32,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smallnest/rpcx v1.7.4
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.402
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.402
 	github.com/tidwall/gjson v1.14.1
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.5.2-0.20220509035736-f3ad8fa960d7

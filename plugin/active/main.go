@@ -3,7 +3,6 @@ package active
 import (
 	"errors"
 	"fmt"
-	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -78,7 +77,9 @@ func init() {
 				}
 			} else {
 				msg := ctx.ExtractPlainText()
-				r := aireply.NewAIReply("青云客")
+				t := []string{"青云客", "腾讯", "小爱"}
+				util.Shuffle(t)
+				r := NewAIReply(t[0])
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 		})

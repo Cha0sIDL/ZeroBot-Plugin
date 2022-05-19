@@ -12,11 +12,13 @@ import (
 const config = "config.json"
 
 type Config struct {
-	RpcHost string   `json:"rpc_host"`
-	TTS     *TTS     `json:"tts"`
-	WsUrl   string   `json:"ws_url"`
-	Weather string   `json:"weather"`
-	Ignore  []string `json:"ignore"`
+	RpcHost   string   `json:"rpc_host"`
+	TTS       *TTS     `json:"tts"`
+	WsUrl     string   `json:"ws_url"`
+	Weather   string   `json:"weather"`
+	Ignore    []string `json:"ignore"`
+	SecretId  string   `json:"secretId"`
+	SecretKey string   `json:"secretKey"`
 }
 
 type TTS struct {
