@@ -2,8 +2,8 @@ package ai
 
 import (
 	"fmt"
-	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/ZeroBot-Plugin/nlp"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -62,7 +62,7 @@ func init() {
 	en.OnMessage(zero.OnlyToMe).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
-			r := aireply.NewAIReply(getReplyMode(ctx))
+			r := nlp.NewAIReply(getReplyMode(ctx))
 			if util.Rand(1, 100) < 50 {
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 				return
