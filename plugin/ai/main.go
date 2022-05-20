@@ -11,7 +11,7 @@ const (
 	serviceName = "ai"
 )
 
-var modes = [...]string{"青云客", "小爱"}
+var modes = [...]string{"青云客", "小爱", "腾讯"}
 
 func init() { // 插件主体
 	//bucket := rate.NewManager(time.Minute, 20) // 接口回复限速器

@@ -1,4 +1,4 @@
-package active
+package nlp
 
 import "github.com/FloatTech/AnimeAPI/aireply"
 
