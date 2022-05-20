@@ -1,29 +1,21 @@
 package active
 
+import "github.com/FloatTech/AnimeAPI/aireply"
+
 var (
-	ModeMap = func() (M map[string]AIReply) {
-		setReplyMap := func(m map[string]AIReply, r AIReply) {
+	ModeMap = func() (M map[string]aireply.AIReply) {
+		setReplyMap := func(m map[string]aireply.AIReply, r aireply.AIReply) {
 			m[r.String()] = r
 		}
-		M = make(map[string]AIReply, 3)
-		setReplyMap(M, &QYKReply{})
-		setReplyMap(M, &XiaoAiReply{})
+		M = make(map[string]aireply.AIReply, 3)
+		setReplyMap(M, &aireply.QYKReply{})
+		setReplyMap(M, &aireply.XiaoAiReply{})
 		setReplyMap(M, &Tencent{})
 		return
 	}()
 )
 
-// AIReply 公用智能回复类
-type AIReply interface {
-	// Talk 取得带 CQ 码的回复消息
-	Talk(msg, nickname string) string
-	// Talk 取得文本回复消息
-	TalkPlain(msg, nickname string) string
-	// String 获得实际使用的回复服务名
-	String() string
-}
-
 // NewAIReply 智能回复简单工厂
-func NewAIReply(mode string) AIReply {
+func NewAIReply(mode string) aireply.AIReply {
 	return ModeMap[mode]
 }
