@@ -19,6 +19,7 @@ type Config struct {
 	Ignore    []string `json:"ignore"`
 	SecretId  string   `json:"secretId"`
 	SecretKey string   `json:"secretKey"`
+	MMToken   string   `json:"MMToken"`
 }
 
 type TTS struct {
