@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/DanPlayer/timefinder"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -658,6 +659,32 @@ func init() {
 		})
 	en.OnPrefixGroup([]string{"奇遇", "奇遇查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
+			//var msg string
+			//commandPart := util.SplitSpace(ctx.State["args"].(string))
+			//if len(commandPart) != 2 {
+			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
+			//	return
+			//}
+			//server := commandPart[0]
+			//name := commandPart[1]
+			//qiyuUrl := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
+			//rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
+			//if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 0 {
+			//	ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+			//	return
+			//}
+			//jData := gjson.Get(binary.BytesToString(rspData), "data.data")
+			//if len(jData.String()) == 0 {
+			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
+			//	return
+			//}
+			//for idx, data := range jData.Array() {
+			//	if idx == 0 {
+			//		msg += server + "\n"
+			//	}
+			//	msg = msg + name + "  " + data.Get("serendipity").String() + "  " + data.Get("date_str").String() + "\n"
+			//}
+			//ctx.SendChain(message.Text(msg))
 			var msg string
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) != 2 {
@@ -666,14 +693,15 @@ func init() {
 			}
 			server := commandPart[0]
 			name := commandPart[1]
-			qiyuUrl := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
+			qiyuUrl := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&u=不限&t=&token=%s", server, name, config.Cfg.MMToken)
 			rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
-			if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 0 {
+			log.Errorln(string(rspData))
+			if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 200 {
 				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 				return
 			}
-			jData := gjson.Get(binary.BytesToString(rspData), "data.data")
-			if len(jData.String()) == 0 {
+			jData := gjson.Get(binary.BytesToString(rspData), "result")
+			if len(jData.Array()) == 0 {
 				ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 				return
 			}
@@ -681,7 +709,7 @@ func init() {
 				if idx == 0 {
 					msg += server + "\n"
 				}
-				msg = msg + name + "  " + data.Get("serendipity").String() + "  " + data.Get("date_str").String() + "\n"
+				msg = msg + name + "  " + data.Get("serendipity").String() + "  " + carbon.CreateFromTimestamp(data.Get("time").Int()).ToDateTimeString() + "\n"
 			}
 			ctx.SendChain(message.Text(msg))
 		})
