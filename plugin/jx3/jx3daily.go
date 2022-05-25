@@ -19,6 +19,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
 	"io/ioutil"
+	goUrl "net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -66,24 +67,9 @@ func init() {
 	go func() {
 		initialize()
 	}()
-	en.OnRegex(`^(日常任务|日常)(.*)`).SetBlock(true).
+	en.OnFullMatchGroup([]string{"日常", "日常任务"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			str := ctx.State["regex_matched"].([]string)[1]
-			data, err := util.SendHttp(url+"daily", []byte(getMental(strings.Replace(str, " ", "", -1))))
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-				ctx.SendChain(message.Text("出错了！！！可能是参数不对"))
-				return
-			}
-			json := gjson.ParseBytes(data)
-			ctx.SendChain(message.Text(
-				"日期: ", json.Get("data.date"), "\n",
-				"大战: ", json.Get("data.dayWar").Str, "\n",
-				"战场: ", json.Get("data.dayBattle").Str, "\n",
-				"公共日常: ", json.Get("data.dayPublic").Str, "\n",
-				"美人图: ", json.Get("data.dayDraw").Str, "\n",
-				"十人周常：", json.Get("data.weekFive").Str, "\n",
-			))
+			decorator(daily)(ctx)
 		})
 	en.OnRegex(`^开服检查(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -449,7 +435,6 @@ func init() {
 			for _, value := range json.Get("data").Array() {
 				server[value.Get("server").String()] = value.Get("id").Int()
 			}
-			log.Errorln(server)
 			if _, ok := server[area]; ok {
 				bindArea(ctx.Event.GroupID, area)
 				ctx.Send(message.Text("绑定成功"))
@@ -713,6 +698,41 @@ func init() {
 			//}
 			//ctx.SendChain(message.Text(msg))
 		})
+}
+
+func daily(ctx *zero.Ctx, server string) {
+	var msg string
+	msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
+	riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
+	daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
+	if err != nil || gjson.Get(binary.BytesToString(daily), "code").Int() != 0 {
+		ctx.SendChain(message.Text("出错了联系管理员看看吧~"))
+		return
+	}
+	for _, d := range gjson.Get(binary.BytesToString(daily), "data").Array() {
+		msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
+	}
+	meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
+	meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
+	if err != nil || gjson.Get(binary.BytesToString(meiData), "code").Int() != 0 {
+		msg += "今天没有美人图呢\n"
+	} else {
+		msg += "美人图：" + gjson.Get(binary.BytesToString(meiData), "data.name").String() + "\n"
+	}
+	msg += "---------------------\n"
+	msg += "数据来源JXBOX和推栏"
+	ctx.SendChain(message.Text(msg))
+}
+
+func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
+	return func(ctx *zero.Ctx) {
+		server := bind(ctx.Event.GroupID)
+		if len(server) != 0 {
+			f(ctx, server)
+			return
+		}
+		ctx.SendChain(message.Text("本群还没绑定区服呢"))
+	}
 }
 
 func sendNotice(payload gjson.Result) {

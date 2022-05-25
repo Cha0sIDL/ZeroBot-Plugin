@@ -234,6 +234,16 @@ func isEnable(Gid int64) (bool, string) {
 	return control.Disable, control.Area
 }
 
+func bind(Gid int64) string {
+	var control jxControl
+	var rwMutex sync.RWMutex
+	rwMutex.RLock()
+	arg := "where gid = " + strconv.FormatInt(Gid, 10)
+	db.Find(dbControl, &control, arg)
+	rwMutex.RUnlock()
+	return control.Area
+}
+
 func bindArea(Gid int64, Area string) {
 	var c jxControl
 	var rwMutex sync.RWMutex

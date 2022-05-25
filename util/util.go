@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -297,4 +298,10 @@ func Unicode2utf8(source string) string {
 	}
 	res = append(res, context)
 	return strings.Join(res, "")
+}
+
+func GetWeek() string {
+	s := []string{"周日", "周一", "周二", "周三", "周四", "周五", "周六"}
+	intWeek := carbon.Now().Week()
+	return s[intWeek]
 }
