@@ -5,15 +5,19 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/zbputils/web"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"image"
 	"image/jpeg"
+	"io"
 	"math/rand"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -118,6 +122,30 @@ func MergeMap(mObj ...map[string]interface{}) map[string]interface{} {
 		}
 	}
 	return newObj
+}
+
+// RequestDataWith 剑网小黑特殊客户端
+func RequestDataWith(url string) (data []byte, err error) {
+	var request *http.Request
+	client := web.NewDefaultClient()
+	request, err = http.NewRequest("POST", url, nil)
+	if err == nil {
+		// 增加header选项
+		request.Header.Add("X-Token", "")
+		request.Header.Add("User-Agent", web.RandUA())
+		var response *http.Response
+		response, err = client.Do(request)
+		if err == nil {
+			if response.StatusCode != http.StatusOK {
+				s := fmt.Sprintf("status code: %d", response.StatusCode)
+				err = errors.New(s)
+				return
+			}
+			data, err = io.ReadAll(response.Body)
+			response.Body.Close()
+		}
+	}
+	return
 }
 
 func GetCurrentAbPath() string {

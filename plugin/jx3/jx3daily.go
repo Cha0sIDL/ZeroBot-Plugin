@@ -8,6 +8,7 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/img/text"
 	"github.com/FloatTech/zbputils/math"
 	"github.com/FloatTech/zbputils/web"
@@ -43,6 +44,13 @@ var tuiKey = map[string]string{
 	"阵营日常":   "60f211c82d105c0014c5dd9d",
 }
 
+type cd struct {
+	last     int64
+	fileName string
+}
+
+var heiCd = make(map[string]cd)
+
 type jinjia struct {
 	server    string
 	wanbaolou []float64
@@ -50,10 +58,77 @@ type jinjia struct {
 	qita      []float64
 }
 
+var xiaoheiIndx = map[string]string{
+	"电信点卡": "server1",
+	"双线一区": "server2",
+	"电信一区": "server3",
+	"双线二区": "server4",
+}
+
+type xiaohei struct {
+	State int `json:"state"`
+	Data  struct {
+		Other []struct {
+			Region struct {
+				Id          int    `json:"id"`
+				CreatedTime string `json:"createdTime"`
+				UpdatedTime string `json:"updatedTime"`
+				RegionName  string `json:"regionName"`
+				RegionNick  string `json:"regionNick"`
+				Charge      string `json:"charge"`
+			} `json:"region"`
+			Prices struct {
+				Id          int         `json:"id"`
+				Price       float64     `json:"price"`
+				Region      string      `json:"region"`
+				RegionAlias string      `json:"regionAlias"`
+				RegionId    int         `json:"regionId"`
+				Server      string      `json:"server"`
+				ServerId    int         `json:"serverId"`
+				SaleCode    string      `json:"saleCode"`
+				TradeTime   string      `json:"tradeTime"`
+				OutwardName interface{} `json:"outwardName"`
+				OutwardId   int         `json:"outwardId"`
+				Audit       int         `json:"audit"`
+				Now         int         `json:"now"`
+				Exterior    string      `json:"exterior"`
+				Pricer      string      `json:"pricer"`
+			} `json:"prices"`
+		} `json:"other"`
+		Region struct {
+			Id          int    `json:"id"`
+			CreatedTime string `json:"createdTime"`
+			UpdatedTime string `json:"updatedTime"`
+			RegionName  string `json:"regionName"`
+			RegionNick  string `json:"regionNick"`
+			Charge      string `json:"charge"`
+		} `json:"region"`
+		Prices []struct {
+			Id          int         `json:"id"`
+			Price       float64     `json:"price"`
+			Region      string      `json:"region"`
+			RegionAlias string      `json:"regionAlias"`
+			RegionId    int         `json:"regionId"`
+			Server      string      `json:"server"`
+			ServerId    int         `json:"serverId"`
+			SaleCode    string      `json:"saleCode"`
+			TradeTime   string      `json:"tradeTime"`
+			OutwardName interface{} `json:"outwardName"`
+			OutwardId   int         `json:"outwardId"`
+			Audit       int         `json:"audit"`
+			Now         int         `json:"now"`
+			Exterior    string      `json:"exterior"`
+			Pricer      string      `json:"pricer"`
+		} `json:"prices"`
+	} `json:"data"`
+	Message interface{} `json:"message"`
+}
+
 func init() {
 	go startWs()
 	en := control.Register("jx", &control.Options{
-		DisableOnDefault: false,
+		DisableOnDefault:  false,
+		PrivateDataFolder: "jx3",
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +
 			"- 开服检查xxx(eg 开服检查绝代天骄)\n" +
 			"- 金价查询xxx(eg 金价查询绝代天骄)\n" +
@@ -76,6 +151,7 @@ func init() {
 	go func() {
 		initialize()
 	}()
+	datapath := file.BOTPATH + "/" + en.DataFolder()
 	en.OnFullMatchGroup([]string{"日常", "日常任务"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			decorator(daily)(ctx)
@@ -709,7 +785,7 @@ func init() {
 		})
 	en.OnPrefixGroup([]string{"物价"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			decorator(wujia)(ctx)
+			wujia(ctx, datapath)
 		})
 }
 
@@ -746,26 +822,66 @@ func daily(ctx *zero.Ctx, server string) {
 	ctx.SendChain(message.Text(msg))
 }
 
-func wujia(ctx *zero.Ctx, server string) {
-	//var msg string
+func wujia(ctx *zero.Ctx, datapath string) {
+	var price = make(map[string][]map[string]interface{})
+	var data xiaohei
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
 	if len(commandPart) != 1 {
 		ctx.SendChain(message.Text("参数输入有误！\n" + "物价 牛金"))
 		return
 	}
 	name := commandPart[0]
-	goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
-	rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
-	if err != nil || gjson.Get(binary.BytesToString(rspData), "state").Int() != 0 {
-		ctx.SendChain(message.Text("出错了联系管理员看看吧"))
-		return
-	}
-	goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
-	infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
-	wuJiaData, err := web.PostData(infoUrl, "application/x-www-form-urlencoded", bytes.NewReader([]byte{}))
-	if err != nil || gjson.Get(binary.BytesToString(wuJiaData), "state").Int() != 0 {
-		ctx.SendChain(message.Text("出错了联系管理员看看吧"))
-		return
+	if hei, ok := heiCd[name]; ok && (carbon.Now().Timestamp()-hei.last) < 3600 {
+		ctx.SendChain(message.Image(hei.fileName))
+	} else {
+		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
+		rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
+		if err != nil || gjson.Get(binary.BytesToString(rspData), "state").Int() != 0 {
+			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+			return
+		}
+		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
+		infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
+		wuJiaData, err := web.PostData(infoUrl, "application/x-www-form-urlencoded", nil)
+		json.Unmarshal(wuJiaData, &data)
+		if err != nil || data.State != 0 {
+			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+			return
+		}
+		wujiaPicUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/outward?regionId=1&imageLimit=1&outwardId=%d", goodid)
+		wujiaPic, err := util.RequestDataWith(wujiaPicUrl)
+		for _, rprice := range data.Data.Other {
+			if server, ok := xiaoheiIndx[rprice.Prices.Region]; ok {
+				price[server] = append(price[server], map[string]interface{}{
+					"date":   rprice.Prices.TradeTime,
+					"server": rprice.Prices.Server,
+					"value":  fmt.Sprintf("%.2f", rprice.Prices.Price),
+					"sale":   rprice.Prices.SaleCode,
+				})
+			}
+		}
+		for _, rprice := range data.Data.Prices {
+			if server, ok := xiaoheiIndx[rprice.Region]; ok {
+				price[server] = append(price[server], map[string]interface{}{
+					"date":   rprice.TradeTime,
+					"server": rprice.Server,
+					"value":  fmt.Sprintf("%.2f", rprice.Price),
+					"sale":   rprice.SaleCode,
+				})
+			}
+		}
+		d := map[string]interface{}{
+			"image": gjson.Get(binary.BytesToString(wujiaPic), "data.images.0.image"),
+			"name":  name,
+			"data":  price,
+		}
+		html := util.Template2html("price.html", d)
+		finName, err := util.Html2pic(datapath, util.TodayFileName(), "weather.html", html)
+		heiCd[name] = cd{
+			last:     carbon.Now().Timestamp(),
+			fileName: "file:///" + finName,
+		}
+		ctx.SendChain(message.Image("file:///" + finName))
 	}
 }
 
