@@ -16,6 +16,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 
 	control "github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/img"
 	"github.com/FloatTech/zbputils/img/text"
@@ -24,7 +25,7 @@ import (
 )
 
 const (
-	backgroundURL = "https://iw233.cn/api.php?sort=pc&type=json"
+	backgroundURL = "https://mirlkoi.ifast3.vipnps.vip/api.php?sort=pc&type=json"
 	referer       = "https://iw233.cn/main.html"
 	ua            = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
 	signinMax     = 1
@@ -49,18 +50,17 @@ func init() {
 		}
 		sdb = initialize(engine.DataFolder() + "score.db")
 	}()
-	engine.OnFullMatch("签到", zero.OnlyGroup).SetBlock(true).
+	engine.OnFullMatch("签到", zero.OnlyGroup).Limit(ctxext.LimitByGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			uid := ctx.Event.UserID
 			now := time.Now()
 			today := now.Format("20060102")
 			si := sdb.GetSignInByUID(uid)
 			siUpdateTimeStr := si.UpdatedAt.Format("20060102")
-			if siUpdateTimeStr != today {
-				_ = sdb.InsertOrUpdateSignInCountByUID(uid, 0)
-			}
-
 			drawedFile := cachePath + strconv.FormatInt(uid, 10) + today + "signin.png"
+
+			picFile := cachePath + strconv.FormatInt(uid, 10) + today + ".png"
+
 			if si.Count >= signinMax && siUpdateTimeStr == today {
 				ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("今天你已经签到过了！"))
 				if file.IsExist(drawedFile) {
@@ -68,21 +68,21 @@ func init() {
 				}
 				return
 			}
-
-			picFile := cachePath + strconv.FormatInt(uid, 10) + today + ".png"
 			err := initPic(picFile)
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR:", err))
 				return
 			}
-
-			_ = sdb.InsertOrUpdateSignInCountByUID(uid, si.Count+1)
-
 			back, err := gg.LoadImage(picFile)
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR:", err))
 				return
 			}
+			if siUpdateTimeStr != today {
+				_ = sdb.InsertOrUpdateSignInCountByUID(uid, 0)
+			}
+
+			_ = sdb.InsertOrUpdateSignInCountByUID(uid, si.Count+1)
 
 			// 避免图片过大，最大 1280*720
 			back = img.Limit(back, 1280, 720)
@@ -159,7 +159,7 @@ func init() {
 			}
 			ctx.SendChain(message.Image("file:///" + file.BOTPATH + "/" + drawedFile))
 		})
-	engine.OnPrefix("获得签到背景", zero.OnlyGroup).SetBlock(true).
+	engine.OnPrefix("获得签到背景", zero.OnlyGroup).Limit(ctxext.LimitByGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			param := ctx.State["args"].(string)
 			var uidStr string
@@ -175,7 +175,7 @@ func init() {
 			}
 			ctx.SendChain(message.Image("file:///" + file.BOTPATH + "/" + picFile))
 		})
-	engine.OnFullMatch("查看分数排名", zero.OnlyGroup).SetBlock(true).
+	engine.OnFullMatch("查看分数排名", zero.OnlyGroup).Limit(ctxext.LimitByGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			today := time.Now().Format("20060102")
 			drawedFile := cachePath + today + "scoreRank.png"
