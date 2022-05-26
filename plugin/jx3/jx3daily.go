@@ -1,6 +1,7 @@
 package jx3
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/DanPlayer/timefinder"
@@ -33,6 +34,14 @@ const realizeUrl = "https://www.jx3api.com/realize/"
 const cloudUrl = "https://www.jx3api.com/cloud/"
 
 var method = "GET"
+
+var tuiKey = map[string]string{
+	"大战":     "60f211c82d105c0014c5dd7d",
+	"武林通鉴秘境": "60f211c82d105c0014c5de01",
+	"武林通鉴公共": "60f211c82d105c0014c5dd97",
+	"十人团队秘境": "60f211c82d105c0014c5ddcd",
+	"阵营日常":   "60f211c82d105c0014c5dd9d",
+}
 
 type jinjia struct {
 	server    string
@@ -712,14 +721,23 @@ func daily(ctx *zero.Ctx, server string) {
 	for _, d := range gjson.Get(binary.BytesToString(daily), "data").Array() {
 		msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
 	}
+	for k, _ := range tuiKey {
+		tuilanData := tuilan(k)
+		quest_name := gjson.Get(tuilanData, "data.quest_name").String()
+		if len(tuilanData) == 0 || k == "大战" || len(quest_name) == 0 || k == "阵营日常" { //大战美人图获取jxbox
+			continue
+		}
+		msg += k + "：" + quest_name + "\n"
+	}
 	meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
 	meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
 	if err != nil || gjson.Get(binary.BytesToString(meiData), "code").Int() != 0 {
-		msg += "今天没有美人图呢\n"
+		msg += "美人图：今天没有美人图呢~\n"
 	} else {
 		msg += "美人图：" + gjson.Get(binary.BytesToString(meiData), "data.name").String() + "\n"
 	}
-	msg += "---------------------\n"
+	msg += fmt.Sprintf("今日活动：%s\n", util.PrettyPrint(date[carbon.Now().Week()]))
+	msg += "--------------------------------\n"
 	msg += "数据来源JXBOX和推栏"
 	ctx.SendChain(message.Text(msg))
 }
@@ -771,6 +789,20 @@ func sendNotice(payload gjson.Result) {
 		}
 		return true
 	})
+}
+
+func tuilan(tuiType string) string {
+	url := "https://m.pvp.xoyo.com/activitygw/activity/calendar/detail"
+	m := make(map[string]interface{})
+	if id, ok := tuiKey[tuiType]; ok {
+		m = map[string]interface{}{"id": id}
+		b, _ := json.Marshal(m)
+		tuilanData, _ := web.PostData(url, "application/json", bytes.NewReader(b))
+		return binary.BytesToString(tuilanData)
+	} else {
+		return ""
+	}
+	return ""
 }
 
 func parseDate(msg string) int64 {

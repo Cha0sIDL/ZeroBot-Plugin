@@ -305,3 +305,20 @@ func GetWeek() string {
 	intWeek := carbon.Now().Week()
 	return s[intWeek]
 }
+
+func PrettyPrint(v interface{}) string {
+	b, err := json.Marshal(v)
+	if err != nil {
+		fmt.Println(v)
+		return ""
+	}
+
+	var out bytes.Buffer
+	err = json.Indent(&out, b, "", "  ")
+	if err != nil {
+		fmt.Println(v)
+		return ""
+	}
+
+	return out.String()
+}
