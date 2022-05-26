@@ -707,6 +707,10 @@ func init() {
 			//}
 			//ctx.SendChain(message.Text(msg))
 		})
+	en.OnPrefixGroup([]string{"物价"}).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			decorator(wujia)(ctx)
+		})
 }
 
 func daily(ctx *zero.Ctx, server string) {
@@ -740,6 +744,29 @@ func daily(ctx *zero.Ctx, server string) {
 	msg += "--------------------------------\n"
 	msg += "数据来源JXBOX和推栏"
 	ctx.SendChain(message.Text(msg))
+}
+
+func wujia(ctx *zero.Ctx, server string) {
+	//var msg string
+	commandPart := util.SplitSpace(ctx.State["args"].(string))
+	if len(commandPart) != 1 {
+		ctx.SendChain(message.Text("参数输入有误！\n" + "物价 牛金"))
+		return
+	}
+	name := commandPart[0]
+	goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
+	rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
+	if err != nil || gjson.Get(binary.BytesToString(rspData), "state").Int() != 0 {
+		ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+		return
+	}
+	goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
+	infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
+	wuJiaData, err := web.PostData(infoUrl, "application/x-www-form-urlencoded", bytes.NewReader([]byte{}))
+	if err != nil || gjson.Get(binary.BytesToString(wuJiaData), "state").Int() != 0 {
+		ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+		return
+	}
 }
 
 func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
