@@ -12,14 +12,13 @@ import (
 const config = "config.json"
 
 type Config struct {
-	RpcHost   string   `json:"rpc_host"`
-	TTS       *TTS     `json:"tts"`
-	WsUrl     string   `json:"ws_url"`
-	Weather   string   `json:"weather"`
-	Ignore    []string `json:"ignore"`
-	SecretId  string   `json:"secretId"`
-	SecretKey string   `json:"secretKey"`
-	MMToken   string   `json:"MMToken"`
+	RpcHost   string   `json:"rpc_host"`  //http rpc的地址
+	TTS       *TTS     `json:"tts"`       //阿里tts的一些配置
+	WsUrl     string   `json:"ws_url"`    //jxapi ws的地址
+	Weather   string   `json:"weather"`   //天气查询token
+	Ignore    []string `json:"ignore"`    //忽略的触发列表
+	SecretId  string   `json:"secretId"`  //腾讯npl
+	SecretKey string   `json:"secretKey"` //腾讯npl
 }
 
 type TTS struct {
