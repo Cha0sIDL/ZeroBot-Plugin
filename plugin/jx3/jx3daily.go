@@ -20,7 +20,6 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
-	"io/ioutil"
 	goUrl "net/url"
 	"strconv"
 	"strings"
@@ -383,28 +382,29 @@ func init() {
 				)
 			}
 		})
-	en.OnSuffix("宏").SetBlock(true).
-		//TODO 图片
+	en.OnPrefix("宏").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
-			if utf8.RuneCountInString(name) > 5 {
-				log.Println("name len max")
-			} else {
-				//data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-				//reqbody, err := json.Marshal(data)
-				//rsp, err := util.SendHttp(url+"macro", reqbody)
-				//if err != nil {
-				//	log.Errorln("jx3daily:", err)
-				//}
-				//json := gjson.ParseBytes(rsp)
-				//ctx.SendChain(
-				//	message.Text("奇穴：\n", json.Get("data.qixue").String(), "\n", "宏：\n", json.Get("data.macro").String()),
-				//)
-				mental := getMentalData(strings.Replace(name, " ", "", -1))
-				b, err := ioutil.ReadFile(dbpath + "macro/" + strconv.FormatUint(mental.ID, 10))
-				if err == nil {
-					ctx.SendChain(message.Text(string(b)))
+			mental := getMentalData(strings.Replace(name, " ", "", -1))
+			mentalUrl := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
+			data, err := web.RequestDataWith(web.NewDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
+			DataList := gjson.Get(binary.BytesToString(data), "data.list").Array()
+			if err != nil || len(DataList) == 0 {
+				ctx.SendChain(message.Text("出错了请检查参数或稍后试试吧~"))
+				return
+			}
+			for idx, m := range DataList {
+				rsp := ""
+				if idx >= 3 {
+					break
 				}
+				rsp += "作者:" + m.Get("author").String() + "\n" + m.Get("post_title").String() + "\n"
+				for _, meta := range m.Get("post_meta.data").Array() {
+					rsp += "\n" + meta.Get("name").String() + ":\n" + meta.Get("macro").String() + "\n" + "----------------------------------------------\n"
+				}
+				rsp += "数据来源于JXBOX，dps请自行测试"
+				ctx.SendChain(message.Text(rsp))
+				time.Sleep(time.Second * 2)
 			}
 		})
 	en.OnSuffix("阵眼").SetBlock(true).
