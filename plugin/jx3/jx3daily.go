@@ -853,6 +853,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 				msg += s.Get("outwardName").String() + "\n"
 			}
 			ctx.SendChain(message.Text(msg))
+			return
 		}
 		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
 		infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
