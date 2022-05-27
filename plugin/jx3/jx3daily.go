@@ -152,7 +152,7 @@ func init() {
 		initialize()
 	}()
 	datapath := file.BOTPATH + "/" + en.DataFolder()
-	en.OnFullMatchGroup([]string{"日常", "日常任务"}).SetBlock(true).
+	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			decorator(daily)(ctx)
 		})
@@ -839,6 +839,20 @@ func wujia(ctx *zero.Ctx, datapath string) {
 		if err != nil || gjson.Get(binary.BytesToString(rspData), "state").Int() != 0 {
 			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			return
+		}
+		if len(gjson.Get(binary.BytesToString(rspData), "data").Array()) == 0 { //如果输入无数据则请求
+			searchUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward/search?step=0&page=1&size=20&name=%s", goUrl.QueryEscape(name))
+			searchData, err := web.PostData(searchUrl, "application/x-www-form-urlencoded", nil)
+			searchList := gjson.Get(binary.BytesToString(searchData), "data.list").Array()
+			if err != nil || len(searchList) == 0 {
+				ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s，你是不是乱输的哦~", name)))
+				return
+			}
+			msg := "你可能找的是以下结果：\n"
+			for _, s := range searchList {
+				msg += s.Get("outwardName").String() + "\n"
+			}
+			ctx.SendChain(message.Text(msg))
 		}
 		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
 		infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
