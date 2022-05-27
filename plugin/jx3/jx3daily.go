@@ -831,7 +831,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 		return
 	}
 	name := commandPart[0]
-	if hei, ok := heiCd[name]; ok && (carbon.Now().Timestamp()-hei.last) < 3600 {
+	if hei, ok := heiCd[name]; ok && (carbon.Now().Timestamp()-hei.last) < 18000 {
 		ctx.SendChain(message.Image(hei.fileName))
 	} else {
 		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
@@ -876,7 +876,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			"data":  price,
 		}
 		html := util.Template2html("price.html", d)
-		finName, err := util.Html2pic(datapath, util.TodayFileName(), "weather.html", html)
+		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html)
 		heiCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
 			fileName: "file:///" + finName,
