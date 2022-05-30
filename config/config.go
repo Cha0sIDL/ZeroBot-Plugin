@@ -12,13 +12,14 @@ import (
 const config = "config.json"
 
 type Config struct {
-	RpcHost   string   `json:"rpc_host"`  //http rpc的地址
-	TTS       *TTS     `json:"tts"`       //阿里tts的一些配置
-	WsUrl     string   `json:"ws_url"`    //jxapi ws的地址
-	Weather   string   `json:"weather"`   //天气查询token
-	Ignore    []string `json:"ignore"`    //忽略的触发列表
-	SecretId  string   `json:"secretId"`  //腾讯npl
-	SecretKey string   `json:"secretKey"` //腾讯npl
+	RpcHost   string        `json:"rpc_host"`  //http rpc的地址
+	TTS       *TTS          `json:"tts"`       //阿里tts的一些配置
+	WsUrl     string        `json:"ws_url"`    //jxapi ws的地址
+	Weather   string        `json:"weather"`   //天气查询token
+	Ignore    []string      `json:"ignore"`    //忽略的触发列表
+	SecretId  string        `json:"secretId"`  //腾讯npl
+	SecretKey string        `json:"secretKey"` //腾讯npl
+	Picture   *PictureToken `json:"picture"`
 }
 
 type TTS struct {
@@ -27,6 +28,11 @@ type TTS struct {
 	Secret string   `json:"secret"`
 	Voice  []string `json:"voice"`
 	Start  string   `json:"start"`
+}
+
+type PictureToken struct {
+	MuXiaoGuo string `json:"mu_xiao_guo,omitempty"`
+	AlApi     string `json:"al_api,omitempty"`
 }
 
 var Cfg Config

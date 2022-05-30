@@ -12,19 +12,19 @@ import (
 	"net/url"
 )
 
-type XiaoGuo struct{}
+type Al struct{}
 
 const (
-	xiaoguoURL = "https://api.muxiaoguo.cn/api/emoticons?tuname=%s&api_key=%s"
+	alURL = "https://v2.alapi.cn/api/doutu?keyword=%s&token=%s&type=%d"
 )
 
-func (*XiaoGuo) String() string {
-	return "木小果"
+func (*Al) String() string {
+	return "Al"
 }
 
 // Picture 取得图片信息
-func (*XiaoGuo) Picture(msg string) (data []string, err error) {
-	u := fmt.Sprintf(xiaoguoURL, url.QueryEscape(msg), config.Cfg.Picture.MuXiaoGuo)
+func (*Al) Picture(msg string) (data []string, err error) {
+	u := fmt.Sprintf(alURL, url.QueryEscape(msg), config.Cfg.Picture.AlApi, 7)
 	client := &http.Client{}
 	req, err := http.NewRequest("POST", u, nil)
 	if err != nil {
@@ -44,10 +44,8 @@ func (*XiaoGuo) Picture(msg string) (data []string, err error) {
 		return
 	}
 	jsondata, _ := io.ReadAll(resp.Body)
-	gjson.Get(binary.BytesToString(jsondata), "data").ForEach(
-		func(key, value gjson.Result) bool {
-			data = append(data, value.Get("imagelink").String())
-			return true
-		})
+	for _, d := range gjson.Get(binary.BytesToString(jsondata), "data").Array() {
+		data = append(data, d.String())
+	}
 	return
 }

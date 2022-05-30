@@ -4,24 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/nlp"
+	"github.com/FloatTech/ZeroBot-Plugin/picture"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
-	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/web"
-	log "github.com/sirupsen/logrus"
-	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"math/rand"
-	"net/url"
 	"strconv"
 	"strings"
 )
 
 const (
 	serviceName = "active"
-	pictureUrl  = "https://doutu.lccyy.com/doutu/items?"
 )
 
 func init() {
@@ -66,14 +60,11 @@ func init() {
 							ocrTags = append(ocrTags, text.Str)
 						}
 						text := fmt.Sprintf("%s", strings.Join(ocrTags, ""))
-						url := pictureUrl + fmt.Sprintf("pageNum=%d&pageSize=%d&keyword=", 1, util.Rand(1, 100)) + url.QueryEscape(text)
-						data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
-						if err != nil {
-							log.Errorln("Active Err :", err)
+						url := picture.GetPicture(text)
+						if len(url) == 0 {
 							return
 						}
-						Items := gjson.Get(binary.BytesToString(data), "items").Array()
-						ctx.SendChain(message.Image(Items[rand.Intn(len(Items))].Get("url").String()))
+						ctx.SendChain(message.Image(url))
 					}
 				}
 			} else {

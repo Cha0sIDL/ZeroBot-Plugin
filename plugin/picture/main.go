@@ -1,22 +1,15 @@
 package picture
 
 import (
-	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-	"github.com/FloatTech/zbputils/binary"
+	"github.com/FloatTech/ZeroBot-Plugin/picture"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/web"
-	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"math/rand"
-	"net/url"
 )
 
 const (
 	servicename = "picture"
-	pictureUrl  = "https://doutu.lccyy.com/doutu/items?"
 )
 
 func init() {
@@ -30,16 +23,11 @@ func init() {
 			if arg == "" {
 				return
 			}
-			url := pictureUrl + fmt.Sprintf("pageNum=%d&pageSize=%d&keyword=", util.Rand(1, 10), util.Rand(1, 100)) + url.QueryEscape(arg)
-			data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
-			if err != nil {
-				ctx.SendChain(message.Text("服务出错了请稍后重试！"))
-			}
-			Items := gjson.Get(binary.BytesToString(data), "items").Array()
-			if len(Items) <= 0 {
-				ctx.SendChain(message.Text("请重试！"))
+			url := picture.GetPicture(arg)
+			if len(url) == 0 {
+				ctx.SendChain(message.Text("出错了稍后再试试吧~"))
 				return
 			}
-			ctx.SendChain(message.Image(Items[rand.Intn(len(Items))].Get("url").String()))
+			ctx.SendChain(message.Image(url))
 		})
 }
