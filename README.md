@@ -997,7 +997,7 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] xxx小药
   - [x] xxx配装(eg 分山劲配装)
   - [x] xxx奇穴(eg 分山劲奇穴)
-  - [x] xxx宏(eg 分山劲宏)
+  - [x] 宏xxx(eg 宏分山劲)
   - [x] 沙盘xxx(eg 沙盘绝代天骄)
   - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
   - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
@@ -1008,6 +1008,7 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 开启jx推送
   - [x] 更新内容
   - [x] /roll
+  - [x] 物价xxx
   - [x] 团队相关 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
   - [x] TODO...
 
