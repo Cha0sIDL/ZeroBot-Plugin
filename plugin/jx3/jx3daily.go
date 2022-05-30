@@ -21,6 +21,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
 	goUrl "net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -891,14 +892,29 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			"name":  name,
 			"data":  price,
 		}
+		lineHtml := data2line(price)
 		html := util.Template2html("price.html", d)
-		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html)
+		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html+lineHtml)
 		heiCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
 			fileName: "file:///" + finName,
 		}
 		ctx.SendChain(message.Image("file:///" + finName))
 	}
+}
+
+func data2line(price map[string][]map[string]interface{}) string {
+	var tmp []map[string]interface{}
+	for _, val := range price {
+		tmp = append(tmp, val...)
+	}
+	sort.Slice(tmp, func(i, j int) bool {
+		dateA := tmp[i]["date"]
+		dateB := tmp[j]["date"]
+
+		return true
+	})
+	return ""
 }
 
 func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
