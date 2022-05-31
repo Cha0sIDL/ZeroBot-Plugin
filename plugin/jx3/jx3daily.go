@@ -30,6 +30,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode/utf8"
 )
@@ -831,6 +832,9 @@ func daily(ctx *zero.Ctx, server string) {
 }
 
 func wujia(ctx *zero.Ctx, datapath string) {
+	var m sync.Mutex
+	m.Lock()
+	defer m.Unlock()
 	var price = make(map[string][]map[string]interface{})
 	var data xiaohei
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
