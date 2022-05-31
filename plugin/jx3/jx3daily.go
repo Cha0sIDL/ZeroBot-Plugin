@@ -904,6 +904,8 @@ func wujia(ctx *zero.Ctx, datapath string) {
 		}
 		lineHtml := data2line(price, datapath)
 		html := util.Template2html("price.html", d)
+		log.Errorln("html", html)
+		log.Errorln("line", lineHtml)
 		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html+lineHtml)
 		heiCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
