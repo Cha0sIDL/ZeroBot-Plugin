@@ -35,11 +35,11 @@ import (
 	"unicode/utf8"
 )
 
-const url = "https://www.jx3api.com/app/"
-
-const realizeUrl = "https://www.jx3api.com/realize/"
-
-const cloudUrl = "https://www.jx3api.com/cloud/"
+const (
+	url        = "https://www.jx3api.com/app/"
+	realizeUrl = "https://www.jx3api.com/realize/"
+	cloudUrl   = "https://www.jx3api.com/cloud/"
+)
 
 var method = "GET"
 
@@ -51,19 +51,49 @@ var tuiKey = map[string]string{
 	"阵营日常":   "60f211c82d105c0014c5dd9d",
 }
 
+var allServer = map[string]string{
+	"斗转星移": "斗转星移",
+	"姨妈":   "斗转星移",
+	"蝶恋花":  "蝶恋花",
+	"龙争虎斗": "龙争虎斗",
+	"长安城":  "长安城",
+	"幽月轮":  "幽月轮",
+	"剑胆琴心": "剑胆琴心",
+	"煎蛋":   "剑胆琴心",
+	"乾坤一掷": "乾坤一掷",
+	"华乾":   "乾坤一掷",
+	"唯我独尊": "唯我独尊",
+	"唯满侠":  "唯我独尊",
+	"梦江南":  "梦江南",
+	"双梦":   "梦江南",
+	"绝代天骄": "绝代天骄",
+	"绝代":   "绝代天骄",
+	"破阵子":  "破阵子",
+	"念破":   "破阵子",
+	"天鹅坪":  "天鹅坪",
+	"纵月":   "天鹅坪",
+	"飞龙在天": "飞龙在天",
+	"大唐万象": "大唐万象",
+	"青梅煮酒": "青梅煮酒",
+	"共結來緣": "共結來緣",
+	"傲血戰意": "傲血戰意",
+	"巔峰再起": "巔峰再起",
+	"江海雲夢": "江海雲夢",
+}
+
 type cd struct {
 	last     int64
 	fileName string
 }
 
-var heiCd = make(map[string]cd)
-
-type jinjia struct {
-	server    string
-	wanbaolou []float64
-	tieba     []float64
-	qita      []float64
+type JinPrice struct {
+	P5173    float64 `json:"5173"`
+	Post     float64 `json:"post"`
+	Official float64 `json:"official"`
+	Date     string  `json:"date"`
 }
+
+var heiCd = make(map[string]cd)
 
 var xiaoheiIndx = map[string]string{
 	"电信点卡": "server1",
@@ -186,46 +216,9 @@ func init() {
 				fmt.Sprint(text),
 			))
 		})
-	en.OnRegex(`^(金价|金价查询)(.*)`).SetBlock(true).
+	en.OnPrefixGroup([]string{"金价", "金价查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			str := ctx.State["regex_matched"].([]string)[1]
-			if len(str) == 0 {
-				ctx.SendChain(message.Text(
-					"请输入区服",
-				))
-			} else {
-				data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"demon", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
-				}
-				json := gjson.ParseBytes(rsp)
-				jin := jinjia{}
-				for _, value := range json.Get("data").Array() {
-					value.ForEach(func(key, v gjson.Result) bool {
-						switch key.String() {
-						case "server":
-							jin.server = v.String()
-						case "wanbaolou":
-							jin.wanbaolou = append(jin.wanbaolou, v.Float())
-						case "tieba":
-							jin.tieba = append(jin.tieba, v.Float())
-						case "dd373", "uu898", "5173", "7881":
-							jin.qita = append(jin.qita, v.Float())
-						}
-						return true
-					})
-				}
-				dateStr := time.Now().Format("2006/01/02 15:04:05")
-				ctx.SendChain(message.Text(
-					"服务器: ", jin.server, "\n",
-					"万宝楼: ", util.AppendAny(util.Min(jin.wanbaolou), util.Max(jin.wanbaolou)), "\n",
-					"贴吧: ", util.AppendAny(util.Min(jin.tieba), util.Max(jin.tieba)), "\n",
-					"其他平台: ", util.AppendAny(util.Min(jin.qita), util.Max(jin.qita)), "\n",
-					"时间：", dateStr, "\n",
-				))
-			}
+			jinjia(ctx, datapath)
 		})
 	en.OnRegex(`^(花价|花价查询).*?\s(.*).*?\s(.*).*?\s(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -831,6 +824,118 @@ func daily(ctx *zero.Ctx, server string) {
 	ctx.SendChain(message.Text(msg))
 }
 
+func jinjia(ctx *zero.Ctx, datapath string) {
+	var lineStruct []JinPrice
+	commandPart := util.SplitSpace(ctx.State["args"].(string))
+	var rsp string
+	if len(commandPart) != 1 {
+		ctx.SendChain(message.Text("参数输入有误！\n" + "金价 绝代天骄"))
+		return
+	}
+	server := commandPart[0]
+	if val, ok := allServer[server]; ok {
+		data, err := web.RequestDataWith(web.NewDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
+		strData := binary.BytesToString(data)
+		if err != nil || gjson.Get(strData, "code").Int() != 0 {
+			ctx.SendChain(message.Text("出错了，请稍后再试吧"))
+			return
+		}
+		jin := gjson.Get(strData, fmt.Sprintf("data.%s", val))
+		rsp += fmt.Sprintf("今日%s平均金价为：\n", val)
+		rsp += "5173：" + average(jin.Get("today.5173")) + "￥\n"
+		rsp += "万宝楼：" + average(jin.Get("today.official")) + "￥\n"
+		rsp += "贴吧：" + average(jin.Get("today.post")) + "￥\n"
+		rsp += "------------------------------------------\n"
+		rsp += "数据来源万宝楼\n"
+		json.Unmarshal([]byte(jin.Get("trend").String()), &lineStruct)
+		html := jibPrice2line(lineStruct, datapath)
+		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), "price.html", html)
+		ctx.SendChain(message.Text(rsp), message.Image("file:///"+finName))
+
+	} else {
+		ctx.SendChain(message.Text("没有找到这个服呢，你是不是乱输的哦~"))
+		return
+	}
+}
+
+func jibPrice2line(lineStruct []JinPrice, datapath string) string {
+	sort.Slice(lineStruct, func(i, j int) bool {
+		dateA := strings.Split(lineStruct[i].Date, "-")
+		dateB := strings.Split(lineStruct[j].Date, "-")
+		for k := 0; k < len(dateA); k++ {
+			switch strings.Compare(dateA[k], dateB[k]) {
+			case 1:
+				return false
+			case -1:
+				return true
+			default:
+				continue
+			}
+		}
+		return true
+	})
+	var xdata, officialdata, postdata, p5173 []string
+	for _, data := range lineStruct {
+		xdata = append(xdata, data.Date)
+		officialdata = append(officialdata, fmt.Sprintf("%.2f", data.Official))
+		postdata = append(postdata, fmt.Sprintf("%.2f", data.Post))
+		p5173 = append(p5173, fmt.Sprintf("%.2f", data.P5173))
+	}
+	page := components.NewPage()
+	page.AddCharts(
+		drawJinLine("日期", "金价", xdata, map[string][]string{"official": officialdata,
+			"贴吧":   postdata,
+			"5173": p5173}),
+	)
+	f, err := os.Create(datapath + "line.html")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	page.Render(io.MultiWriter(f))
+	html, _ := ioutil.ReadFile(datapath + "line.html")
+	return binary.BytesToString(html)
+}
+
+func drawJinLine(XName, YName string, xdata []string, data map[string][]string) *charts.Line {
+	line := charts.NewLine()
+	line.SetGlobalOptions(
+		charts.WithLegendOpts(opts.Legend{Show: true, Bottom: "1px"}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: YName,
+			SplitLine: &opts.SplitLine{
+				Show: false,
+			},
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name: XName,
+			//AxisLabel: &opts.AxisLabel{
+			//	Interval: "0",
+			//},
+		}),
+	)
+	xLine := line.SetXAxis(xdata)
+	for name, val := range data {
+		xLine = xLine.AddSeries(name, generateLineData(val))
+	}
+	xLine.SetSeriesOptions(
+		charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{
+			Name: "Average",
+			Type: "average",
+		}),
+		charts.WithLineChartOpts(opts.LineChart{
+			Smooth: true,
+		}),
+		charts.WithMarkPointStyleOpts(opts.MarkPointStyle{
+			Label: &opts.Label{
+				Show:      true,
+				Formatter: "{a}: {b}",
+			},
+		}),
+	)
+	return line
+}
+
 func wujia(ctx *zero.Ctx, datapath string) {
 	var m sync.Mutex
 	m.Lock()
@@ -902,9 +1007,9 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			"name":  name,
 			"data":  price,
 		}
-		lineHtml := data2line(price, datapath)
+		lineHtml := priceData2line(price, datapath)
 		html := util.Template2html("price.html", d)
-		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html+lineHtml)
+		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "price.html", html+lineHtml)
 		heiCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
 			fileName: "file:///" + finName,
@@ -913,7 +1018,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 	}
 }
 
-func data2line(price map[string][]map[string]interface{}, datapath string) string {
+func priceData2line(price map[string][]map[string]interface{}, datapath string) string {
 	var x []string
 	var y []string
 	var tmp []map[string]interface{}
@@ -953,7 +1058,7 @@ func data2line(price map[string][]map[string]interface{}, datapath string) strin
 	return binary.BytesToString(html)
 }
 
-func drawLine(XName, YName string, x, data interface{}) *charts.Line {
+func drawLine(XName, YName string, x, data []string) *charts.Line {
 	line := charts.NewLine()
 
 	line.SetGlobalOptions(
@@ -966,9 +1071,10 @@ func drawLine(XName, YName string, x, data interface{}) *charts.Line {
 		charts.WithXAxisOpts(opts.XAxis{
 			Name: XName, //横坐标
 		}),
+		charts.WithLegendOpts(opts.Legend{Show: true, Bottom: "1px"}),
 	)
 	line.SetXAxis(x).
-		AddSeries("slice", generateLineData(data),
+		AddSeries("price", generateLineData(data),
 			charts.WithLabelOpts(opts.Label{Show: true, Position: "top"})).
 		SetSeriesOptions(
 			charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{
@@ -988,11 +1094,10 @@ func drawLine(XName, YName string, x, data interface{}) *charts.Line {
 	return line
 }
 
-func generateLineData(data interface{}) []opts.LineData {
+func generateLineData(data []string) []opts.LineData {
 	items := make([]opts.LineData, 0)
-	sliceData := data.([]string)
-	for i := 0; i < len(sliceData); i++ {
-		items = append(items, opts.LineData{Value: sliceData[i]})
+	for i := 0; i < len(data); i++ {
+		items = append(items, opts.LineData{Value: data[i]})
 	}
 	return items
 }
@@ -1121,4 +1226,14 @@ func drawTeam(teamId int) image.Image {
 		dc.DrawImage(back, int(x), int(y+th*3))
 	}
 	return dc.Image()
+}
+
+func average(price gjson.Result) string {
+	var a float64
+	price.ForEach(
+		func(key, value gjson.Result) bool {
+			a += value.Float()
+			return true
+		})
+	return fmt.Sprintf("%.2f", a/price.Get("#").Float())
 }
