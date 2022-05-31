@@ -13,6 +13,9 @@ import (
 	"github.com/FloatTech/zbputils/math"
 	"github.com/FloatTech/zbputils/web"
 	"github.com/fogleman/gg"
+	"github.com/go-echarts/go-echarts/v2/charts"
+	"github.com/go-echarts/go-echarts/v2/components"
+	"github.com/go-echarts/go-echarts/v2/opts"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -20,7 +23,10 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
+	"io"
+	"io/ioutil"
 	goUrl "net/url"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -892,7 +898,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			"name":  name,
 			"data":  price,
 		}
-		lineHtml := data2line(price)
+		lineHtml := data2line(price, datapath)
 		html := util.Template2html("price.html", d)
 		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "weather.html", html+lineHtml)
 		heiCd[name] = cd{
@@ -903,18 +909,88 @@ func wujia(ctx *zero.Ctx, datapath string) {
 	}
 }
 
-func data2line(price map[string][]map[string]interface{}) string {
+func data2line(price map[string][]map[string]interface{}, datapath string) string {
+	var x []string
+	var y []string
 	var tmp []map[string]interface{}
 	for _, val := range price {
 		tmp = append(tmp, val...)
 	}
 	sort.Slice(tmp, func(i, j int) bool {
-		dateA := tmp[i]["date"]
-		dateB := tmp[j]["date"]
-
+		dateA := strings.Split(util.Interface2String(tmp[i]["date"]), "/")
+		dateB := strings.Split(util.Interface2String(tmp[j]["date"]), "/")
+		for k := 0; k < len(dateA); k++ {
+			switch strings.Compare(dateA[k], dateB[k]) {
+			case 1:
+				return false
+			case -1:
+				return true
+			default:
+				continue
+			}
+		}
 		return true
 	})
-	return ""
+	for _, d := range tmp {
+		x = append(x, util.Interface2String(d["date"]))
+		y = append(y, util.Interface2String(d["value"]))
+	}
+	page := components.NewPage()
+	page.AddCharts(
+		drawLine("日期", "价格", x, y),
+	)
+	f, err := os.Create(datapath + "line.html")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	page.Render(io.MultiWriter(f))
+	html, _ := ioutil.ReadFile(datapath + "line.html")
+	return binary.BytesToString(html)
+}
+
+func drawLine(XName, YName string, x, data interface{}) *charts.Line {
+	line := charts.NewLine()
+
+	line.SetGlobalOptions(
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: YName, //纵坐标
+			SplitLine: &opts.SplitLine{
+				Show: false,
+			},
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name: XName, //横坐标
+		}),
+	)
+	line.SetXAxis(x).
+		AddSeries("slice", generateLineData(data),
+			charts.WithLabelOpts(opts.Label{Show: true, Position: "top"})).
+		SetSeriesOptions(
+			charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{
+				Name: "Average",
+				Type: "average",
+			}),
+			charts.WithLineChartOpts(opts.LineChart{
+				Smooth: true,
+			}),
+			charts.WithMarkPointStyleOpts(opts.MarkPointStyle{
+				Label: &opts.Label{
+					Show:      true,
+					Formatter: "{a}: {b}",
+				},
+			}),
+		)
+	return line
+}
+
+func generateLineData(data interface{}) []opts.LineData {
+	items := make([]opts.LineData, 0)
+	sliceData := data.([]string)
+	for i := 0; i < len(sliceData); i++ {
+		items = append(items, opts.LineData{Value: sliceData[i]})
+	}
+	return items
 }
 
 func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {

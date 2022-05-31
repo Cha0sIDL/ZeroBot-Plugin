@@ -19,6 +19,7 @@ require (
 	github.com/fumiama/gofastTEA v0.0.10
 	github.com/fumiama/gotracemoe v0.0.3
 	github.com/fumiama/sqlite3 v1.14.6
+	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/golang-module/carbon/v2 v2.1.6
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/jinzhu/gorm v1.9.16

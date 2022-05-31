@@ -180,7 +180,7 @@ func TodayFileName() string {
 	return fmt.Sprint(t.Format("2006-01-02"))
 }
 
-func strval(value interface{}) string {
+func Interface2String(value interface{}) string {
 	var key string
 	if value == nil {
 		return key
