@@ -14,7 +14,7 @@ func init() {
 	control.Register("haimage", &control.Options{
 		DisableOnDefault: false,
 		Help:             "古风小姐姐\n",
-	}).OnKeywordGroup([]string{"古风小姐姐"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
+	}).OnKeywordGroup([]string{"古风"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		r, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
 		if err != nil {
 			ctx.SendChain(message.Text("出错了稍后再试吧"))
