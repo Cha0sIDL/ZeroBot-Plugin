@@ -28,7 +28,7 @@ func init() {
 				ctx.SendChain(message.Text("https://buhuibaidu.me/?s=" + url.QueryEscape(txt)))
 			}
 		})
-	en.OnPrefixGroup([]string{"维基", "百科"}).SetBlock(true).Limit(ctxext.LimitByGroup).Handle(
+	en.OnPrefixGroup([]string{"维基", "百科"}, zero.SuperUserPermission).SetBlock(true).Limit(ctxext.LimitByGroup).Handle(
 		func(ctx *zero.Ctx) {
 			txt := ctx.State["args"].(string)
 			if txt != "" {

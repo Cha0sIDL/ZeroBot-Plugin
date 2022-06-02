@@ -120,12 +120,13 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"          // 月幕galgame
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"         // 早报
 
-	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf" // 鬼东西
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
 	//其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" //明日方舟公招tag查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     //吃什么
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   //古风小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  //一言
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       //剑网相关
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   //搜表情包
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"   //查天气

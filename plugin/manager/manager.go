@@ -562,7 +562,7 @@ func init() { // 插件主体
 	// 然后请将您的用户名和gist哈希(小写)按照username/gisthash的格式填写到回答即可。
 	engine.OnRequest().SetBlock(false).Handle(func(ctx *zero.Ctx) {
 		if ctx.Event.RequestType == "friend" {
-			ctx.SetFriendAddRequest(ctx.Event.Flag, true, "")
+			ctx.SetFriendAddRequest(ctx.Event.Flag, false, "")
 		}
 		c, ok := control.Lookup("manager")
 		if ok && c.GetData(ctx.Event.GroupID)&0x10 == 0x10 && ctx.Event.RequestType == "group" && ctx.Event.SubType == "add" {

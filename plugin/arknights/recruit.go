@@ -3,8 +3,6 @@ package arknights
 import (
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
-	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/img/text"
 	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -229,63 +227,51 @@ func tagsAnalysis(tags []string) (tagResults []tagResult) {
 	return
 }
 
-func init() {
-	//var err error
-	Fonts, _ = gg.LoadFontFace(text.FontFile, 18)
-	//if err != nil {
-	//	panic(err)
-	//}
-	engine := control.Register("arknight", &control.Options{
-		DisableOnDefault: false,
-		Help:             "查公招\n",
-	})
-	engine.OnRegex("^查公招$").
-		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(
-				message.Text("请在60s内发送你的公招截图"),
-			)
-			rule := func(ctx *zero.Ctx) bool {
-				for _, elem := range ctx.Event.Message {
-					if elem.Type == "image" {
-						ocrTags := make([]string, 0)
-						ocrResult := ctx.OCRImage(elem.Data["file"]).Get("texts.#.text").Array()
-						for _, text := range ocrResult {
-							for _, tag := range tags {
-								if tag == text.Str {
-									ocrTags = append(ocrTags, tag)
-									break
-								}
-							}
+func recruit(ctx *zero.Ctx) {
+	ctx.SendChain(
+		message.Text("请在60s内发送你的公招截图"),
+	)
+	rule := func(ctx *zero.Ctx) bool {
+		for _, elem := range ctx.Event.Message {
+			if elem.Type == "image" {
+				ocrTags := make([]string, 0)
+				ocrResult := ctx.OCRImage(elem.Data["file"]).Get("texts.#.text").Array()
+				for _, text := range ocrResult {
+					for _, tag := range tags {
+						if tag == text.Str {
+							ocrTags = append(ocrTags, tag)
+							break
 						}
-						text := fmt.Sprintf("识别标签:%s\n", strings.Join(ocrTags, " "))
-						for _, tmp := range tagsAnalysis(ocrTags) {
-							var resultStrSlice []string
-							for _, char := range tmp.Result {
-								resultStrSlice = append(resultStrSlice, fmt.Sprintf("%s(%d)", char.Name, char.Rarity+1))
-							}
-							text += fmt.Sprintf("[%s]\n%s\n\n",
-								strings.Join(tmp.Tags, " "),
-								strings.Join(resultStrSlice, " "),
-							)
-						}
-						img := drawStrImage(text, 500.0)
-						ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(img))))
-						return true
 					}
 				}
-				ctx.SendChain(message.Text("没有发现图片"))
+				text := fmt.Sprintf("识别标签:%s\n", strings.Join(ocrTags, " "))
+				for _, tmp := range tagsAnalysis(ocrTags) {
+					var resultStrSlice []string
+					for _, char := range tmp.Result {
+						resultStrSlice = append(resultStrSlice, fmt.Sprintf("%s(%d)", char.Name, char.Rarity+1))
+					}
+					text += fmt.Sprintf("[%s]\n%s\n\n",
+						strings.Join(tmp.Tags, " "),
+						strings.Join(resultStrSlice, " "),
+					)
+				}
+				img := drawStrImage(text, 500.0)
+				ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(img))))
 				return true
 			}
-			next := zero.NewFutureEvent("message", 999, false, zero.CheckUser(ctx.Event.UserID), rule)
-			recv, cancel := next.Repeat()
-			select {
-			case <-time.After(time.Minute):
-				ctx.SendChain(message.Text("已超时"))
-				cancel()
-			case <-recv:
-				cancel()
-			}
-		})
+		}
+		ctx.SendChain(message.Text("没有发现图片"))
+		return true
+	}
+	next := zero.NewFutureEvent("message", 999, false, zero.CheckUser(ctx.Event.UserID), rule)
+	recv, cancel := next.Repeat()
+	select {
+	case <-time.After(time.Minute):
+		ctx.SendChain(message.Text("已超时"))
+		cancel()
+	case <-recv:
+		cancel()
+	}
 }
 
 func drawStrImage(str string, W float64) image.Image {

@@ -1030,6 +1030,7 @@ print("run[CQ:image,file="+j["img"]+"]")
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"`
 
 - [x] 查公招
+- [x] 方舟资源
 
 
 </details>
@@ -1068,9 +1069,19 @@ print("run[CQ:image,file="+j["img"]+"]")
 <details>
   <summary>随机头像生成</summary>
 
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"`
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo`
 
 - [x] 头像
+
+
+</details>
+
+<details>
+  <summary>一言</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"`
+
+- [x] 每日一言
 
 
 </details>
