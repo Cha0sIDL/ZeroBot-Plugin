@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.4.1-0.20220512034947-4dd25b414348
+	github.com/FloatTech/AnimeAPI v1.4.1-0.20220520130802-b8c30f649145
 	github.com/FloatTech/sqlite v0.2.1
-	github.com/FloatTech/zbputils v1.4.1-0.20220514105630-80024139bd3c
+	github.com/FloatTech/zbputils v1.4.1-0.20220530064115-3c48ea94cfda
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v0.0.1
 	github.com/antchfx/htmlquery v1.2.4
@@ -20,7 +20,7 @@ require (
 	github.com/fumiama/gotracemoe v0.0.3
 	github.com/fumiama/sqlite3 v1.14.6
 	github.com/go-echarts/go-echarts/v2 v2.2.4
-	github.com/golang-module/carbon/v2 v2.1.6
+	github.com/golang-module/carbon/v2 v2.1.8
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jozsefsallai/gophersauce v1.0.1
@@ -33,8 +33,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smallnest/rpcx v1.7.4
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.402
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.402
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.412
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.412
 	github.com/tidwall/gjson v1.14.1
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.5.2-0.20220509035736-f3ad8fa960d7
