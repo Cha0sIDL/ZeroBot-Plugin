@@ -4,8 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"image"
+	"io"
+	"io/ioutil"
+	goUrl "net/url"
+	"os"
+	"sort"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+	"unicode/utf8"
+
 	"github.com/DanPlayer/timefinder"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
@@ -22,17 +33,8 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
-	"image"
-	"io"
-	"io/ioutil"
-	goUrl "net/url"
-	"os"
-	"sort"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
-	"unicode/utf8"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
@@ -502,7 +504,6 @@ func init() {
 			rsp, _ := util.SendHttp(cloudUrl+"content", reqbody)
 			json := gjson.ParseBytes(rsp)
 			ctx.Send(message.Image(json.Get("data.url").String()))
-
 		})
 	en.OnFullMatch("/roll").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -529,7 +530,7 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
-	//开团 时间 副本名 备注
+	// 开团 时间 副本名 备注
 	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, func(ctx *zero.Ctx) bool {
 		return isOk(ctx.Event.UserID)
 	}, zero.OnlyGroup).SetBlock(true).
@@ -550,7 +551,7 @@ func init() {
 			}
 			ctx.SendChain(message.Text("开团成功，团队id为：", teamId))
 		})
-	//报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
+	// 报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
 	en.OnPrefixGroup([]string{"报名", "报团", "报名团队"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
@@ -662,7 +663,7 @@ func init() {
 			at = append(at, message.Text("\n准备进本啦！！"))
 			ctx.Send(at)
 		})
-	//查看团队 teamid
+	// 查看团队 teamid
 	en.OnPrefixGroup([]string{"查看团队", "查询团队", "查团"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
@@ -673,7 +674,7 @@ func init() {
 			}
 			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
-	//申请团长 团牌
+	// 申请团长 团牌
 	en.OnPrefixGroup([]string{"申请团长"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			permission := 0
@@ -694,7 +695,7 @@ func init() {
 				ctx.SendChain(message.Text("贵人多忘事，你已经申请过了"))
 			}
 		})
-	//取消开团 团队id
+	// 取消开团 团队id
 	en.OnPrefixGroup([]string{"取消开团", "删除团队", "撤销团队", "撤销开团"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
@@ -714,7 +715,7 @@ func init() {
 				ctx.SendChain(message.Text("删除成功"))
 			}
 		})
-	//同意审批@qq
+	// 同意审批@qq
 	en.OnRegex(`^同意审批.*?(\d+)`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1])
@@ -756,7 +757,7 @@ func init() {
 				msg = msg + name + "  " + data.Get("serendipity").String() + "  " + data.Get("date_str").String() + "\n"
 			}
 			ctx.SendChain(message.Text(msg))
-			//var msg string
+			// var msg string
 			//commandPart := util.SplitSpace(ctx.State["args"].(string))
 			//if len(commandPart) != 2 {
 			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
@@ -803,10 +804,10 @@ func daily(ctx *zero.Ctx, server string) {
 	for _, d := range gjson.Get(binary.BytesToString(daily), "data").Array() {
 		msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
 	}
-	for k, _ := range tuiKey {
+	for k := range tuiKey {
 		tuilanData := tuilan(k)
 		quest_name := gjson.Get(tuilanData, "data.quest_name").String()
-		if len(tuilanData) == 0 || k == "大战" || len(quest_name) == 0 || k == "阵营日常" { //大战美人图获取jxbox
+		if len(tuilanData) == 0 || k == "大战" || len(quest_name) == 0 || k == "阵营日常" { // 大战美人图获取jxbox
 			continue
 		}
 		msg += k + "：" + quest_name + "\n"
@@ -851,7 +852,6 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 		html := jibPrice2line(lineStruct, datapath)
 		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), "price.html", html)
 		ctx.SendChain(message.Text(rsp), message.Image("file:///"+finName))
-
 	} else {
 		ctx.SendChain(message.Text("没有找到这个服呢，你是不是乱输的哦~"))
 		return
@@ -911,7 +911,7 @@ func drawJinLine(XName, YName string, xdata []string, data map[string][]string) 
 			Name: XName,
 			//AxisLabel: &opts.AxisLabel{
 			//	Interval: "0",
-			//},
+			// },
 		}),
 	)
 	xLine := line.SetXAxis(xdata)
@@ -957,7 +957,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			return
 		}
-		if len(gjson.Get(binary.BytesToString(rspData), "data").Array()) == 0 { //如果输入无数据则请求
+		if len(gjson.Get(binary.BytesToString(rspData), "data").Array()) == 0 { // 如果输入无数据则请求
 			searchUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward/search?step=0&page=1&size=20&name=%s", goUrl.QueryEscape(name))
 			searchData, err := web.PostData(searchUrl, "application/x-www-form-urlencoded", nil)
 			searchList := gjson.Get(binary.BytesToString(searchData), "data.list").Array()
@@ -972,7 +972,7 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text(msg))
 			return
 		}
-		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() //获得商品id
+		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() // 获得商品id
 		infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
 		wuJiaData, err := web.PostData(infoUrl, "application/x-www-form-urlencoded", nil)
 		json.Unmarshal(wuJiaData, &data)
@@ -1063,13 +1063,13 @@ func drawLine(XName, YName string, x, data []string) *charts.Line {
 
 	line.SetGlobalOptions(
 		charts.WithYAxisOpts(opts.YAxis{
-			Name: YName, //纵坐标
+			Name: YName, // 纵坐标
 			SplitLine: &opts.SplitLine{
 				Show: false,
 			},
 		}),
 		charts.WithXAxisOpts(opts.XAxis{
-			Name: XName, //横坐标
+			Name: XName, // 横坐标
 		}),
 		charts.WithLegendOpts(opts.Legend{Show: true, Bottom: "1px"}),
 	)
@@ -1180,7 +1180,7 @@ func drawTeam(teamId int) image.Image {
 	dc := gg.NewContext(W, H)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
-	//画直线
+	// 画直线
 	for i := 0; i < 1200; {
 		dc.SetRGBA(255, 255, 255, 11)
 		dc.SetLineWidth(1)
@@ -1188,27 +1188,27 @@ func drawTeam(teamId int) image.Image {
 		dc.Stroke()
 		i += 200
 	}
-	//画直线
+	// 画直线
 	for i := 200; i < 1200; {
-		//dc.SetRGBA(255, 255, 255, 11)
+		// dc.SetRGBA(255, 255, 255, 11)
 		//dc.SetLineWidth(1)
 		dc.DrawLine(float64(i), 200, float64(i), 1200)
 		dc.Stroke()
 		i += 200
 	}
 	dc.SetFontFace(Fonts)
-	//队伍
+	// 队伍
 	for i := 1; i < 6; i++ {
 		dc.DrawString(strconv.Itoa(i)+"队", 40, float64(100+200*i))
 	}
-	//标题
+	// 标题
 	team := getTeamInfo(teamId)
 	title := strconv.Itoa(team.TeamId) + " " + team.Dungeon
 	_, th := dc.MeasureString("哈")
 	t := 1200/2 - (float64(len([]rune(title))) / 2)
 	dc.DrawStringAnchored(title, t, th, 0.5, 0.5)
 	dc.DrawStringAnchored(team.Comment, 1200/2-float64(len([]rune(team.Comment)))/2, 3*th, 0.5, 0.5)
-	//团队
+	// 团队
 	mSlice := getMemberInfo(teamId)
 	dc.LoadFontFace(text.FontFile, 30)
 	_, th = dc.MeasureString("哈")

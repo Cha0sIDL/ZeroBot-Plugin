@@ -2,6 +2,7 @@ package ai
 
 import (
 	"errors"
+
 	control "github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -14,14 +15,14 @@ const (
 var modes = [...]string{"青云客", "小爱", "腾讯"}
 
 func init() { // 插件主体
-	//bucket := rate.NewManager(time.Minute, 20) // 接口回复限速器
+	// bucket := rate.NewManager(time.Minute, 20) // 接口回复限速器
 	engine := control.Register(serviceName, &control.Options{
 		DisableOnDefault: false,
 		Help: "人工智能回复\n" +
 			"- @Bot 任意文本(任意一句话回复)\n- 设置回复模式[青云客  |  小爱]\n- ",
 	})
 	// 回复 @和包括名字
-	//engine.OnMessage(zero.OnlyToMe).SetBlock(true).
+	// engine.OnMessage(zero.OnlyToMe).SetBlock(true).
 	//	Handle(func(ctx *zero.Ctx) {
 	//		aireply := aireply.NewAIReply(getReplyMode(ctx))
 	//		if !bucket.Load(ctx.Event.UserID).Acquire() {

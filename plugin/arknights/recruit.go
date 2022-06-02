@@ -2,16 +2,18 @@ package arknights
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"image"
+	"sort"
+	"strings"
+	"time"
+
 	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"golang.org/x/image/font"
-	"image"
-	"sort"
-	"strings"
-	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 var tags = [...]string{"近卫干员", "狙击干员", "重装干员",

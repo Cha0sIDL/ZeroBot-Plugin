@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/FloatTech/ZeroBot-Plugin/kanban" // 在最前打印 banner
 
@@ -40,7 +41,7 @@ import (
 
 	_ "github.com/FloatTech/zbputils/job" // 定时指令触发器
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" //聊天记录
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" // 聊天记录
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
@@ -101,7 +102,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/omikuji"        // 浅草寺求签
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/qqwife"         // 一群一天一夫一妻制群老婆
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/reborn"         // 投胎
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"       //复读机
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"       // 复读机
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/runcode"        // 在线运行代码
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/saucenao"       // 以图搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/scale"          // 叔叔的AI二次元图片放大
@@ -122,17 +123,17 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf" // 鬼东西
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
-	//其他
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" //明日方舟公招tag查询
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     //吃什么
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   //古风小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  //一言
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       //剑网相关
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   //搜表情包
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather"   //查天气
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     //头像生成
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" //热搜
+	// 其他
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
+
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
@@ -154,10 +155,10 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/curse" // 骂人
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" //活跃度自动插话
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" // 活跃度自动插话
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"     // 人工智能回复
 
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //

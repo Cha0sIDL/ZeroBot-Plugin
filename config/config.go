@@ -2,23 +2,24 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/FloatTech/zbputils/control"
-	zero "github.com/wdvxdr1123/ZeroBot"
 	"io/ioutil"
 	"log"
 	"time"
+
+	"github.com/FloatTech/zbputils/control"
+	zero "github.com/wdvxdr1123/ZeroBot"
 )
 
 const config = "config.json"
 
 type Config struct {
-	RpcHost   string        `json:"rpc_host"`  //http rpc的地址
-	TTS       *TTS          `json:"tts"`       //阿里tts的一些配置
-	WsUrl     string        `json:"ws_url"`    //jxapi ws的地址
-	Weather   string        `json:"weather"`   //天气查询token
-	Ignore    []string      `json:"ignore"`    //忽略的触发列表
-	SecretId  string        `json:"secretId"`  //腾讯npl
-	SecretKey string        `json:"secretKey"` //腾讯npl
+	RpcHost   string        `json:"rpc_host"`  // http rpc的地址
+	TTS       *TTS          `json:"tts"`       // 阿里tts的一些配置
+	WsUrl     string        `json:"ws_url"`    // jxapi ws的地址
+	Weather   string        `json:"weather"`   // 天气查询token
+	Ignore    []string      `json:"ignore"`    // 忽略的触发列表
+	SecretId  string        `json:"secretId"`  // 腾讯npl
+	SecretKey string        `json:"secretKey"` // 腾讯npl
 	Picture   *PictureToken `json:"picture"`
 }
 

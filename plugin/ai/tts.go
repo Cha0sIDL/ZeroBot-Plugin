@@ -2,19 +2,21 @@ package ai
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/nlp"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"math/rand"
+	"os"
+	"strconv"
+	"time"
+
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/file"
 	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"math/rand"
-	"os"
-	"strconv"
-	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/ZeroBot-Plugin/nlp"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
@@ -22,7 +24,7 @@ const (
 	dbpath    = "data/ai/"
 )
 
-//func init() {
+// func init() {
 //	limit := rate.NewManager(time.Second*10, 1)
 //
 //	control.Register("mockingbird", order.PrioMockingBird, &control.Options{
@@ -72,7 +74,7 @@ func init() {
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
 			err := util.TTS(VoiceFile, r.TalkPlain(msg, zero.BotConfig.NickName[0]), arg, getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
 			if err != nil {
-				//data := map[string]string{"appkey": getCfg().TTS.Appkey, "access": getCfg().TTS.Access, "secret": getCfg().TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
+				// data := map[string]string{"appkey": getCfg().TTS.Appkey, "access": getCfg().TTS.Access, "secret": getCfg().TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
 				//reqbody, _ := json.Marshal(data)
 				// JX3 api 已弃用
 				//rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
@@ -93,7 +95,7 @@ func getCfg() config.Config {
 }
 
 func getVoice() string {
-	//timeLayout := config.Cfg.TTS.Start
+	// timeLayout := config.Cfg.TTS.Start
 	//tmp, _ := time.Parse("2006-01-02", timeLayout)
 	//login := tmp.Unix()
 	//today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))

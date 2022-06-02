@@ -1,11 +1,13 @@
 package repeater
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"sync"
+
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"sync"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (

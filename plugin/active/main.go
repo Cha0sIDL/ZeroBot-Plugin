@@ -3,15 +3,17 @@ package active
 import (
 	"errors"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/nlp"
-	"github.com/FloatTech/ZeroBot-Plugin/picture"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"strconv"
+	"strings"
+
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"strconv"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/nlp"
+	"github.com/FloatTech/ZeroBot-Plugin/picture"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (

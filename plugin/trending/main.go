@@ -1,7 +1,9 @@
 package trending
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"strconv"
+	"strings"
+
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/web"
@@ -9,8 +11,8 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"strconv"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 func init() { // 插件主体
@@ -87,7 +89,7 @@ func getGithubTrending(ctx *zero.Ctx) {
 		titlePath := htmlquery.FindOne(a, "/h1/a")
 		title := htmlquery.SelectAttr(titlePath, "href")
 		msg += strconv.Itoa(idx+1) + "：" + strings.TrimPrefix(title, "/") + "\n" + "地址：https://github.com" + title + "\n"
-		//introduction := htmlquery.FindOne(a, "/p[*]/text()").Data
+		// introduction := htmlquery.FindOne(a, "/p[*]/text()").Data
 		//fmt.Println(introduction)
 	}
 	ctx.SendChain(message.Text(msg))

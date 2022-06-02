@@ -2,8 +2,9 @@ package weather
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"net/url"
+	"strings"
+
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -12,12 +13,13 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"net/url"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 //// result geo数据
-//type geo struct {
+// type geo struct {
 //	Location []location `json:"location"`
 //}
 //
@@ -45,12 +47,12 @@ func init() {
 	engine.OnRegex("^[一-龥]{0,5}天气").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			city := strings.ReplaceAll(ctx.ExtractPlainText(), "天气", "")
-			geo := getGeo(city) //geo数据
+			geo := getGeo(city) // geo数据
 			lat := gjson.Get(geo, "location.0.lat").Float()
 			lon := gjson.Get(geo, "location.0.lon").Float()
 			cityName := gjson.Get(geo, "location.0.name").String()
-			todayWeather := getWeather("now", lat, lon) //当天预报
-			dailyWeather := getWeather("7d", lat, lon)  //七天预报
+			todayWeather := getWeather("now", lat, lon) // 当天预报
+			dailyWeather := getWeather("7d", lat, lon)  // 七天预报
 			warning := getWarning(lat, lon)
 			JMap := util.MergeMap(util.JsonToMap(todayWeather), util.JsonToMap(dailyWeather), util.JsonToMap(warning))
 			JMap["city"] = cityName
@@ -69,7 +71,7 @@ func init() {
 }
 
 // geo数据
-//type T struct {
+// type T struct {
 //	Code     string `json:"code"`
 //	Location []struct {
 //		Name      string `json:"name"`

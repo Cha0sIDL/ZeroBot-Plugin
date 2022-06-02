@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"fmt"
+
 	"github.com/FloatTech/zbputils/control"
 	"github.com/golang-module/carbon/v2"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -23,7 +24,7 @@ var date = map[int]map[string]string{
 	0: {"12:00:00": "攻防前置：昆仑", "13:00:00": "阵营攻防：恶人谷；奇袭：浩气盟", "19:00:00": "阵营攻防：恶人谷；奇袭：浩气盟"},
 }
 
-//"一": "帮会跑商：阴山商路(10:00)\n阵营祭天：出征祭祀(19:00)\n",
+// "一": "帮会跑商：阴山商路(10:00)\n阵营祭天：出征祭祀(19:00)\n",
 //"二": "阵营攻防：逐鹿中原(20:00)\n",
 //"三": "世界首领：少林·乱世，七秀·乱世(20:00)\n",
 //"四": "阵营攻防：逐鹿中原(20:00)\n",

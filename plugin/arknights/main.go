@@ -15,5 +15,4 @@ func init() {
 	})
 	engine.OnRegex("^查公招$").Handle(recruit)
 	engine.OnKeyword("方舟资源").Handle(daily)
-
 }

@@ -2,13 +2,14 @@ package hitokoto
 
 import (
 	"encoding/json"
+
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/web"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
-const url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=h&c=i" //动漫 漫画 游戏 文学 影视 诗词
+const url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=h&c=i" // 动漫 漫画 游戏 文学 影视 诗词
 
 type RspData struct {
 	Id         int    `json:"id"`

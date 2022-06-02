@@ -1,11 +1,12 @@
 package jx3
 
 import (
+	"os"
+
 	sql "github.com/FloatTech/sqlite"
 	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/process"
 	log "github.com/sirupsen/logrus"
-	"os"
 )
 
 const (
@@ -49,11 +50,11 @@ func initialize() {
 }
 
 //// 加载数据库
-//func init() {
+// func init() {
 //	go down()
 //}
 
-//func down() *JxDb {
+// func down() *JxDb {
 //	if file.IsNotExist(dbfile) {
 //		process.SleepAbout1sTo2s()
 //		_ = os.MkdirAll(dbpath, 0755)

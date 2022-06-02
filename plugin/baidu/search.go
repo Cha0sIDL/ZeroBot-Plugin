@@ -2,12 +2,14 @@
 package baidu
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"net/url"
+
 	"github.com/playwright-community/playwright-go"
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"net/url"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"

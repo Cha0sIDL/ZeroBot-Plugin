@@ -199,7 +199,7 @@ func init() {
 			sort.SliceStable(temp, func(i, j int) bool {
 				return temp[i].Get("last_sent_time").Int() < temp[j].Get("last_sent_time").Int()
 			})
-			//temp = temp[math.Max(0, len(temp)-30):]
+			// temp = temp[math.Max(0, len(temp)-30):]
 			// 将已经娶过的人剔除
 			qqgrouplist := make([]int64, 0, len(temp))
 			for k := 0; k < len(temp); k++ {

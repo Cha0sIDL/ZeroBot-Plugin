@@ -6,7 +6,7 @@ import (
 
 var db = &sql.Sqlite{}
 
-//聊天记录存储结构体
+// 聊天记录存储结构体
 type record struct {
 	MId     interface{}
 	Message string

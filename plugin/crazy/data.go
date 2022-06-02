@@ -4,7 +4,7 @@ import sql "github.com/FloatTech/sqlite"
 
 var db = &sql.Sqlite{}
 
-//nsMental的结构体
+// nsMental的结构体
 type crazy struct {
 	Crazy string `db:"crazy"`
 }

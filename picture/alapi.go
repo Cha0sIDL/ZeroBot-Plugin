@@ -3,13 +3,15 @@ package picture
 import (
 	"errors"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/zbputils/binary"
-	"github.com/FloatTech/zbputils/web"
-	"github.com/tidwall/gjson"
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/FloatTech/zbputils/binary"
+	"github.com/FloatTech/zbputils/web"
+	"github.com/tidwall/gjson"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type Al struct{}

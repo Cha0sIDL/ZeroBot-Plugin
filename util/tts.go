@@ -2,12 +2,13 @@ package util
 
 import (
 	"errors"
-	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
 	"sync"
 	"time"
+
+	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
+	log "github.com/sirupsen/logrus"
 )
 
 type TtsUserParam struct {
@@ -101,7 +102,6 @@ func TTS(FileName string, text string, param nls.SpeechSynthesisStartParam, AppK
 			fail++
 			lk.Unlock()
 			tts.Shutdown()
-
 		}
 		tts.Shutdown()
 	}()

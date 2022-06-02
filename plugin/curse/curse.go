@@ -67,7 +67,7 @@ func init() {
 		ctx.SendChain(message.At(qq), message.Text(text))
 	})
 
-	//engine.OnFullMatch("大力骂我").SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
+	// engine.OnFullMatch("大力骂我").SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 	//	process.SleepAbout1sTo2s()
 	//	text := getRandomCurseByLevel(maxLevel).Text
 	//	ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(text))

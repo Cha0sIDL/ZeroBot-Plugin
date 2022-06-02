@@ -7,12 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/zbputils/web"
-	"github.com/golang-module/carbon/v2"
-	log "github.com/sirupsen/logrus"
-	"github.com/smallnest/rpcx/client"
-	zero "github.com/wdvxdr1123/ZeroBot"
 	"image"
 	"image/jpeg"
 	"io"
@@ -26,6 +20,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/FloatTech/zbputils/web"
+	"github.com/golang-module/carbon/v2"
+	log "github.com/sirupsen/logrus"
+	"github.com/smallnest/rpcx/client"
+	zero "github.com/wdvxdr1123/ZeroBot"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type Args struct {
@@ -54,7 +56,7 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 		log.Errorln("failed to call: %v", err)
 	}
 	return Reply, err
-	//req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))
+	// req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))
 	//if err != nil {
 	//	panic("request error")
 	//}
@@ -266,7 +268,7 @@ func SplitSpace(text string) []string {
 	return strings.Fields(strings.TrimSpace(text))
 }
 
-func Shuffle(slice interface{}) { //切片乱序
+func Shuffle(slice interface{}) { // 切片乱序
 	rv := reflect.ValueOf(slice)
 	if rv.Type().Kind() != reflect.Slice {
 		return

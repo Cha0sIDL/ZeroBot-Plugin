@@ -2,13 +2,15 @@ package nlp
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"strings"
+
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	nlp "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp/v20190408"
 	"github.com/tidwall/gjson"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type Tencent struct{}
@@ -21,7 +23,7 @@ func (*Tencent) String() string {
 	return "腾讯"
 }
 
-//Talk 取得带 CQ 码的回复消息
+// Talk 取得带 CQ 码的回复消息
 func (t *Tencent) Talk(msg, nickname string) string {
 	replystr := t.TalkPlain(msg, nickname)
 	replystr = strings.ReplaceAll(replystr, "{face:", "[CQ:face,id=")

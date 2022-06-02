@@ -3,11 +3,13 @@ package epidemic
 
 import (
 	"encoding/json"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+
 	"github.com/FloatTech/zbputils/file"
 	"github.com/playwright-community/playwright-go"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -75,15 +77,15 @@ func init() {
 				return
 			}
 			d := map[string]interface{}{
-				"NowConfirm": data.Total.NowConfirm, //现有确诊
-				"Confirm":    data.Today.Confirm,    //新增人数
-				"Heal":       data.Total.Heal,       //累计确诊
-				"deadCount":  data.Total.Dead,       //死亡人数
+				"NowConfirm": data.Total.NowConfirm, // 现有确诊
+				"Confirm":    data.Today.Confirm,    // 新增人数
+				"Heal":       data.Total.Heal,       // 累计确诊
+				"deadCount":  data.Total.Dead,       // 死亡人数
 				"Grade":      data.Total.Grade,      //
 				"name":       data.Name,
 				"time":       time,
-				"Wzz":        data.Total.Wzz,    //无症状人数
-				"Wzzadd":     data.Today.Wzzadd} //新增无症状
+				"Wzz":        data.Total.Wzz,    // 无症状人数
+				"Wzzadd":     data.Today.Wzzadd} // 新增无症状
 			html := util.Template2html("yiqing.html", d)
 			Clip := util.PageScreenshotOptionsClip(
 				playwright.PageScreenshotOptionsClip{
@@ -94,7 +96,7 @@ func init() {
 				})
 			finName, err := util.Html2pic(datapath, util.TodayFileName(), "yiqing.html", html, Clip)
 			ctx.SendChain(
-				//message.Text(
+				// message.Text(
 				//	"【", data.Name, "】疫情数据\n",
 				//	"新增人数：", data.Today.Confirm, "\n",
 				//	"现有确诊：", data.Total.NowConfirm, "\n",

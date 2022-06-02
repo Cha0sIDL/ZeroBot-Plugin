@@ -2,15 +2,16 @@ package jx3
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"sort"
 	"strconv"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
-//type JxDb gorm.DB
+// type JxDb gorm.DB
 
-//nsMental的结构体
+// nsMental的结构体
 type mental struct {
 	ID          uint64 `db:"mentalID"`
 	Name        string `db:"mentalName"`
@@ -25,17 +26,17 @@ type mental struct {
 type jxControl struct {
 	GroupID int64  `db:"gid"`     // GroupID 群号
 	Disable bool   `db:"disable"` // Disable 是否启用推送
-	Area    string `db:"area"`    //绑定的区服
+	Area    string `db:"area"`    // 绑定的区服
 }
 
 // Team 的结构体
 type Team struct {
 	TeamId    int    `db:"teamID"`
-	LeaderId  int64  `db:"leaderId"`  //团长id
-	Dungeon   string `db:"dungeon"`   //副本名
-	StartTime int64  `db:"startTime"` //团开始时间
-	Comment   string `db:"comment"`   //备注信息
-	GroupId   int64  `db:"groupId"`   //团所属群组
+	LeaderId  int64  `db:"leaderId"`  // 团长id
+	Dungeon   string `db:"dungeon"`   // 副本名
+	StartTime int64  `db:"startTime"` // 团开始时间
+	Comment   string `db:"comment"`   // 备注信息
+	GroupId   int64  `db:"groupId"`   // 团所属群组
 }
 
 type Leader struct {
@@ -52,7 +53,7 @@ type Member struct {
 	MemberNickName string `db:"member_nick_name"`
 	MentalId       uint64 `db:"mental_id"`
 	Double         int    `db:"double"`
-	SignUp         int64  `db:"sign_up"` //进团时间
+	SignUp         int64  `db:"sign_up"` // 进团时间
 }
 
 func getMental(mentalName string) string {
@@ -98,7 +99,7 @@ func isBelongGroup(teamId int, groupId int64) bool {
 	return db.CanFind(dbTeam, arg)
 }
 
-//返回未过期的团
+// 返回未过期的团
 func getEfficientTeamInfo(arg string) []Team {
 	var c Team
 	var cSlice []Team
@@ -109,7 +110,7 @@ func getEfficientTeamInfo(arg string) []Team {
 	return cSlice
 }
 
-//返回我报的团id
+// 返回我报的团id
 func getSignUp(qq int64) []int {
 	var c Member
 	var team []int
@@ -125,7 +126,7 @@ func delTeam(teamId int, leaderId int64) int {
 	var c Team
 	db.Find(dbTeam, &c, "WHERE teamID = "+fmt.Sprintln(teamId))
 	if c.LeaderId != leaderId {
-		return -1 //这个团不是你的
+		return -1 // 这个团不是你的
 	}
 	db.Del(dbTeam, "WHERE teamID = "+fmt.Sprintln(teamId))
 	return 0
@@ -159,11 +160,11 @@ func isOk(qq int64) bool {
 	return c.IsOk == 1
 }
 
-//添加新团长
+// 添加新团长
 func newLeader(QQ int64, nickName string, permission int, teamName ...string) int {
 	ok := db.CanFind(dbLeader, "where id="+fmt.Sprintln(QQ))
 	if ok {
-		return -1 //数据库中存在记录
+		return -1 // 数据库中存在记录
 	}
 	name := ""
 	if len(teamName) > 0 {
@@ -173,12 +174,12 @@ func newLeader(QQ int64, nickName string, permission int, teamName ...string) in
 		Id:       QQ,
 		NickName: nickName,
 		TeamName: name,
-		IsOk:     1, //新团长默认没有权限
+		IsOk:     1, // 新团长默认没有权限
 	})
 	return 0
 }
 
-//同意审批
+// 同意审批
 func acceptLeader(qq int64) string {
 	var c Leader
 	err := db.Find(dbLeader, &c, "WHERE id = "+fmt.Sprintln(qq))

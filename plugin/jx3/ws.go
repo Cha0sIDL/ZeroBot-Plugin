@@ -1,12 +1,14 @@
 package jx3
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"time"
+
 	"github.com/RomiChan/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
-	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type wsClient struct {

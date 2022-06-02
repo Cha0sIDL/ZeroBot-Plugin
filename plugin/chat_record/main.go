@@ -1,12 +1,14 @@
 package chat_record
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"os"
+	"sync"
+
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
 	zero "github.com/wdvxdr1123/ZeroBot"
-	"os"
-	"sync"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 var m sync.Mutex

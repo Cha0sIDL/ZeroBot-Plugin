@@ -1,8 +1,9 @@
 package picture
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math/rand"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 var (
