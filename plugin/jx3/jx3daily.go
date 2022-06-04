@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"image"
 	"io"
 	"io/ioutil"
@@ -165,7 +166,7 @@ type xiaohei struct {
 
 func init() {
 	go startWs()
-	en := control.Register("jx", &control.Options{
+	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +

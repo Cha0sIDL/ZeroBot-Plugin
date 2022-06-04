@@ -3,6 +3,7 @@ package active
 import (
 	"errors"
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"strconv"
 	"strings"
 
@@ -21,7 +22,7 @@ const (
 )
 
 func init() {
-	en := control.Register(serviceName, &control.Options{
+	en := control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "自动插话\n" +
 			"- 设置活跃度 xx\n" +

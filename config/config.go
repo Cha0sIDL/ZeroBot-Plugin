@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"io/ioutil"
 	"log"
 	"time"
@@ -39,7 +40,7 @@ type PictureToken struct {
 var Cfg Config
 
 func init() {
-	control.Register("config", &control.Options{
+	control.Register("config", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- 加载配置文件",
 	}).OnKeyword("配置").SetBlock(true).

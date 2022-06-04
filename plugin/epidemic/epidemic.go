@@ -3,14 +3,14 @@ package epidemic
 
 import (
 	"encoding/json"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/FloatTech/zbputils/file"
 	"github.com/playwright-community/playwright-go"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
@@ -53,7 +53,7 @@ type area struct {
 }
 
 func init() {
-	engine := control.Register(servicename, &control.Options{
+	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "城市疫情查询\n" +
 			"- xxx疫情\n",

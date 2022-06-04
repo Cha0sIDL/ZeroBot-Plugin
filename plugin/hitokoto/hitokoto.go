@@ -2,6 +2,7 @@ package hitokoto
 
 import (
 	"encoding/json"
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/web"
@@ -27,7 +28,7 @@ type RspData struct {
 }
 
 func init() {
-	engine := control.Register("hitokoto", &control.Options{
+	engine := control.Register("hitokoto", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "每日一言\n",
 	})

@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/golang-module/carbon/v2"
@@ -33,7 +34,7 @@ var date = map[int]map[string]string{
 //"日": "攻防前置：昆仑(12:00)\n阵营攻防：恶人谷；奇袭：浩气盟(13:00，19:00)\n"
 
 func init() { // 插件主体
-	engine := control.Register(ServiceName, &control.Options{
+	engine := control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "每周日常定时推送\n",
 	})

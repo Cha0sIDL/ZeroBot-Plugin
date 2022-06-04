@@ -2,6 +2,7 @@ package logo
 
 import (
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"math/rand"
 
 	"github.com/FloatTech/zbputils/control"
@@ -18,7 +19,7 @@ const (
 //https://avatars.dicebear.com/
 
 func init() {
-	engine := control.Register(servicename, &control.Options{
+	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- 头像\n",
 	})

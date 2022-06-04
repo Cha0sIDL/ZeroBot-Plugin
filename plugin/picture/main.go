@@ -1,6 +1,7 @@
 package picture
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -14,7 +15,7 @@ const (
 )
 
 func init() {
-	engine := control.Register(servicename, &control.Options{
+	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- xxx表情\n" + "可能会偶尔抽风",
 	})

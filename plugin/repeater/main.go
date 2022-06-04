@@ -1,6 +1,7 @@
 package repeater
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"sync"
 
 	"github.com/FloatTech/zbputils/control"
@@ -33,7 +34,7 @@ var instance *autoCopy
 type msgCompareFunc func(string, string) bool
 
 func init() {
-	engine := control.Register(serviceName, &control.Options{
+	engine := control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 	})
 	instance = &autoCopy{}

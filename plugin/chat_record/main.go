@@ -1,6 +1,7 @@
 package chat_record
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"os"
 	"sync"
 
@@ -14,7 +15,7 @@ import (
 var m sync.Mutex
 
 func init() { // 插件主体
-	engine := control.Register("record", &control.Options{
+	engine := control.Register("record", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		PublicDataFolder: "Record",
 	})

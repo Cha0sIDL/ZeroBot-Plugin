@@ -1,6 +1,7 @@
 package haimage
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
@@ -11,7 +12,7 @@ import (
 const url = "https://cdn.seovx.com/ha/?mom=302"
 
 func init() {
-	control.Register("haimage", &control.Options{
+	control.Register("haimage", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "古风小姐姐\n",
 	}).OnKeywordGroup([]string{"古风"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {

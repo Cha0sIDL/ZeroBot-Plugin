@@ -2,6 +2,7 @@ package ai
 
 import (
 	"errors"
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	control "github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -16,7 +17,7 @@ var modes = [...]string{"青云客", "小爱", "腾讯"}
 
 func init() { // 插件主体
 	// bucket := rate.NewManager(time.Minute, 20) // 接口回复限速器
-	engine := control.Register(serviceName, &control.Options{
+	engine := control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "人工智能回复\n" +
 			"- @Bot 任意文本(任意一句话回复)\n- 设置回复模式[青云客  |  小爱]\n- ",

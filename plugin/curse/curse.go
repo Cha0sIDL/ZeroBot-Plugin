@@ -9,6 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 )
 
 const (
@@ -17,7 +19,7 @@ const (
 )
 
 func init() {
-	engine := control.Register("curse", &control.Options{
+	engine := control.Register("curse", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "骂他@qq(求骂,自卫)",
 		PublicDataFolder: "Curse",

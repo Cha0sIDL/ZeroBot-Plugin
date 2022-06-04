@@ -1,6 +1,7 @@
 package crazy
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"math/rand"
 	"os"
 	"time"
@@ -15,7 +16,7 @@ import (
 )
 
 func init() { // 插件主体
-	engine := control.Register("crazy", &control.Options{
+	engine := control.Register("crazy", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		PublicDataFolder: "Crazy",
 		Help: "喝什么\n" +

@@ -1,6 +1,7 @@
 package trending
 
 import (
+	ctrl "github.com/FloatTech/zbpctrl"
 	"strconv"
 	"strings"
 
@@ -16,7 +17,7 @@ import (
 )
 
 func init() { // 插件主体
-	engine := control.Register("trending", &control.Options{
+	engine := control.Register("trending", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "微博热搜\n" +
 			"知乎热搜\n" +

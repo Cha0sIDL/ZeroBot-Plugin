@@ -2,6 +2,7 @@ package ai
 
 import (
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"math/rand"
 	"os"
 	"strconv"
@@ -46,7 +47,7 @@ func init() {
 	if file.IsNotExist(cachePath) {
 		os.MkdirAll(cachePath, 0755)
 	}
-	en := control.Register("ai", &control.Options{
+	en := control.Register("ai", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
 	})

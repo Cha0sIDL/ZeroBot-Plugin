@@ -2,6 +2,7 @@
 package baidu
 
 import (
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"net/url"
 
 	"github.com/playwright-community/playwright-go"
@@ -9,14 +10,13 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 )
 
 func init() {
-	en := control.Register("baidu", &control.Options{
+	en := control.Register("baidu", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "baidu\n" +
 			"- 百度下[xxx]\n" +
