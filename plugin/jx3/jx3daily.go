@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	ctrl "github.com/FloatTech/zbpctrl"
 	"image"
 	"io"
 	"io/ioutil"
@@ -16,6 +15,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/DanPlayer/timefinder"
 	"github.com/FloatTech/zbputils/binary"
@@ -759,7 +760,7 @@ func init() {
 			}
 			ctx.SendChain(message.Text(msg))
 			// var msg string
-			//commandPart := util.SplitSpace(ctx.State["args"].(string))
+			// commandPart := util.SplitSpace(ctx.State["args"].(string))
 			//if len(commandPart) != 2 {
 			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
 			//	return
@@ -1192,7 +1193,7 @@ func drawTeam(teamId int) image.Image {
 	// 画直线
 	for i := 200; i < 1200; {
 		// dc.SetRGBA(255, 255, 255, 11)
-		//dc.SetLineWidth(1)
+		// dc.SetLineWidth(1)
 		dc.DrawLine(float64(i), 200, float64(i), 1200)
 		dc.Stroke()
 		i += 200

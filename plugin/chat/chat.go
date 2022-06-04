@@ -3,10 +3,11 @@ package chat
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"

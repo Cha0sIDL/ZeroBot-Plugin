@@ -1,9 +1,10 @@
 package trending
 
 import (
-	ctrl "github.com/FloatTech/zbpctrl"
 	"strconv"
 	"strings"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -91,7 +92,7 @@ func getGithubTrending(ctx *zero.Ctx) {
 		title := htmlquery.SelectAttr(titlePath, "href")
 		msg += strconv.Itoa(idx+1) + "：" + strings.TrimPrefix(title, "/") + "\n" + "地址：https://github.com" + title + "\n"
 		// introduction := htmlquery.FindOne(a, "/p[*]/text()").Data
-		//fmt.Println(introduction)
+		// fmt.Println(introduction)
 	}
 	ctx.SendChain(message.Text(msg))
 }

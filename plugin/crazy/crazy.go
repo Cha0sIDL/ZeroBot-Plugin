@@ -1,10 +1,11 @@
 package crazy
 
 import (
-	ctrl "github.com/FloatTech/zbpctrl"
 	"math/rand"
 	"os"
 	"time"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"

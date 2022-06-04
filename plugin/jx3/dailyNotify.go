@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"fmt"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
@@ -26,7 +27,7 @@ var date = map[int]map[string]string{
 }
 
 // "一": "帮会跑商：阴山商路(10:00)\n阵营祭天：出征祭祀(19:00)\n",
-//"二": "阵营攻防：逐鹿中原(20:00)\n",
+// "二": "阵营攻防：逐鹿中原(20:00)\n",
 //"三": "世界首领：少林·乱世，七秀·乱世(20:00)\n",
 //"四": "阵营攻防：逐鹿中原(20:00)\n",
 //"五": "世界首领：黑山林海，藏剑·乱世(20:00)\n",

@@ -3,9 +3,10 @@ package active
 import (
 	"errors"
 	"fmt"
-	ctrl "github.com/FloatTech/zbpctrl"
 	"strconv"
 	"strings"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"

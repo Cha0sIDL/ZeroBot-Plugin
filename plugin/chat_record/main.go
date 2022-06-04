@@ -1,9 +1,10 @@
 package chat_record
 
 import (
-	ctrl "github.com/FloatTech/zbpctrl"
 	"os"
 	"sync"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"

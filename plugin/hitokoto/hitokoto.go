@@ -2,6 +2,7 @@ package hitokoto
 
 import (
 	"encoding/json"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"

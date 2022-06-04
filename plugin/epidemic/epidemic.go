@@ -3,6 +3,7 @@ package epidemic
 
 import (
 	"encoding/json"
+
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/FloatTech/zbputils/file"
@@ -106,7 +107,7 @@ func init() {
 				//	"无症状人数：", data.Total.Wzz, "\n",
 				//	"新增无症状：", data.Today.Wzzadd, "\n",
 				//	"更新时间：\n『", time, "』",
-				//),
+				// ),
 				message.Image("file:///" + finName),
 			)
 		})

@@ -1,8 +1,9 @@
 package repeater
 
 import (
-	ctrl "github.com/FloatTech/zbpctrl"
 	"sync"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"

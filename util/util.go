@@ -57,7 +57,7 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	}
 	return Reply, err
 	// req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))
-	//if err != nil {
+	// if err != nil {
 	//	panic("request error")
 	//}
 	//client := &http.Client{}

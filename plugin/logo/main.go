@@ -2,8 +2,9 @@ package logo
 
 import (
 	"fmt"
-	ctrl "github.com/FloatTech/zbpctrl"
 	"math/rand"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
