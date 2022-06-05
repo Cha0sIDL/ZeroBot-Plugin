@@ -80,7 +80,7 @@ func init() {
 				// reqbody, _ := json.Marshal(data)
 				// JX3 api 已弃用
 				// rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
-				//json := gjson.ParseBytes(rsp)
+				// json := gjson.ParseBytes(rsp)
 				//if json.Get("code").Int() != 200 {
 				//	ctx.SendChain(message.Text(r.TalkPlain(msg)))
 				//} else {
@@ -100,7 +100,7 @@ func getVoice() string {
 	// timeLayout := config.Cfg.TTS.Start
 	// tmp, _ := time.Parse("2006-01-02", timeLayout)
 	// login := tmp.Unix()
-	//today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))
+	// today := (time.Now().Unix() - login) / 86400 % int64(len(config.Cfg.TTS.Voice))
 	rand.Seed(time.Now().Unix())
 	return config.Cfg.TTS.Voice[rand.Intn(len(config.Cfg.TTS.Voice))]
 }
