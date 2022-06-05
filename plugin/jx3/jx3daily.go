@@ -761,7 +761,7 @@ func init() {
 			ctx.SendChain(message.Text(msg))
 			// var msg string
 			// commandPart := util.SplitSpace(ctx.State["args"].(string))
-			//if len(commandPart) != 2 {
+			// if len(commandPart) != 2 {
 			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
 			//	return
 			//}
