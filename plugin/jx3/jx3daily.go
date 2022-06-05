@@ -401,16 +401,16 @@ func init() {
 			}
 			for idx, m := range DataList {
 				rsp := ""
-				if idx >= 3 {
+				if idx >= 2 {
 					break
 				}
 				rsp += "作者:" + m.Get("author").String() + "\n" + m.Get("post_title").String() + "\n"
 				for _, meta := range m.Get("post_meta.data").Array() {
-					rsp += "\n" + meta.Get("name").String() + ":\n" + meta.Get("macro").String() + "\n" + "----------------------------------------------\n"
+					rsp += "\n" + meta.Get("desc").String() + "\n" + meta.Get("name").String() + ":\n" + meta.Get("macro").String() + "\n" + "----------------------------------------------\n"
 				}
 				rsp += "数据来源于JXBOX，dps请自行测试"
 				ctx.SendChain(message.Text(rsp))
-				time.Sleep(time.Second * 2)
+				time.Sleep(time.Second * 4)
 			}
 		})
 	en.OnSuffix("阵眼").SetBlock(true).
