@@ -2,18 +2,19 @@ package jx3
 
 import (
 	"fmt"
-
 	ctrl "github.com/FloatTech/zbpctrl"
+	"github.com/fumiama/cron"
+	log "github.com/sirupsen/logrus"
+	"github.com/wdvxdr1123/ZeroBot/message"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/golang-module/carbon/v2"
 	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
 const (
 	ServiceName       = "dailyNotify"
-	notify      int64 = 10
+	notify      int64 = 15
 )
 
 var date = map[int]map[string]string{
@@ -34,23 +35,58 @@ var date = map[int]map[string]string{
 //"六": "攻防前置：南屏山(12:00)\n阵营攻防：浩气盟；奇袭：恶人谷(13:00，19:00)\n",
 //"日": "攻防前置：昆仑(12:00)\n阵营攻防：恶人谷；奇袭：浩气盟(13:00，19:00)\n"
 
+//func init() { // 插件主体
+//	engine := control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
+//		DisableOnDefault: false,
+//		Help:             "每周日常定时推送\n",
+//	})
+//	engine.OnFullMatch("剑网活动推送").Handle(
+//		sendMessage,
+//	)
+//}
+//
+//func sendMessage(ctx *zero.Ctx) {
+//	week := carbon.Now().Week()
+//	daily := date[week]
+//	for time, msg := range daily {
+//		diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
+//		if diff == -notify {
+//			ctx.SendChain(message.AtAll(), message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg)))
+//		}
+//	}
+//}
+
 func init() { // 插件主体
-	engine := control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
+	c := cron.New()
+	_, err := c.AddFunc("*/1 * * * *", func() { sendMessage() })
+	if err == nil {
+		c.Start()
+	}
+	control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "每周日常定时推送\n",
 	})
-	engine.OnFullMatch("剑网活动推送").Handle(
-		sendMessage,
-	)
 }
 
-func sendMessage(ctx *zero.Ctx) {
-	week := carbon.Now().Week()
-	daily := date[week]
-	for time, msg := range daily {
-		diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
-		if diff == -notify {
-			ctx.SendChain(message.AtAll(), message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg)))
-		}
+func sendMessage() {
+	m, ok := control.Lookup(ServiceName)
+	if !ok {
+		log.Errorln("dailyNotify Err")
 	}
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		for _, g := range ctx.GetGroupList().Array() {
+			grp := g.Get("group_id").Int()
+			if m.IsEnabledIn(grp) {
+				week := carbon.Now().Week()
+				daily := date[week]
+				for time, msg := range daily {
+					diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
+					if diff == -notify {
+						ctx.SendGroupMessage(grp, []message.MessageSegment{message.AtAll(), message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg))})
+					}
+				}
+			}
+		}
+		return true
+	})
 }

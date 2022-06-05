@@ -255,6 +255,7 @@ func bindArea(Gid int64, Area string) {
 		c.GroupID = Gid
 	}
 	c.Area = Area
+	c.Disable = true //默认开
 	rwMutex.Lock()
 	err = db.Insert(dbControl, &c)
 	rwMutex.Unlock()
