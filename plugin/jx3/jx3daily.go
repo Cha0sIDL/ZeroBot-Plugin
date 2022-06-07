@@ -751,7 +751,7 @@ func init() {
 			//	return
 			//}
 			// server := commandPart[0]
-			//name := commandPart[1]
+			// name := commandPart[1]
 			//qiyuUrl := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&u=不限&t=&token=%s", server, name, config.Cfg.MMToken)
 			//rspData, err := util.SendHttp(qiyuUrl, []byte(""))
 			////rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())

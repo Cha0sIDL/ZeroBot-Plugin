@@ -32,7 +32,7 @@ var date = map[int]map[string]string{
 // "二": "阵营攻防：逐鹿中原(20:00)\n",
 // "三": "世界首领：少林·乱世，七秀·乱世(20:00)\n",
 // "四": "阵营攻防：逐鹿中原(20:00)\n",
-//"五": "世界首领：黑山林海，藏剑·乱世(20:00)\n",
+// "五": "世界首领：黑山林海，藏剑·乱世(20:00)\n",
 //"六": "攻防前置：南屏山(12:00)\n阵营攻防：浩气盟；奇袭：恶人谷(13:00，19:00)\n",
 //"日": "攻防前置：昆仑(12:00)\n阵营攻防：恶人谷；奇袭：浩气盟(13:00，19:00)\n"
 
@@ -46,7 +46,7 @@ var date = map[int]map[string]string{
 //	)
 //}
 //
-//func sendMessage(ctx *zero.Ctx) {
+// func sendMessage(ctx *zero.Ctx) {
 //	week := carbon.Now().Week()
 //	daily := date[week]
 //	for time, msg := range daily {

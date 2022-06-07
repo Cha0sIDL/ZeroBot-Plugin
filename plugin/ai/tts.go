@@ -81,7 +81,7 @@ func init() {
 				// JX3 api 已弃用
 				// rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
 				// json := gjson.ParseBytes(rsp)
-				//if json.Get("code").Int() != 200 {
+				// if json.Get("code").Int() != 200 {
 				//	ctx.SendChain(message.Text(r.TalkPlain(msg)))
 				//} else {
 				//	ctx.SendChain(message.Record(json.Get("data.url").String()))
