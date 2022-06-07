@@ -325,22 +325,7 @@ func init() {
 		})
 	en.OnSuffix("小药").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["args"].(string)
-			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-			reqbody, err := json.Marshal(data)
-			rsp, err := util.SendHttp(url+"heighten", reqbody)
-			json := gjson.ParseBytes(rsp)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			} else {
-				ctx.SendChain(
-					message.Text(
-						"辅助食品：", json.Get("data.auxiliary_food"), "\n",
-						"辅助药品：", json.Get("data.auxiliary_drug"), "\n",
-						"增强食品：", json.Get("data.heighten_food"), "\n",
-						"增强药品：", json.Get("data.heighten_drug"), "\n",
-					))
-			}
+			ctx.SendChain(message.Image(fileUrl + "medicine.png"))
 		})
 	en.OnSuffix("配装").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {

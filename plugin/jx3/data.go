@@ -13,7 +13,7 @@ const (
 	dbpath    = "data/jx3/"
 	dbfile    = dbpath + "robotData.db"
 	iconfile  = dbpath + "mental_icon/"
-	fileUrl   = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/robotData.db"
+	fileUrl   = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
 	dbMental  = "ns_mental"
 	dbControl = "jxControl"
 	dbTeam    = "team"
@@ -35,7 +35,7 @@ func initialize() {
 	if file.IsNotExist(dbfile) {
 		process.SleepAbout1sTo2s()
 		_ = os.MkdirAll(dbpath, 0755)
-		err := file.DownloadTo(fileUrl, dbfile, false)
+		err := file.DownloadTo(fileUrl+"robotData.db", dbfile, false)
 		if err != nil {
 			panic(err)
 		}
