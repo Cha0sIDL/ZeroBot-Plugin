@@ -775,7 +775,7 @@ func init() {
 		})
 	en.OnPrefixGroup([]string{"物价"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			wujia(ctx, datapath)
+			wujia(ctx, datapath, 0)
 		})
 }
 
@@ -923,7 +923,10 @@ func drawJinLine(XName, YName string, xdata []string, data map[string][]string) 
 	return line
 }
 
-func wujia(ctx *zero.Ctx, datapath string) {
+func wujia(ctx *zero.Ctx, datapath string, control int8) {
+	if control >= 2 {
+		return
+	}
 	var m sync.Mutex
 	m.Lock()
 	defer m.Unlock()
@@ -956,7 +959,10 @@ func wujia(ctx *zero.Ctx, datapath string) {
 			for _, s := range searchList {
 				msg += s.Get("outwardName").String() + "\n"
 			}
+			msg += "自动帮你查询：" + searchList[0].Get("outwardAlias").String()
 			ctx.SendChain(message.Text(msg))
+			ctx.State["args"] = searchList[0].Get("outwardName").String()
+			wujia(ctx, datapath, control+1)
 			return
 		}
 		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() // 获得商品id
