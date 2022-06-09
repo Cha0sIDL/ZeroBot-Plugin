@@ -64,7 +64,7 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	// req.Header.Set("User-Agent", "User-Agent, Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)")
 	// response, err := client.Do(req)
 	// log.Errorln(response.Body, response.StatusCode)
-	//if response.StatusCode != http.StatusOK {
+	// if response.StatusCode != http.StatusOK {
 	//	panic("请求失败")
 	//}
 	//return io.ReadAll(response.Body)

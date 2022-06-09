@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/playwright-community/playwright-go"
 	"image"
 	"io"
 	"io/ioutil"
@@ -16,6 +15,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/playwright-community/playwright-go"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
@@ -796,7 +797,7 @@ func init() {
 			// server := commandPart[0]
 			// name := commandPart[1]
 			// qiyuUrl := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&u=不限&t=&token=%s", server, name, config.Cfg.MMToken)
-			//rspData, err := util.SendHttp(qiyuUrl, []byte(""))
+			// rspData, err := util.SendHttp(qiyuUrl, []byte(""))
 			////rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
 			////log.Errorln(qiyuUrl, string(rspData), "err", err)
 			//if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 200 {
