@@ -805,7 +805,7 @@ func init() {
 			//	return
 			//}
 			// jData := gjson.Get(binary.BytesToString(rspData), "result")
-			//if len(jData.Array()) == 0 {
+			// if len(jData.Array()) == 0 {
 			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 			//	return
 			//}
