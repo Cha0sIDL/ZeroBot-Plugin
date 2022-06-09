@@ -131,6 +131,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/event"      // 一些事件插件
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/sulian"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜
