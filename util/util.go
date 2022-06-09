@@ -67,7 +67,7 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	// if response.StatusCode != http.StatusOK {
 	//	panic("请求失败")
 	//}
-	//return io.ReadAll(response.Body)
+	// return io.ReadAll(response.Body)
 }
 
 func Max(l []float64) (max float64) {
