@@ -562,9 +562,9 @@ func init() { // 插件主体
 	// 加群请在github新建一个gist，其文件名为本群群号的字符串的md5(小写)，内容为一行，是当前unix时间戳(10分钟内有效)。
 	// 然后请将您的用户名和gist哈希(小写)按照username/gisthash的格式填写到回答即可。
 	engine.OnRequest().SetBlock(false).Handle(func(ctx *zero.Ctx) {
-		if ctx.Event.RequestType == "friend" {
-			ctx.SetFriendAddRequest(ctx.Event.Flag, false, "")
-		}
+		/*if ctx.Event.RequestType == "friend" {
+			ctx.SetFriendAddRequest(ctx.Event.Flag, true, "")
+		}*/
 		c, ok := ctx.State["manager"].(*ctrl.Control[*zero.Ctx])
 		if ok && c.GetData(ctx.Event.GroupID)&0x10 == 0x10 && ctx.Event.RequestType == "group" && ctx.Event.SubType == "add" {
 			// gist 文件名是群号的 ascii 编码的 md5
@@ -588,28 +588,6 @@ func init() { // 插件主体
 			}
 		}
 	})
-	engine.OnMessage(func(ctx *zero.Ctx) bool {
-		msg := ctx.Event.Message
-		if msg[0].Type != "reply" {
-			return false
-		}
-		for _, elem := range msg {
-			if elem.Type == "text" {
-				text := elem.Data["text"]
-				text = strings.ReplaceAll(text, " ", "")
-				text = strings.ReplaceAll(text, "\r", "")
-				text = strings.ReplaceAll(text, "\n", "")
-				if text == "撤回" {
-					return true
-				}
-			}
-		}
-		return false
-	}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
-		func(ctx *zero.Ctx) {
-			ctx.DeleteMessage(message.NewMessageIDFromString(ctx.Event.Message[0].Data["id"]))
-			return
-		})
 }
 
 // 传入 ctx 和 welcome格式string 返回cq格式string  使用方法:welcometocq(ctx,w.Msg)
