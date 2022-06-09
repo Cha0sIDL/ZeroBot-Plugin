@@ -10,23 +10,25 @@ import (
 )
 
 const (
-	dbpath    = "data/jx3/"
-	dbfile    = dbpath + "robotData.db"
-	iconfile  = dbpath + "mental_icon/"
-	fileUrl   = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
-	dbMental  = "ns_mental"
-	dbControl = "jxControl"
-	dbTeam    = "team"
-	dbLeader  = "leader"
-	dbMember  = "member"
+	dbpath      = "data/jx3/"
+	dbfile      = dbpath + "robotData.db"
+	iconfile    = dbpath + "mental_icon/"
+	fileUrl     = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
+	dbMental    = "ns_mental"
+	dbControl   = "jxControl"
+	dbTeam      = "team"
+	dbLeader    = "leader"
+	dbMember    = "member"
+	dbAdventure = "adventure"
 )
 
 var rangeDb = map[string]interface{}{
-	dbMental:  &mental{},
-	dbControl: &jxControl{},
-	dbTeam:    &Team{},
-	dbLeader:  &Leader{},
-	dbMember:  &Member{},
+	dbMental:    &mental{},
+	dbControl:   &jxControl{},
+	dbTeam:      &Team{},
+	dbLeader:    &Leader{},
+	dbMember:    &Member{},
+	dbAdventure: &Adventure{},
 }
 
 var db = &sql.Sqlite{DBPath: dbfile}

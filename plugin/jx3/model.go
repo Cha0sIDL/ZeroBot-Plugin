@@ -56,6 +56,12 @@ type Member struct {
 	SignUp         int64  `db:"sign_up"` // 进团时间
 }
 
+type Adventure struct {
+	Name string `db:"name"`
+	Pic  []byte `db:"pic"`
+	Time int64  `db:"time"`
+}
+
 func getMental(mentalName string) string {
 	var mental mental
 	var rwMutex sync.RWMutex
@@ -299,4 +305,20 @@ func enable(Gid int64) string {
 		log.Error("jx push enable database error")
 	}
 	return c.Area
+}
+
+func getAdventure(name string) Adventure {
+	var data Adventure
+	var rwMutex sync.RWMutex
+	rwMutex.RLock()
+	db.Find(dbAdventure, &data, "WHERE name = "+fmt.Sprintf("'%s'", name))
+	rwMutex.RUnlock()
+	return data
+}
+
+func updateAdventure(data *Adventure) {
+	var rwMutex sync.RWMutex
+	rwMutex.RLock()
+	db.Insert(dbAdventure, data)
+	rwMutex.RUnlock()
 }
