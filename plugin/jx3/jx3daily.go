@@ -804,7 +804,7 @@ func init() {
 			//	ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			//	return
 			//}
-			//jData := gjson.Get(binary.BytesToString(rspData), "result")
+			// jData := gjson.Get(binary.BytesToString(rspData), "result")
 			//if len(jData.Array()) == 0 {
 			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 			//	return
