@@ -83,7 +83,7 @@ func init() {
 				// json := gjson.ParseBytes(rsp)
 				// if json.Get("code").Int() != 200 {
 				//	ctx.SendChain(message.Text(r.TalkPlain(msg)))
-				//} else {
+				// } else {
 				//	ctx.SendChain(message.Record(json.Get("data.url").String()))
 				//}
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
