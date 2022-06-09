@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/playwright-community/playwright-go"
 	"image"
 	"io"
 	"io/ioutil"
@@ -302,7 +303,7 @@ func init() {
 				json.Get("data.image_path").String(),
 			))
 		})
-	en.OnRegex(`^奇遇条件(.*)`).SetBlock(true).
+	en.OnRegex(`^前置(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["regex_matched"].([]string)[1]
 			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
@@ -414,23 +415,54 @@ func init() {
 				log.Errorln(string(rsp))
 			}
 		})
-	en.OnRegex(`^奇遇攻略(.*)`).SetBlock(true).
+	en.OnRegex(`^攻略(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["regex_matched"].([]string)[1]
 			if len(name) == 0 {
 				ctx.SendChain(message.Text("输入参数有误！！！"))
 			} else {
-				data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"strategy", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
+				dwData, _ := web.GetData(fmt.Sprintf("https://node.jx3box.com/serendipities?name=%s", goUrl.QueryEscape(name)))
+				dwList := gjson.Get(binary.BytesToString(dwData), "list").Array()
+				if len(dwList) == 0 {
+					ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s呢，你是不是乱输的哦~", name)))
+					return
 				}
-				json := gjson.ParseBytes(rsp)
-				log.Errorln(string(rsp))
-				ctx.SendChain(
-					message.Image(json.Get("data.url").String()),
-				)
+				dwId := dwList[0].Get("dwID").String()
+				json, _ := web.GetData("https://icon.jx3box.com/pvx/serendipity/output/serendipity.json")
+				articleId := gjson.Get(binary.BytesToString(json), dwId).String()
+				articleUrl := fmt.Sprintf("https://www.jx3box.com/cj/#/view/%s", articleId)
+				pw, err := playwright.Run()
+				if err != nil {
+					playwright.Install()
+					playwright.Run()
+				}
+				defer pw.Stop()
+				browser, err := pw.Chromium.Launch()
+				if err != nil {
+					playwright.Install()
+				}
+				page, err := browser.NewPage(playwright.BrowserNewContextOptions{
+					IsMobile: playwright.Bool(true),
+				})
+				if err != nil {
+					return
+				}
+				_, err = page.Goto(articleUrl, playwright.PageGotoOptions{
+					WaitUntil: playwright.WaitUntilStateNetworkidle,
+					Timeout:   playwright.Float(10000),
+				})
+				if err != nil {
+					return
+				}
+				page.Click("//*[@id=\"app\"]/aside/span")
+				result, _ := page.QuerySelector("div[class=\"c-article-chunk on\"]")
+				result.WaitForSelector("image")
+				result.ScrollIntoViewIfNeeded()
+				b, err := result.Screenshot()
+				if err != nil {
+					ctx.SendChain(message.Text("出错了，稍后再试试吧~"))
+				}
+				ctx.SendChain(message.ImageBytes(b))
 			}
 		})
 	en.OnRegex(`^(维护公告|更新公告)(.*)`).SetBlock(true).
