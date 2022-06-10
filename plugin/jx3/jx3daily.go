@@ -809,7 +809,7 @@ func init() {
 			//	}
 			//	msg = msg + name + "  " + data.Get("serendipity").String() + "  " + carbon.CreateFromTimestamp(data.Get("time").Int()).ToDateTimeString() + "\n"
 			//}
-			//ctx.SendChain(message.Text(msg))
+			// ctx.SendChain(message.Text(msg))
 		})
 	en.OnPrefixGroup([]string{"物价"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
