@@ -1086,6 +1086,36 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 
+<details>
+  <summary>各种定时任务</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron"`
+
+- [x] 地震预警
+
+
+</details>
+
+<details>
+  <summary>一些事件的处理</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/event"`
+
+- [x] 好友申请以及群聊邀请事件处理，默认发送给主人列表第一位
+
+
+</details>
+
+<details>
+  <summary>反撤回</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall"`
+
+- [x] 反闪照、反撤回 默认不启动
+
+
+</details>
+
 
 
 ### *低优先级*

@@ -189,8 +189,8 @@ func init() {
 			"- 舔狗\n" +
 			"-（开启|关闭）jx推送\n" +
 			"- /roll随机roll点\n" +
-			"- 物价xxx" +
-			"TODO:宏转图片",
+			"- 物价xxx\n" +
+			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
 	})
 	go func() {
 		initialize()
