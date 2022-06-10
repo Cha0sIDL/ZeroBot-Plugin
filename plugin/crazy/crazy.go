@@ -35,6 +35,7 @@ func init() { // 插件主体
 				panic(err)
 			}
 		}
+		db.Open(time.Hour * 24)
 		err := db.Create("crazy", &crazy{})
 		db.Create("menu", &menu{})
 		db.Create("drink", &drink{})

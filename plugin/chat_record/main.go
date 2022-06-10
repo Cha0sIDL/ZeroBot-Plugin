@@ -3,6 +3,7 @@ package chat_record
 import (
 	"os"
 	"sync"
+	"time"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
@@ -26,6 +27,7 @@ func init() { // 插件主体
 		if file.IsNotExist(db.DBPath) {
 			_ = os.MkdirAll(dbpath, 0755)
 		}
+		db.Open(time.Hour * 24)
 		err := db.Create("record", &record{})
 		if err != nil {
 			panic(err)

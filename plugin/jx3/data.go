@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"os"
+	"time"
 
 	sql "github.com/FloatTech/sqlite"
 	"github.com/FloatTech/zbputils/file"
@@ -42,6 +43,7 @@ func initialize() {
 			panic(err)
 		}
 	}
+	db.Open(time.Hour * 24)
 	for key, value := range rangeDb {
 		err := db.Create(key, value)
 		if err != nil {
