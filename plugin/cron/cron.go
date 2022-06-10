@@ -83,7 +83,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 			}
 			history[d.Get("time").Int()] = struct{}{}
 			if len(history) > 128 {
-				history = nil //防止无限增长
+				history = nil // 防止无限增长
 				runtime.GC()
 			}
 		}
