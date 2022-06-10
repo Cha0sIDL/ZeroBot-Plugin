@@ -548,13 +548,7 @@ func init() {
 	en.OnPrefix("绑定区服", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := strings.Replace(ctx.State["args"].(string), " ", "", -1)
-			server := make(map[string]int64)
-			rsp, _ := util.SendHttp(url+"check", nil)
-			json := gjson.ParseBytes(rsp)
-			for _, value := range json.Get("data").Array() {
-				server[value.Get("server").String()] = value.Get("id").Int()
-			}
-			if _, ok := server[area]; ok {
+			if _, ok := allServer[area]; ok {
 				bindArea(ctx.Event.GroupID, area)
 				ctx.Send(message.Text("绑定成功"))
 			} else {
