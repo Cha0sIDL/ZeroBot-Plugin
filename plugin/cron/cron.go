@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -15,6 +15,8 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
