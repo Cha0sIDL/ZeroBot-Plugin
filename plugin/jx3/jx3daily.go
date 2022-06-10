@@ -809,7 +809,7 @@ func init() {
 			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 			//	return
 			//}
-			//for idx, data := range jData.Array() {
+			// for idx, data := range jData.Array() {
 			//	if idx == 0 {
 			//		msg += server + "\n"
 			//	}
