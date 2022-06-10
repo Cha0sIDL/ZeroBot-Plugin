@@ -336,6 +336,7 @@ func GetWeek() string {
 	return s[intWeek]
 }
 
+// PrettyPrint 格式化打印
 func PrettyPrint(v interface{}) string {
 	b, err := json.Marshal(v)
 	if err != nil {
@@ -351,4 +352,19 @@ func PrettyPrint(v interface{}) string {
 	}
 
 	return out.String()
+}
+
+// ConvertStrSlice2Map 将字符串 slice 转为 map[string]struct{}。
+func ConvertStrSlice2Map(sl []string) map[string]struct{} {
+	set := make(map[string]struct{}, len(sl))
+	for _, v := range sl {
+		set[v] = struct{}{}
+	}
+	return set
+}
+
+// InMap 判断字符串是否在 map 中。
+func InMap(m map[string]struct{}, s string) bool {
+	_, ok := m[s]
+	return ok
 }
