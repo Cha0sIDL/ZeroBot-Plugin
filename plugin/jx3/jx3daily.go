@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/playwright-community/playwright-go"
 	"image"
 	"io"
 	"io/ioutil"
@@ -16,6 +15,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/playwright-community/playwright-go"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
@@ -415,7 +416,7 @@ func init() {
 				log.Errorln(string(rsp))
 			}
 		})
-	//en.OnRegex(`^攻略(.*)`).SetBlock(true).
+	// en.OnRegex(`^攻略(.*)`).SetBlock(true).
 	//	Handle(func(ctx *zero.Ctx) {
 	//		name := ctx.State["regex_matched"].([]string)[1]
 	//		if len(name) == 0 {
