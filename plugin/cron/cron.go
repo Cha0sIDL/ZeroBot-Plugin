@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/FloatTech/zbputils/binary"
 	"runtime"
 
 	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/web"
 	"github.com/fumiama/cron"
@@ -25,6 +25,8 @@ const (
 )
 
 var history = make(map[int64]struct{}, 128)
+
+var last = carbon.Now().Timestamp() - carbon.Now().Timestamp()%60
 
 var provinces = map[string]struct{}{"河北": {}, "山西": {}, "辽宁": {}, "吉林": {}, "黑龙江": {}, "江苏": {}, "浙江": {}, "安徽": {}, "福建": {}, "江西": {}, "山东": {}, "河南": {}, "湖北": {}, "湖南": {}, "广东": {}, "海南": {}, "四川": {}, "贵州": {}, "云南": {}, "陕西": {}, "甘肃": {}, "青海": {}, "台湾": {}, "内蒙古": {}, "广西": {}, "西藏": {}, "宁夏": {}, "新疆": {}, "北京": {}, "天津": {}, "上海": {}, "重庆": {}, "香港": {}, "澳门": {}}
 
@@ -59,15 +61,18 @@ func sendMessage1min() {
 }
 
 func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
-	now := carbon.Now().TimestampMilli()
+	now := carbon.Now().Timestamp()
 	data, _ := json.Marshal(map[string]string{
 		"action":     "requestMonitorDataAction",
 		"dataSource": "CEIC",
-		"startTime":  util.Interface2String(now - 60000),
-		"endTime":    util.Interface2String(now),
+		"startTime":  util.Interface2String(last * 1000),
+		"endTime":    util.Interface2String(now * 1000),
 	})
+	last = now
+	//"http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
 	rspData, err := web.PostData("http://api.dizhensubao.getui.com/api.htm", "application/json", bytes.NewReader(data))
 	if err != nil {
+		log.Errorln("cron error ", err)
 		return
 	}
 	strData := binary.BytesToString(rspData)
@@ -78,7 +83,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		if ok && lv >= 3.5 && !hisOk {
 			for _, grpId := range grpIds {
 				ctx.SendGroupMessage(grpId, []message.MessageSegment{
-					message.Text(fmt.Sprintf("检测到 %s 发生 %f 级地震，请处于震中位置人员前往安全位置避难~", d.Get("loc_name").String(), lv)),
+					message.Text(fmt.Sprintf("检测到 %s 发生 %.1f 级地震，请处于震中位置人员前往安全位置避难~", d.Get("loc_name").String(), lv)),
 				})
 			}
 			history[d.Get("time").Int()] = struct{}{}

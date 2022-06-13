@@ -34,7 +34,7 @@ func init() { // 来自mayuri的插件
 						"\n用户:[", username, "](", strconv.FormatInt(userid, 10), ")",
 						"\n的好友请求:", comment,
 						"\n请在下方复制flag并在前面加上:",
-						"\n通过/拒绝邀请，来决定通过还是拒绝"))
+						"\n通过/拒绝申请，来决定通过还是拒绝"))
 				time.Sleep(time.Second * 1)
 				ctx.SendPrivateMessage(su, message.ReplyWithMessage(id, message.Text(flag)))
 			}
