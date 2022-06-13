@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/FloatTech/zbputils/binary"
 	"runtime"
+
+	"github.com/FloatTech/zbputils/binary"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
@@ -69,7 +70,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		"endTime":    util.Interface2String(now * 1000),
 	})
 	last = now
-	//"http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
+	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
 	rspData, err := web.PostData("http://api.dizhensubao.getui.com/api.htm", "application/json", bytes.NewReader(data))
 	if err != nil {
 		log.Errorln("cron error ", err)
