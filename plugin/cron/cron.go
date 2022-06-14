@@ -79,6 +79,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		return
 	}
 	strData := binary.BytesToString(rspData)
+	log.Errorln("cron debug data", strData)
 	for _, d := range gjson.Get(strData, "values").Array() {
 		log.Errorln("cron debug", strData, d, "start", now, "last", last)
 		_, ok := provinces[d.Get("loc_province").String()]
