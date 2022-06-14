@@ -72,7 +72,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	last = now
 	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
 	// data, _ := web.GetData("http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6")
-	//gjson.Get(strings.Trim(binary.BytesToString(data), "()"), "shuju")
+	// gjson.Get(strings.Trim(binary.BytesToString(data), "()"), "shuju")
 	rspData, err := web.PostData("http://api.dizhensubao.getui.com/api.htm", "application/json", bytes.NewReader(data))
 	if err != nil {
 		log.Errorln("cron error ", err)
