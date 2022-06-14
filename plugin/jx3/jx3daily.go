@@ -477,12 +477,14 @@ func init() {
 	//			}
 	//		}
 	//	})
-	en.OnRegex(`^攻略(.*)`).SetBlock(true).
+	en.OnPrefix("攻略").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
-			if len(name) == 0 {
-				ctx.SendChain(message.Text("输入参数有误！！！"))
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) != 1 {
+				ctx.SendChain(message.Text("输入参数有误！！！攻略 炼狱厨神"))
+				return
 			} else {
+				name := commandPart[0]
 				dbData := getAdventure(name)
 				if len(dbData.Pic) == 0 || carbon.Now().DiffAbsInSeconds(carbon.CreateFromTimestamp(dbData.Time)) > 3600*10 {
 					dwData, _ := web.GetData(fmt.Sprintf("https://node.jx3box.com/serendipities?name=%s", goUrl.QueryEscape(name)))
