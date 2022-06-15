@@ -69,7 +69,6 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		"startTime":  util.Interface2String(last * 1000),
 		"endTime":    util.Interface2String(now * 1000),
 	})
-	last = now
 	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
 	// data, _ := web.GetData("http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6")
 	// gjson.Get(strings.Trim(binary.BytesToString(data), "()"), "shuju")
@@ -81,6 +80,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	strData := binary.BytesToString(rspData)
 	log.Errorln("cron debug data", strData)
 	for _, d := range gjson.Get(strData, "values").Array() {
+		last = now
 		log.Errorln("cron debug", strData, d, "start", now, "last", last)
 		_, ok := provinces[d.Get("loc_province").String()]
 		_, hisOk := history[d.Get("time").Int()]
@@ -88,7 +88,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		if ok && lv >= 3.5 && !hisOk {
 			for _, grpId := range grpIds {
 				ctx.SendGroupMessage(grpId, []message.MessageSegment{
-					message.Text(fmt.Sprintf("检测到 %s 发生 %.1f 级地震，请处于震中位置人员注意安全~", d.Get("loc_name").String(), lv)),
+					message.Text(fmt.Sprintf("检测到 %s 于 "+carbon.CreateFromTimestamp(d.Get("time").Int()/1000).ToDateTimeString()+" 发生 %.1f 级地震，请处于震中位置人员注意安全~", d.Get("loc_name").String(), lv)),
 				})
 			}
 			history[d.Get("time").Int()] = struct{}{}
