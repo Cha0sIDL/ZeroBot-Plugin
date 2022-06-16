@@ -265,7 +265,7 @@ func init() {
 			server := commandPart[0]
 			if _, ok := allServer[server]; ok {
 				client := web.NewDefaultClient()
-				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=1&is_history=1", server), nil)
+				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=0&is_history=1", server), nil)
 				if err == nil {
 					// 增加header选项
 					var response *http.Response
@@ -274,11 +274,16 @@ func init() {
 					if err == nil {
 						if response.StatusCode != http.StatusOK {
 							ctx.SendChain(message.Text("请求出错了稍后再试试吧~"))
+							return
 						}
 						data, _ := io.ReadAll(response.Body)
 						response.Body.Close()
 						strData := binary.BytesToString(data)
-
+						if gjson.Get(strData, "msg").String() != "success" {
+							ctx.SendChain(message.Text("请求出错了稍后再试试吧~"))
+							return
+						}
+						ctx.SendChain(message.Image(gjson.Get(strData, "data.sand_data.sandImage").String()))
 					}
 				}
 
