@@ -7,6 +7,7 @@ import (
 	"image"
 	"io"
 	"io/ioutil"
+	"net/http"
 	goUrl "net/url"
 	"os"
 	"sort"
@@ -46,8 +47,6 @@ const (
 	realizeUrl = "https://www.jx3api.com/realize/"
 	cloudUrl   = "https://www.jx3api.com/cloud/"
 )
-
-var method = "GET"
 
 var tuiKey = map[string]string{
 	"大战":     "60f211c82d105c0014c5dd7d",
@@ -256,29 +255,35 @@ func init() {
 				ctx.SendChain(message.Text(text))
 			}
 		})
-	en.OnRegex(`^沙盘(.*)`).SetBlock(true).
+	en.OnPrefixGroup([]string{"沙盘"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			str := ctx.State["regex_matched"].([]string)[1]
-			if len(str) == 0 {
-				ctx.SendChain(message.Text(
-					"请输入区服",
-				))
-			} else {
-				data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"sand", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) != 1 {
+				ctx.SendChain(message.Text("参数输入有误！\n" + "沙盘 绝代天骄"))
+				return
+			}
+			server := commandPart[0]
+			if _, ok := allServer[server]; ok {
+				client := web.NewDefaultClient()
+				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=1&is_history=1", server), nil)
+				if err == nil {
+					// 增加header选项
+					var response *http.Response
+					request.Header.Add("Cookie", "spc_token=1e245818-e241-437e-a292-dfa5544a2c9f")
+					response, err = client.Do(request)
+					if err == nil {
+						if response.StatusCode != http.StatusOK {
+							ctx.SendChain(message.Text("请求出错了稍后再试试吧~"))
+						}
+						data, _ := io.ReadAll(response.Body)
+						response.Body.Close()
+						strData := binary.BytesToString(data)
+
+					}
 				}
-				json := gjson.ParseBytes(rsp)
-				sandUrl := json.Get("data").Array()[0]
-				ctx.SendChain(message.Text(
-					"服务器：", sandUrl.Get("server"), "\n",
-					"时间：", time.Unix(sandUrl.Get("time").Int(), 0).Format("2006/01/02 15:04:05"),
-				))
-				ctx.SendChain(message.Image(
-					sandUrl.Get("url").String(),
-				))
+
+			} else {
+				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
 	en.OnRegex(`^(装饰属性|装饰)(.*)`).SetBlock(true).
