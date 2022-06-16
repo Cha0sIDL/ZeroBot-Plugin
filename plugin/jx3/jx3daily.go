@@ -286,7 +286,6 @@ func init() {
 						ctx.SendChain(message.Image(gjson.Get(strData, "data.sand_data.sandImage").String()))
 					}
 				}
-
 			} else {
 				ctx.Send(message.Text("区服输入有误"))
 			}
