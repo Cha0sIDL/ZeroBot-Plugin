@@ -38,7 +38,7 @@ func init() { // 插件主体
 	})
 	engine.OnFullMatch("今日早报", zero.OnlyGroup).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
-			//err := getdata()
+			// err := getdata()
 			data, err := web.GetData(api)
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR:", err))
