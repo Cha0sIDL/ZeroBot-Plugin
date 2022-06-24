@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	api     = "http://api.soyiji.com/news_jpg"
+	api     = "http://api.2xb.cn/zaob"
 	referer = "safe.soyiji.com"
 	ua      = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66"
 )
@@ -38,12 +38,13 @@ func init() { // 插件主体
 	})
 	engine.OnFullMatch("今日早报", zero.OnlyGroup).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
-			err := getdata()
+			//err := getdata()
+			data, err := web.GetData(api)
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR:", err))
 				return
 			}
-			ctx.SendChain(message.ImageBytes(picdata))
+			ctx.SendChain(message.Image(gjson.Get(binary.BytesToString(data), "imageUrl").String()))
 		})
 }
 
