@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/fumiama/cron"
 	"image"
 	"io"
 	"io/ioutil"
@@ -184,13 +185,23 @@ func init() {
 			"- 奇遇条件xxx(eg 奇遇条件三山四海)\n" +
 			"- 奇遇攻略xxx(eg 奇遇攻略三山四海)\n" +
 			"- 维护公告\n" +
-			"- 骚话（不区分大小写）\n" +
+			"- 骚话\n" +
 			"- 舔狗\n" +
 			"-（开启|关闭）jx推送\n" +
 			"- /roll随机roll点\n" +
 			"- 物价xxx\n" +
 			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
 	})
+	c := cron.New()
+	_, err := c.AddFunc("0 5 * * *", func() {
+		err := updateTalk()
+		if err != nil {
+			return
+		}
+	})
+	if err == nil {
+		c.Start()
+	}
 	go func() {
 		initialize()
 	}()
@@ -580,12 +591,9 @@ func init() {
 		})
 	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			rsp, err := util.SendHttp(url+"random", nil)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			json := gjson.ParseBytes(rsp)
-			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
+			var t Jokes
+			db.Pick(dbTalk, &t)
+			ctx.SendChain(message.Text(t.Talk))
 		})
 	en.OnRegex(`^舔狗(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -901,6 +909,16 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			wujia(ctx, datapath, 0)
 		})
+	en.OnFullMatch("更新骚话", zero.SuperUserPermission).SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			err := updateTalk()
+			if err != nil {
+				ctx.SendChain(message.Text("更新失败", err))
+				return
+			}
+			num, _ := db.Count(dbTalk)
+			ctx.SendChain(message.Text(fmt.Sprintf("更新成功,本次共更新%d条骚话", num)))
+		})
 }
 
 func daily(ctx *zero.Ctx, server string) {
@@ -1132,6 +1150,37 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 			fileName: "file:///" + finName,
 		}
 		ctx.SendChain(message.Image("file:///" + finName))
+	}
+}
+
+func updateTalk() error {
+	url := "https://cms.jx3box.com/api/cms/post/jokes?per=%d&page=%d"
+	var page int64 = 1
+	per := 30
+	var Mutex sync.Mutex
+	Mutex.Lock()
+	defer Mutex.Unlock()
+	for {
+		data, err := web.GetData(fmt.Sprintf(url, per, page))
+		jsonData := binary.BytesToString(data)
+		if err != nil {
+			return err
+		}
+		for _, talkData := range gjson.Get(jsonData, "data.list").Array() {
+			//isFind := db.CanFind(dbTalk, fmt.Sprintf("where id=%d", talkData.Get("id").Int()))
+			//if isFind {
+			//	return nil
+			//}
+			db.Insert(dbTalk, &Jokes{
+				ID:   talkData.Get("id").Int(),
+				Talk: talkData.Get("content").String(),
+			})
+		}
+		if page >= gjson.Get(jsonData, "data.pages").Int() {
+			return nil
+		}
+		page++
+		time.Sleep(time.Millisecond * 500)
 	}
 }
 

@@ -62,6 +62,11 @@ type Adventure struct {
 	Time int64  `db:"time"`
 }
 
+type Jokes struct {
+	ID   int64  `db:"id"`
+	Talk string `db:"talk"`
+}
+
 func getMental(mentalName string) string {
 	var mental mental
 	var rwMutex sync.RWMutex

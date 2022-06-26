@@ -21,6 +21,7 @@ const (
 	dbLeader    = "leader"
 	dbMember    = "member"
 	dbAdventure = "adventure"
+	dbTalk      = "talk"
 )
 
 var rangeDb = map[string]interface{}{
@@ -30,6 +31,7 @@ var rangeDb = map[string]interface{}{
 	dbLeader:    &Leader{},
 	dbMember:    &Member{},
 	dbAdventure: &Adventure{},
+	dbTalk:      &Jokes{},
 }
 
 var db = &sql.Sqlite{DBPath: dbfile}
