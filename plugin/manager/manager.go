@@ -396,7 +396,7 @@ func init() { // 插件主体
 					//	ctx.SendChain(message.At(ctx.Event.UserID), message.Text("还有30秒时间哦~~~"))
 					//	time.Sleep(30 * time.Second)
 					//	ctx.SendChain(message.AtAll(), message.Text("\nlsp们出来接客了\n"))
-					//} else if Info.Get("sex").String() == "male" { // 性别男
+					// } else if Info.Get("sex").String() == "male" { // 性别男
 					//	ctx.SendChain(message.Text("你JB谁啊！！！，不发红包滚出去！！！"),
 					//		message.At(ctx.Event.UserID))
 					//} else { // 没有设置性别

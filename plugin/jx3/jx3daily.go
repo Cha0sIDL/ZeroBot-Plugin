@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/fumiama/cron"
 	"image"
 	"io"
 	"io/ioutil"
@@ -17,6 +16,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/fumiama/cron"
 
 	"github.com/playwright-community/playwright-go"
 
@@ -1167,7 +1168,7 @@ func updateTalk() error {
 			return err
 		}
 		for _, talkData := range gjson.Get(jsonData, "data.list").Array() {
-			//isFind := db.CanFind(dbTalk, fmt.Sprintf("where id=%d", talkData.Get("id").Int()))
+			// isFind := db.CanFind(dbTalk, fmt.Sprintf("where id=%d", talkData.Get("id").Int()))
 			//if isFind {
 			//	return nil
 			//}
