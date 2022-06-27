@@ -100,6 +100,13 @@ type JinPrice struct {
 	Date     string  `json:"date"`
 }
 
+type sandBox struct {
+	sandToken       string
+	sandTokenExpire int64
+}
+
+var sand sandBox
+
 var heiCd = make(map[string]cd)
 
 var xiaoheiIndx = map[string]string{
@@ -275,13 +282,24 @@ func init() {
 				return
 			}
 			server := commandPart[0]
-			if _, ok := allServer[server]; ok {
+			if fullName, ok := allServer[server]; ok {
+				if len(sand.sandToken) == 0 || carbon.Now().Timestamp() > sand.sandTokenExpire {
+					login, err := web.GetData("https://www.j3sp.com/api/user/login?account=ChrisSandBox%40outlook.com&password=123456")
+					if err != nil || gjson.ParseBytes(login).Get("code").Int() != 1 {
+						log.Errorln("jx3daily:", err)
+						return
+					}
+					sand = sandBox{
+						sandToken:       gjson.ParseBytes(login).Get("data.userinfo.token").String(),
+						sandTokenExpire: carbon.Now().Timestamp() + 43200,
+					}
+				}
 				client := web.NewDefaultClient()
-				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=0&is_history=1", server), nil)
+				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=0&is_history=1", fullName), nil)
 				if err == nil {
 					// 增加header选项
 					var response *http.Response
-					request.Header.Add("Cookie", "spc_token=1e245818-e241-437e-a292-dfa5544a2c9f")
+					request.Header.Add("Cookie", fmt.Sprintf("spc_token=%s", sand.sandToken))
 					response, err = client.Do(request)
 					if err == nil {
 						if response.StatusCode != http.StatusOK {
@@ -325,27 +343,27 @@ func init() {
 				json.Get("data.image_path").String(),
 			))
 		})
-	en.OnRegex(`^前置(.*)`).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[1]
-			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
-			reqbody, err := json.Marshal(data)
-			rsp, err := util.SendHttp(url+"require", reqbody)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			json := gjson.ParseBytes(rsp)
-			ctx.SendChain(
-				message.Text(
-					"名称：", json.Get("data.name"), "\n",
-					"方法：", json.Get("data.means"), "\n",
-					"前置：", json.Get("data.require"), "\n",
-					"奖励：", json.Get("data.reward"), "\n",
-				),
-				message.Image(
-					json.Get("data.upload").String()),
-			)
-		})
+	//en.OnRegex(`^前置(.*)`).SetBlock(true).
+	//	Handle(func(ctx *zero.Ctx) {
+	//		name := ctx.State["regex_matched"].([]string)[1]
+	//		data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
+	//		reqbody, err := json.Marshal(data)
+	//		rsp, err := util.SendHttp(url+"require", reqbody)
+	//		if err != nil {
+	//			log.Errorln("jx3daily:", err)
+	//		}
+	//		json := gjson.ParseBytes(rsp)
+	//		ctx.SendChain(
+	//			message.Text(
+	//				"名称：", json.Get("data.name"), "\n",
+	//				"方法：", json.Get("data.means"), "\n",
+	//				"前置：", json.Get("data.require"), "\n",
+	//				"奖励：", json.Get("data.reward"), "\n",
+	//			),
+	//			message.Image(
+	//				json.Get("data.upload").String()),
+	//		)
+	//	})
 	en.OnSuffix("小药").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Image(fileUrl + "medicine.png"))
@@ -373,29 +391,29 @@ func init() {
 				)
 			}
 		})
-	en.OnSuffix("奇穴").SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["args"].(string)
-			if len(name) == 0 {
-				ctx.SendChain(message.Text("请输入职业！！！！"))
-			} else {
-				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"qixue", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
-				}
-				json := gjson.ParseBytes(rsp)
-				ctx.SendChain(
-					message.Text("通用：\n"),
-					message.Image(
-						json.Get("data.all").String()),
-					message.Text("\n吃鸡：\n"),
-					message.Image(
-						json.Get("data.longmen").String()),
-				)
-			}
-		})
+	//en.OnSuffix("奇穴").SetBlock(true).
+	//	Handle(func(ctx *zero.Ctx) {
+	//		name := ctx.State["args"].(string)
+	//		if len(name) == 0 {
+	//			ctx.SendChain(message.Text("请输入职业！！！！"))
+	//		} else {
+	//			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
+	//			reqbody, err := json.Marshal(data)
+	//			rsp, err := util.SendHttp(url+"qixue", reqbody)
+	//			if err != nil {
+	//				log.Errorln("jx3daily:", err)
+	//			}
+	//			json := gjson.ParseBytes(rsp)
+	//			ctx.SendChain(
+	//				message.Text("通用：\n"),
+	//				message.Image(
+	//					json.Get("data.all").String()),
+	//				message.Text("\n吃鸡：\n"),
+	//				message.Image(
+	//					json.Get("data.longmen").String()),
+	//			)
+	//		}
+	//	})
 	en.OnPrefix("宏").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
