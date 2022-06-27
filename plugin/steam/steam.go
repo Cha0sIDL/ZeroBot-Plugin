@@ -7,16 +7,18 @@ import (
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/web"
+	"github.com/antchfx/htmlquery"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"net/url"
+	"strings"
 )
 
 const (
 	servicename = "steam"
 	searchUrl   = "https://steamstats.cn/api/steam/search?q=%s&page=1&format=json&lang=zh-hans"
-	steamUrl    = "https://store.steampowered.com/app/%s/"
+	steamUrl    = "https://store.steampowered.com/app/%d/"
 )
 
 func init() {
@@ -42,17 +44,20 @@ func init() {
 				return
 			}
 			results := gjson.ParseBytes(data).Get("data.results.0")
+			description := getSteamGameDescription(results.Get("app_id").Int())
 			ctx.SendChain(
 				message.Text("搜索到以下信息：\n"),
 				message.Text("游戏:", results.Get("name"), "(", results.Get("name_cn"), ")\n"),
 				message.Text("游戏id：", results.Get("app_id"), "\n"),
 				message.Image(results.Get("avatar").String()),
-				message.Text(fmt.Sprintf("\nSteamUrl:https://store.steampowered.com/app/%s/", results.Get("app_id"))),
+				message.Text("游戏描述：", strings.TrimSpace(description)),
+				message.Text(fmt.Sprintf("\nSteamUrl : https://store.steampowered.com/app/%s/", results.Get("app_id"))),
 			)
-
 		})
 }
 
-func getSteamGameDescription(gameId int) (description string) {
-
+func getSteamGameDescription(gameId int64) (description string) {
+	doc, _ := htmlquery.LoadURL(fmt.Sprintf(steamUrl, gameId))
+	description = htmlquery.InnerText(htmlquery.FindOne(doc, "//*[@id=\"game_highlights\"]/div[1]/div/div[2]"))
+	return
 }
