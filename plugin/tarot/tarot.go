@@ -117,9 +117,14 @@ func init() {
 			p := rand.Intn(2)
 			card := cardMap[(strconv.Itoa(i))]
 			name := card.Name
+			info, _ := infoMap[strings.Split(name, "(")[0]]
 			if id := ctx.SendChain(
 				message.Text(reasons[rand.Intn(len(reasons))], position[p], " 的 ", name, "\n"),
-				message.Image(fmt.Sprintf(bed+"MajorArcana%s/%d.png", reverse[p], i))); id.ID() == 0 {
+				message.Image(fmt.Sprintf(bed+"MajorArcana%s/%d.png", reverse[p], i)),
+				message.Text("\n", name, "的含义是~"),
+				message.Text("\n正位:", info.Description),
+				message.Text("\n逆位:", info.ReverseDescription),
+			); id.ID() == 0 {
 				ctx.SendChain(message.Text("ERROR:可能被风控了"))
 			}
 			return
@@ -137,9 +142,14 @@ func init() {
 			p := rand.Intn(2)
 			card := cardMap[(strconv.Itoa(j))]
 			name := card.Name
+			info, _ := infoMap[strings.Split(name, "(")[0]]
 			tarotMsg := []message.MessageSegment{
 				message.Text(reasons[rand.Intn(len(reasons))], position[p], " 的 ", name, "\n"),
-				message.Image(fmt.Sprintf(bed+"MajorArcana%s/%d.png", reverse[p], j))}
+				message.Image(fmt.Sprintf(bed+"MajorArcana%s/%d.png", reverse[p], j)),
+				message.Text("\n", name, "的含义是~"),
+				message.Text("\n正位:", info.Description),
+				message.Text("\n逆位:", info.ReverseDescription),
+			}
 			msg[i] = ctxext.FakeSenderForwardNode(ctx, tarotMsg...)
 		}
 		ctx.SendGroupForwardMessage(ctx.Event.GroupID, msg)
