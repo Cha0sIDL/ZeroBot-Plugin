@@ -343,7 +343,7 @@ func init() {
 				json.Get("data.image_path").String(),
 			))
 		})
-	//en.OnRegex(`^前置(.*)`).SetBlock(true).
+	// en.OnRegex(`^前置(.*)`).SetBlock(true).
 	//	Handle(func(ctx *zero.Ctx) {
 	//		name := ctx.State["regex_matched"].([]string)[1]
 	//		data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
@@ -391,7 +391,7 @@ func init() {
 				)
 			}
 		})
-	//en.OnSuffix("奇穴").SetBlock(true).
+	// en.OnSuffix("奇穴").SetBlock(true).
 	//	Handle(func(ctx *zero.Ctx) {
 	//		name := ctx.State["args"].(string)
 	//		if len(name) == 0 {
@@ -1187,7 +1187,7 @@ func updateTalk() error {
 		}
 		for _, talkData := range gjson.Get(jsonData, "data.list").Array() {
 			// isFind := db.CanFind(dbTalk, fmt.Sprintf("where id=%d", talkData.Get("id").Int()))
-			//if isFind {
+			// if isFind {
 			//	return nil
 			//}
 			db.Insert(dbTalk, &Jokes{
