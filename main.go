@@ -138,6 +138,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/steam" //steam游戏查询
+
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //
