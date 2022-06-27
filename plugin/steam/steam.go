@@ -2,7 +2,9 @@ package steam
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"net/url"
+	"strings"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -11,8 +13,8 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"net/url"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
