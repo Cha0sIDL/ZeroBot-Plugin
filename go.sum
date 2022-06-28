@@ -12,6 +12,8 @@ github.com/ChimeraCoder/gojson v1.1.0/go.mod h1:nYbTQlu6hv8PETM15J927yM0zGj3njIl
 github.com/DanPlayer/timefinder v1.1.110 h1:oHFMwO42VFF2/+PyEXLYOvuNZuSRuKfQUDRzBD4DZWs=
 github.com/DanPlayer/timefinder v1.1.110/go.mod h1:CUb0HZEysxtZ2rmWVcysiOyJFnNvx3VkHLnr91wNBtI=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
+github.com/FloatTech/AnimeAPI v1.4.0 h1:hUTtXeC/4yz1+sK9QMwOiZdQQqObYy0X55c09kpdiiQ=
+github.com/FloatTech/AnimeAPI v1.4.0/go.mod h1:+UOaYbfm2ciPBJFBUSgn+cMayO/T0jNubk+KEpMgRcU=
 github.com/FloatTech/AnimeAPI v1.4.1-0.20220613042537-0adf8c5616ec h1:Hl/BxaQoQFEJUIGmdhR0NyBvZChb7qkfCrF916bNxnI=
 github.com/FloatTech/AnimeAPI v1.4.1-0.20220613042537-0adf8c5616ec/go.mod h1:MrCZ7P6WvF0JWHMeedAx6fVm5BP1s6/RUy0r0Jvqrds=
 github.com/FloatTech/sqlite v0.3.2 h1:iTg2ZKnzjjZAdlSN3hXmpCBn15odc4Ud484OoM3yXGA=

@@ -1,9 +1,13 @@
 package game
 
-import sql "github.com/FloatTech/sqlite"
+import (
+	"errors"
+	"fmt"
+	sql "github.com/FloatTech/sqlite"
+)
 
 type gameNotify struct {
-	ID       int    `db:"id"`
+	ID       string `db:"id"`
 	QQ       int64  `db:"qq"`
 	ChatType string `db:"chat_type"`
 	GameType string `db:"game_type"` // 预留字段
@@ -17,8 +21,10 @@ const (
 var db = &sql.Sqlite{}
 
 func insertNotify(data gameNotify) error {
-	primaryKey, _ := db.Count(notifyDbName)
-	data.ID = primaryKey + 1
+	isExist := db.CanFind(notifyDbName, fmt.Sprintf("where qq=%d", data.QQ))
+	if isExist {
+		return errors.New("已经订阅了~")
+	}
 	err := db.Insert(notifyDbName, &data)
 	return err
 }

@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"net/http"
 	"os"
@@ -61,26 +62,31 @@ func init() {
 				ctx.SendChain(msg...)
 			},
 		)
-	engine.OnRegex(`^(喜加一|喜\+1)?订阅$`, zero.OnlyGroup, zero.OnlyPrivate).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
+	engine.OnRegex(`^喜(加一|\+1)?订阅`).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			var data gameNotify
 			if zero.OnlyGroup(ctx) {
 				data = gameNotify{
+					ID:       uuid.New().String(),
 					QQ:       ctx.Event.GroupID,
 					ChatType: "群聊",
 					GameType: "epic",
 				}
-			} else {
+			} else if zero.OnlyPrivate(ctx) {
 				data = gameNotify{
+					ID:       uuid.New().String(),
 					QQ:       ctx.Event.UserID,
 					ChatType: "私聊",
 					GameType: "epic",
 				}
+			} else {
+				return
 			}
 			data.RobotId = ctx.Event.SelfID
 			err = insertNotify(data)
 			if err != nil {
 				ctx.SendChain(message.Text("Err", err))
+				return
 			}
 			ctx.SendChain(message.Text("订阅成功~"))
 		})
@@ -127,7 +133,7 @@ func getEpicFree() (msg []message.MessageSegment) {
 		if len(gameThumbnail) != 0 {
 			msg = append(msg, message.Image(gameThumbnail))
 		}
-		msg = append(msg, message.Text(fmt.Sprintf("FREE now :: %s (%s)\n\n%s\n\n", gameName, gamePrice, gameDesp)))
+		msg = append(msg, message.Text(fmt.Sprintf("\nFREE now :: %s (%s)\n\n%s\n\n", gameName, gamePrice, gameDesp)))
 		release := fmt.Sprintf("游戏由 %s 开发、%s 出版，", gameDev, gamePub)
 		if gameDev == gamePub {
 			release = fmt.Sprintf("游戏由 %s 发售，", gameDev)

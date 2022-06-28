@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.4.1-0.20220613042537-0adf8c5616ec
+	github.com/FloatTech/AnimeAPI v1.4.0
 	github.com/FloatTech/sqlite v0.3.2
 	github.com/FloatTech/zbpctrl v1.4.1-0.20220610074608-425160596f27
 	github.com/FloatTech/zbputils v1.4.1-0.20220613042833-33e22060e8d9
