@@ -5,12 +5,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/binary"

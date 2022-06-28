@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"fmt"
+
 	sql "github.com/FloatTech/sqlite"
 )
 
