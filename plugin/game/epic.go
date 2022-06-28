@@ -9,13 +9,19 @@ import (
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/FloatTech/zbputils/file"
+	"github.com/FloatTech/zbputils/process"
 	"github.com/FloatTech/zbputils/web"
+	"github.com/fumiama/cron"
+	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"io"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 )
 
 const (
@@ -24,25 +30,67 @@ const (
 )
 
 func init() {
+	c := cron.New()
+	_, err := c.AddFunc("0 8 8 * 5", func() { weeklyEpic() })
+	if err == nil {
+		c.Start()
+	}
 	engine := control.Register(epicServiceName, &ctrl.Options[*zero.Ctx]{
-		DisableOnDefault: false,
-		Help:             "- epic喜加1 xxx\n",
+		DisableOnDefault:  false,
+		Help:              "- epic喜加1 xxx\n" + "喜加一订阅\n",
+		PrivateDataFolder: "game",
 	})
+	go func() {
+		dbpath := engine.DataFolder()
+		db.DBPath = dbpath + "game.db"
+		if file.IsNotExist(db.DBPath) {
+			process.SleepAbout1sTo2s()
+			_ = os.MkdirAll(dbpath, 0755)
+		}
+		db.Open(time.Hour * 24)
+		err = db.Create(notifyDbName, &gameNotify{})
+		if err != nil {
+			panic(err)
+		}
+	}()
 	engine.OnRegex(`^(E|e)(P|p)(I|i)(C|c)?喜(加一|\+1)$`).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(
 			func(ctx *zero.Ctx) {
-				getEpicFree(ctx)
+				msg := getEpicFree()
+				ctx.SendChain(msg...)
 			},
 		)
+	engine.OnRegex(`^(喜加一|喜\+1)?订阅$`, zero.OnlyGroup, zero.OnlyPrivate).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
+		func(ctx *zero.Ctx) {
+			var data gameNotify
+			if zero.OnlyGroup(ctx) {
+				data = gameNotify{
+					QQ:       ctx.Event.GroupID,
+					ChatType: "群聊",
+					GameType: "epic",
+				}
+			} else {
+				data = gameNotify{
+					QQ:       ctx.Event.UserID,
+					ChatType: "私聊",
+					GameType: "epic",
+				}
+			}
+			data.RobotId = ctx.Event.SelfID
+			err = insertNotify(data)
+			if err != nil {
+				ctx.SendChain(message.Text("Err", err))
+			}
+			ctx.SendChain(message.Text("订阅成功~"))
+		})
 }
 
-func getEpicFree(ctx *zero.Ctx) {
+func getEpicFree() (msg []message.MessageSegment) {
 	gameInfo, err := getEpicGame()
-	var msg []message.MessageSegment
 	var gameDev, gamePub string
 	var gameThumbnail string
 	if err != nil {
-		ctx.SendChain(message.Text(err))
+		msg = append(msg, message.Text(err))
 		return
 	}
 	for _, game := range gjson.Get(gameInfo, "data.Catalog.searchStore.elements").Array() {
@@ -72,6 +120,9 @@ func getEpicFree(ctx *zero.Ctx) {
 		gameDesp := game.Get("description").String()
 		endDate := game.Get("promotions.promotionalOffers.0.promotionalOffers.0.endDate").String()
 		gameUrl := fmt.Sprintf("https://www.epicgames.com/store/zh-CN/p/%s", strings.Replace(game.Get("productSlug").String(), "/home", "", -1))
+		if len(game.Get("productSlug").String()) == 0 {
+			gameUrl = "https://www.epicgames.com/store/zh-CN"
+		}
 		if len(gameThumbnail) != 0 {
 			msg = append(msg, message.Image(gameThumbnail))
 		}
@@ -80,10 +131,9 @@ func getEpicFree(ctx *zero.Ctx) {
 		if gameDev == gamePub {
 			release = fmt.Sprintf("游戏由 %s 发售，", gameDev)
 		}
-		msg = append(msg, message.Text(release))
-		msg = append(msg, message.Text(fmt.Sprintf("将在 UTC 时间 %s 结束免费游玩，戳链接领取吧~\n%s\n", endDate, gameUrl)))
+		msg = append(msg, message.Text(release), message.Text(fmt.Sprintf("将在 UTC 时间 %s 结束免费游玩，戳链接领取吧~\n%s\n", endDate, gameUrl)))
 	}
-	ctx.SendChain(msg...)
+	return
 }
 
 func getEpicGame() (gameInfo string, err error) {
@@ -121,4 +171,32 @@ func getEpicGame() (gameInfo string, err error) {
 		}
 	}
 	return
+}
+
+func weeklyEpic() {
+	_, ok := control.Lookup(epicServiceName)
+	if !ok {
+		log.Errorln("epic Notify Error")
+		return
+	}
+	msg := getEpicFree()
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		var notify []gameNotify
+		var n gameNotify
+		db.FindFor(
+			notifyDbName, &n, fmt.Sprintf("WHERE robot_id = '%d' AND game_type = 'epic' ", id), func() error {
+				notify = append(notify, n)
+				return nil
+			},
+		)
+		for _, data := range notify {
+			if data.ChatType == "群聊" {
+				ctx.SendGroupMessage(data.QQ, msg)
+			}
+			if data.ChatType == "私聊" {
+				ctx.SendPrivateMessage(data.QQ, msg)
+			}
+		}
+		return true
+	})
 }
