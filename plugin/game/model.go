@@ -6,7 +6,7 @@ type gameNotify struct {
 	ID       int    `db:"id"`
 	QQ       int64  `db:"qq"`
 	ChatType string `db:"chat_type"`
-	GameType string `db:"game_type"` //预留字段
+	GameType string `db:"game_type"` // 预留字段
 	RobotId  int64  `db:"robot_id"`
 }
 

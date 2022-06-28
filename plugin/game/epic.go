@@ -1,10 +1,16 @@
 package game
 
-//抄的https://github.com/monsterxcn/nonebot_plugin_epicfree
+// 抄的https://github.com/monsterxcn/nonebot_plugin_epicfree
 import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -17,11 +23,6 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"io"
-	"net/http"
-	"os"
-	"strings"
-	"time"
 )
 
 const (
