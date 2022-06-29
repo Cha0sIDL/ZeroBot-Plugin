@@ -182,7 +182,7 @@ func init() {
 		PrivateDataFolder: "jx3",
 		Help: "- 日常任务xxx(eg 日常任务绝代天骄)\n" +
 			"- 开服检查xxx(eg 开服检查绝代天骄)\n" +
-			"- 金价查询xxx(eg 金价查询绝代天骄)\n" +
+			"- 金价查询|金价xxx(eg 金价查询绝代天骄)\n" +
 			"- 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)\n" +
 			"- 小药\n" +
 			"- xxx配装(eg 分山劲配装)\n" +
@@ -191,13 +191,14 @@ func init() {
 			"- 沙盘xxx(eg 沙盘绝代天骄)\n" +
 			"- 装饰属性|装饰xxx(eg 装饰混沌此生)\n" +
 			"- 奇遇条件xxx(eg 奇遇条件三山四海)\n" +
-			"- 奇遇攻略xxx(eg 奇遇攻略三山四海)\n" +
-			"- 维护公告\n" +
+			"- 攻略xxx(eg 攻略三山四海)\n" +
+			"- 维护公告|更新公告\n" +
 			"- 骚话\n" +
 			"- 舔狗\n" +
 			"-（开启|关闭）jx推送\n" +
 			"- /roll随机roll点\n" +
 			"- 物价xxx\n" +
+			"- 绑定区服xxx\n" +
 			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
 	})
 	c := cron.New()

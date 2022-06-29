@@ -497,6 +497,10 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   - [x] 群老婆列表
 
+  - [x] 闹离婚|办离婚
+
+  - [x] 重置(所有|本群)花名册
+
 </details>
 <details>
   <summary>合成emoji</summary>
@@ -1002,25 +1006,26 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_jx3"`
 
-  - [x] 日常任务xxx(eg 日常任务绝代天骄)
+  - [x] 日常任务|日常
   - [x] 开服检查xxx(eg 开服检查绝代天骄)
-  - [x] 金价查询xxx(eg 金价查询绝代天骄)
+  - [x] 金价|金价查询 xxx(eg 金价绝代天骄)
   - [x] 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)
-  - [x] xxx小药
+  - [x] 小药
   - [x] xxx配装(eg 分山劲配装)
   - [x] xxx奇穴(eg 分山劲奇穴)
   - [x] 宏xxx(eg 宏分山劲)
   - [x] 沙盘xxx(eg 沙盘绝代天骄)
   - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
-  - [x] 奇遇条件xxx(eg 奇遇条件三山四海)
-  - [x] 奇遇攻略xxx(eg 奇遇攻略三山四海)
+  - [x] 奇遇|奇遇查询 xxx xxx(eg 奇遇 唯我独尊 柳连柳奶)
+  - [x] 攻略xxx(eg 攻略三山四海)
   - [x] 维护公告|更新公告
-  - [x] 骚话（不区分大小写)
+  - [x] 骚话
   - [x] 舔狗
   - [x] 开启jx推送
   - [x] 更新内容
   - [x] /roll
   - [x] 物价xxx
+  - [x] 绑定区服xxx
   - [x] 团队相关 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
   - [x] TODO...
 
@@ -1124,6 +1129,31 @@ print("run[CQ:image,file="+j["img"]+"]")
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall"`
 
 - [x] 反闪照、反撤回 默认不启动
+
+
+</details>
+
+<details>
+  <summary>热搜</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending"`
+
+- [x] 微博热搜
+- [x] 知乎热搜
+- [x] github热搜
+
+
+</details>
+
+
+<details>
+  <summary>搜索steam游戏,Epic喜加一订阅</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/game"`
+
+- [x] steam xxx
+- [x] epic喜加一
+- [x] 喜加一订阅
 
 
 </details>

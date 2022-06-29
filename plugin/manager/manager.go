@@ -593,6 +593,9 @@ func init() { // 插件主体
 			}
 		}
 	})
+	engine.OnFullMatch("使用手册").SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		ctx.SendChain(message.Text("https://www.yuque.com/docs/share/34aee3c7-defc-4f29-b45a-1c7f8f4ab535?# 《ZeroBot使用手册》"))
+	})
 }
 
 // 传入 ctx 和 welcome格式string 返回cq格式string  使用方法:welcometocq(ctx,w.Msg)
