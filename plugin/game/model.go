@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	sql "github.com/FloatTech/sqlite"
 )
@@ -22,6 +23,9 @@ const (
 var db = &sql.Sqlite{}
 
 func insertNotify(data gameNotify) error {
+	var mutex sync.RWMutex
+	mutex.RLock()
+	defer mutex.RUnlock()
 	isExist := db.CanFind(notifyDbName, fmt.Sprintf("where qq=%d", data.QQ))
 	if isExist {
 		return errors.New("已经订阅了~")
