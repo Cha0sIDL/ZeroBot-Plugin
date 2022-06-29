@@ -578,6 +578,26 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
+  <summary>猜歌</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"`
+
+  - 猜歌插件（该插件依赖ffmpeg）
+
+  - [x] 个人猜歌
+  
+  - [x] 团队猜歌
+  
+  - [x] 设置缓存歌库路径 [绝对路径]
+  
+  - 注：默认歌库为网易云热歌榜
+  
+  - 1.可在后面添加“-动漫”进行动漫歌猜歌(这个只能猜歌名和歌手)
+  
+  - 2.可在后面添加“-动漫2”进行动漫歌猜歌(这个可以猜番名，但歌手经常“未知”)
+
+</details>
+<details>
   <summary>炉石</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"`
@@ -935,23 +955,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] gal表情包[xxx]
 
   - [x] 更新gal
-
-</details>
-<details>
-  <summary>早报</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"`
-
-  - api早上8点更新，推荐定时在8点30后。配合插件`job`中的记录在"cron"触发的指令使用
-
-  - [x] /启用 zaobao
-
-  - [x] /禁用 zaobao
-
-```
-记录在"00 9 * * *"触发的指令
-今日早报
-```
 
 </details>
 <details>
