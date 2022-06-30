@@ -3,7 +3,6 @@ package guessmusic
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -455,8 +454,6 @@ func getanimedata(musicPath string) (musicname string, err error) {
 
 // 下载网易云热歌榜音乐
 func getuomgdata(musicPath string) (musicname string, err error) {
-	var resp *http.Response
-	var out *os.File
 	api := "https://api.uomg.com/api/rand.music?sort=%E7%83%AD%E6%AD%8C%E6%A6%9C&format=json"
 	referer := "https://api.uomg.com/api/rand.music"
 	data, err := web.RequestDataWith(web.NewDefaultClient(), api, "GET", referer, ua)
@@ -470,17 +467,25 @@ func getuomgdata(musicPath string) (musicname string, err error) {
 	musicname = name + " - " + artistsname
 	downmusic := musicPath + "/" + musicname + ".mp3"
 	if file.IsNotExist(downmusic) {
-		resp, err = http.Get(musicurl + ".mp3")
+		var stderr bytes.Buffer
+		cmdArguments := []string{musicurl, "-O", downmusic}
+		cmd := exec.Command("wget", cmdArguments...)
+		cmd.Stderr = &stderr
+		err = cmd.Run()
 		if err != nil {
 			return
 		}
-		out, err = os.Create(downmusic)
-		defer out.Close()
-		_, err = io.Copy(out, resp.Body)
-		// err = os.WriteFile(downmusic, data, 0666)
-		if err != nil {
-			return
-		}
+		//resp, err = http.Get(musicurl + ".mp3")
+		//if err != nil {
+		//	return
+		//}
+		//out, err = os.Create(downmusic)
+		//defer out.Close()
+		//_, err = io.Copy(out, resp.Body)
+		////err = os.WriteFile(downmusic, data, 0666)
+		//if err != nil {
+		//	return
+		//}
 	}
 	return
 }
