@@ -427,7 +427,7 @@ func getanimedata(musicPath string) (musicname string, err error) {
 }
 
 //// 下载网易云热歌榜音乐
-//func getuomgdata(musicPath string) (musicname string, err error) {
+// func getuomgdata(musicPath string) (musicname string, err error) {
 //	api := "https://api.uomg.com/api/rand.music?sort=%E7%83%AD%E6%AD%8C%E6%A6%9C&format=json"
 //	referer := "https://api.uomg.com/api/rand.music"
 //	data, err := web.RequestDataWith(web.NewDefaultClient(), api, "GET", referer, ua)
@@ -477,7 +477,7 @@ func getuomgdata(musicPath string) (musicname string, err error) {
 		out, err = os.Create(downmusic)
 		defer out.Close()
 		_, err = io.Copy(out, resp.Body)
-		//err = os.WriteFile(downmusic, data, 0666)
+		// err = os.WriteFile(downmusic, data, 0666)
 		if err != nil {
 			return
 		}
