@@ -1305,7 +1305,7 @@ func sendNotice(payload gjson.Result) {
 		for _, g := range ctx.GetGroupList().Array() {
 			grp := g.Get("group_id").Int()
 			isEnable, bindArea := isEnable(grp)
-			switch payload.Get("type").Int() {
+			switch payload.Get("action").Int() {
 			case 2001:
 				var status string
 				if bindArea == payload.Get("data.server").String() {
