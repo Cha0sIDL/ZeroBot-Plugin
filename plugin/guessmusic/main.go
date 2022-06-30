@@ -475,7 +475,7 @@ func getuomgdata(musicPath string) (musicname string, err error) {
 		if err != nil {
 			return
 		}
-		//resp, err = http.Get(musicurl + ".mp3")
+		// resp, err = http.Get(musicurl + ".mp3")
 		//if err != nil {
 		//	return
 		//}
