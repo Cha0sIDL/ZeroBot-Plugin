@@ -3,6 +3,7 @@ package guessmusic
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -425,8 +426,37 @@ func getanimedata(musicPath string) (musicname string, err error) {
 	return
 }
 
+//// 下载网易云热歌榜音乐
+//func getuomgdata(musicPath string) (musicname string, err error) {
+//	api := "https://api.uomg.com/api/rand.music?sort=%E7%83%AD%E6%AD%8C%E6%A6%9C&format=json"
+//	referer := "https://api.uomg.com/api/rand.music"
+//	data, err := web.RequestDataWith(web.NewDefaultClient(), api, "GET", referer, ua)
+//	if err != nil {
+//		return
+//	}
+//	musicdata := gjson.Get(binary.BytesToString(data), "data")
+//	name := musicdata.Get("name").String()
+//	musicurl := musicdata.Get("url").String()
+//	artistsname := musicdata.Get("artistsname").String()
+//	musicname = name + " - " + artistsname
+//	downmusic := musicPath + "/" + musicname + ".mp3"
+//	if file.IsNotExist(downmusic) {
+//		data, err = web.GetData(musicurl + ".mp3")
+//		if err != nil {
+//			return
+//		}
+//		err = os.WriteFile(downmusic, data, 0666)
+//		if err != nil {
+//			return
+//		}
+//	}
+//	return
+//}
+
 // 下载网易云热歌榜音乐
 func getuomgdata(musicPath string) (musicname string, err error) {
+	var resp *http.Response
+	var out *os.File
 	api := "https://api.uomg.com/api/rand.music?sort=%E7%83%AD%E6%AD%8C%E6%A6%9C&format=json"
 	referer := "https://api.uomg.com/api/rand.music"
 	data, err := web.RequestDataWith(web.NewDefaultClient(), api, "GET", referer, ua)
@@ -440,11 +470,14 @@ func getuomgdata(musicPath string) (musicname string, err error) {
 	musicname = name + " - " + artistsname
 	downmusic := musicPath + "/" + musicname + ".mp3"
 	if file.IsNotExist(downmusic) {
-		data, err = web.GetData(musicurl + ".mp3")
+		resp, err = http.Get(musicurl + ".mp3")
 		if err != nil {
 			return
 		}
-		err = os.WriteFile(downmusic, data, 0666)
+		out, err = os.Create(downmusic)
+		defer out.Close()
+		_, err = io.Copy(out, resp.Body)
+		//err = os.WriteFile(downmusic, data, 0666)
 		if err != nil {
 			return
 		}
