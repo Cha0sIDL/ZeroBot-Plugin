@@ -3,6 +3,7 @@ package guessmusic
 
 import (
 	"bytes"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -440,7 +441,7 @@ func getuomgdata(musicPath string) (musicname string, err error) {
 	musicname = name + " - " + artistsname
 	downmusic := musicPath + "/" + musicname + ".mp3"
 	if file.IsNotExist(downmusic) {
-		data, err = web.GetData(musicurl + ".mp3")
+		data, err = util.ProxyHttp(web.NewDefaultClient(), musicurl+".mp3", "GET", "", web.RandUA(), nil)
 		if err != nil {
 			return
 		}

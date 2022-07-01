@@ -70,6 +70,33 @@ func SendHttp(httpUrl string, body []byte) ([]byte, error) {
 	// return io.ReadAll(response.Body)
 }
 
+func ProxyHttp(client *http.Client, url, method, referer, ua string, body io.Reader) (data []byte, err error) {
+	var request *http.Request
+	request, err = http.NewRequest(method, "https://http-go-http-proxy-jvuuzynfbg.cn-hangzhou.fcapp.run", body)
+	if err == nil {
+		// 增加header选项
+		if referer != "" {
+			request.Header.Add("Referer", referer)
+		}
+		if ua != "" {
+			request.Header.Add("User-Agent", ua)
+		}
+		request.Header.Add("proxy", url)
+		var response *http.Response
+		response, err = client.Do(request)
+		if err == nil {
+			if response.StatusCode != http.StatusOK {
+				s := fmt.Sprintf("status code: %d", response.StatusCode)
+				err = errors.New(s)
+				return
+			}
+			data, err = io.ReadAll(response.Body)
+			response.Body.Close()
+		}
+	}
+	return
+}
+
 func Max(l []float64) (max float64) {
 	max = l[0]
 	for _, v := range l {
