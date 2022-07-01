@@ -3,7 +3,6 @@ package guessmusic
 
 import (
 	"bytes"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/pkg/errors"
 	zero "github.com/wdvxdr1123/ZeroBot"
