@@ -120,8 +120,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wordle"         // 猜单词
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"          // 月幕galgame
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf" // 鬼东西
-	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili_push"  // b站推送
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// 其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
