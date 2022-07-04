@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/antchfx/htmlquery"
 	"image"
 	"io"
 	"io/ioutil"
@@ -207,6 +208,9 @@ func init() {
 		if err != nil {
 			return
 		}
+	})
+	c.AddFunc("@every 30s", func() {
+		news()
 	})
 	if err == nil {
 		c.Start()
@@ -1297,6 +1301,53 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 		}
 		ctx.SendChain(message.Text("本群还没绑定区服呢"))
 	}
+}
+
+func news() {
+	var msg []News
+	count, _ := db.Count(dbNews)
+	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
+	li := htmlquery.Find(doc, "/html/body/div[5]/div/div/div[2]/div/div[3]/div[2]/div/div/ul/li")
+	for _, node := range li {
+		date := htmlquery.InnerText(htmlquery.FindOne(node, "/em"))
+		attribute := htmlquery.FindOne(node, "/a")
+		title := htmlquery.SelectAttr(attribute, "title")
+		href := htmlquery.SelectAttr(attribute, "href")
+		kind := htmlquery.InnerText(htmlquery.FindOne(attribute, "/div"))
+		if !strings.Contains(href, "https://jx3.xoyo.com") {
+			href = "https://jx3.xoyo.com" + href
+		}
+		canFind := db.CanFind(dbNews, "where id="+href)
+		data := News{
+			ID:    href,
+			Date:  date,
+			Title: title,
+			Kind:  kind,
+		}
+		if canFind {
+			continue
+		}
+		err := db.Insert(dbNews, &data)
+		if err != nil {
+			continue
+		}
+		msg = append(msg, data)
+	}
+	if count == 0 {
+		return
+	}
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		for _, g := range ctx.GetGroupList().Array() {
+			grp := g.Get("group_id").Int()
+			isEnable, _ := isEnable(grp)
+			if isEnable {
+				for _, data := range msg {
+					ctx.SendGroupMessage(grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
+				}
+			}
+		}
+		return true
+	})
 }
 
 func sendNotice(payload gjson.Result) {

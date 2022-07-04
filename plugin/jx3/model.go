@@ -67,6 +67,13 @@ type Jokes struct {
 	Talk string `db:"talk"`
 }
 
+type News struct {
+	ID    string `db:"id"` //href
+	Date  string `db:"date"`
+	Title string `db:"title"`
+	Kind  string `db:"kind"`
+}
+
 func getMental(mentalName string) string {
 	var mental mental
 	var rwMutex sync.RWMutex

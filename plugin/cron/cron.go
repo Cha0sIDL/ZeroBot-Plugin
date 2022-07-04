@@ -33,7 +33,7 @@ var provinces = map[string]struct{}{"河北": {}, "山西": {}, "辽宁": {}, "�
 
 func init() { // 一些定时器
 	c := cron.New()
-	_, err := c.AddFunc("*/1 * * * *", func() { sendMessage1min() })
+	_, err := c.AddFunc("@every 30s", func() { sendMessage30s() })
 	if err == nil {
 		c.Start()
 	}
@@ -43,7 +43,7 @@ func init() { // 一些定时器
 	})
 }
 
-func sendMessage1min() {
+func sendMessage30s() {
 	m, ok := control.Lookup(ServiceName)
 	if !ok {
 		log.Errorln("cron Notify Error")
