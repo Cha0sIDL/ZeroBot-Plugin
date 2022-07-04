@@ -1317,7 +1317,7 @@ func news() {
 		if !strings.Contains(href, "https://jx3.xoyo.com") {
 			href = "https://jx3.xoyo.com" + href
 		}
-		canFind := db.CanFind(dbNews, "where id="+href)
+		canFind := db.CanFind(dbNews, fmt.Sprintf("WHERE id = '%s'", href))
 		data := News{
 			ID:    href,
 			Date:  date,
