@@ -561,7 +561,7 @@ func getNetEaseData(musicPath string) (musicName string, err error) {
 	musicName = name + " - " + artistsName
 	downMusic := musicPath + "/" + musicName + ".mp3"
 	if file.IsNotExist(downMusic) {
-		data, err = util.ProxyHttp(web.NewDefaultClient(), musicurl, "GET", "", web.RandUA(), nil)
+		data, err = util.ProxyHttp(web.NewDefaultClient(), musicURL, "GET", "", web.RandUA(), nil)
 		if err != nil {
 			return
 		}
