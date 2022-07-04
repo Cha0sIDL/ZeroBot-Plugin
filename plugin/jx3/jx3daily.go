@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/antchfx/htmlquery"
 	"image"
 	"io"
 	"io/ioutil"
@@ -17,6 +16,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/antchfx/htmlquery"
 
 	"github.com/fumiama/cron"
 

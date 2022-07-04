@@ -68,7 +68,7 @@ type Jokes struct {
 }
 
 type News struct {
-	ID    string `db:"id"` //href
+	ID    string `db:"id"` // href
 	Date  string `db:"date"`
 	Title string `db:"title"`
 	Kind  string `db:"kind"`
