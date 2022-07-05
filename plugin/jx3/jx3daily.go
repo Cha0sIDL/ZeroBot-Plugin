@@ -61,6 +61,11 @@ var tuiKey = map[string]string{
 	"阵营日常":   "60f211c82d105c0014c5dd9d",
 }
 
+var chatServer = map[string]string{
+	"绝代天骄": "45",
+	"唯我独尊": "19",
+}
+
 var allServer = map[string]string{
 	"斗转星移": "斗转星移",
 	"姨妈":   "斗转星移",

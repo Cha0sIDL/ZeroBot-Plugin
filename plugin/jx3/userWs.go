@@ -50,7 +50,7 @@ RETRY:
 }
 
 func (ws *userWsClient) listen() {
-	tableName := dbUser + "_" + ws.serverName
+	tableName := dbUser
 	err := db.Create(tableName, &User{})
 	if err != nil {
 		log.Warn("jx User Db Create error", err)
@@ -68,12 +68,13 @@ func (ws *userWsClient) listen() {
 			if rsp.Get("cmd").Int() != 100120 {
 				continue
 			}
+			server := rsp.Get("body.msg.0.extra.CenterID.0").String()
 			roleName := rsp.Get("body.msg.0.sName").String()
-			if len(roleName) == 0 {
+			if len(roleName) == 0 || len(server) == 0 {
 				continue
 			}
 			db.Insert(tableName, &User{
-				ID:   roleName,
+				ID:   roleName + "_" + server,
 				Data: binary.BytesToString(payload),
 			})
 		}
