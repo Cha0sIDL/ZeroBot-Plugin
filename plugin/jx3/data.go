@@ -23,6 +23,7 @@ const (
 	dbAdventure = "adventure"
 	dbTalk      = "talk"
 	dbNews      = "news"
+	dbUser      = "user"
 )
 
 var rangeDb = map[string]interface{}{

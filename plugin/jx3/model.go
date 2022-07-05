@@ -74,6 +74,11 @@ type News struct {
 	Kind  string `db:"kind"`
 }
 
+type User struct {
+	ID   string `db:"id"`
+	Data string `db:"data"` //服务器的json数据
+}
+
 func getMental(mentalName string) string {
 	var mental mental
 	var rwMutex sync.RWMutex

@@ -23,6 +23,7 @@ type Config struct {
 	SecretId  string        `json:"secretId"`  // 腾讯npl
 	SecretKey string        `json:"secretKey"` // 腾讯npl
 	Picture   *PictureToken `json:"picture"`
+	JxChat    *[]Chat       `json:"jxChat"`
 }
 
 type TTS struct {
@@ -36,6 +37,13 @@ type TTS struct {
 type PictureToken struct {
 	MuXiaoGuo string `json:"mu_xiao_guo,omitempty"`
 	AlApi     string `json:"al_api,omitempty"`
+}
+
+type Chat struct {
+	Url         string `json:"url,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Token       string `json:"token,omitempty"`
+	DeviceToken string `json:"deviceToken,omitempty"`
 }
 
 var Cfg Config
