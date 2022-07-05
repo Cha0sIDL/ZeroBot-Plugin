@@ -76,7 +76,7 @@ type News struct {
 
 type User struct {
 	ID   string `db:"id"`
-	Data string `db:"data"` //服务器的json数据
+	Data string `db:"data"` // 服务器的json数据
 }
 
 func getMental(mentalName string) string {

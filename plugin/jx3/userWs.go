@@ -1,19 +1,21 @@
 package jx3
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"net/http"
+	"time"
+
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/RomiChan/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
-	"net/http"
-	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type userWsClient struct {
 	url        string          // ws连接地址
-	serverName string          //当前链接的区服名字
-	conn       *websocket.Conn //The Conn type represents a WebSocket connection.
+	serverName string          // 当前链接的区服名字
+	conn       *websocket.Conn // The Conn type represents a WebSocket connection.
 	header     http.Header
 }
 
