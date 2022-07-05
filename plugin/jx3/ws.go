@@ -1,6 +1,6 @@
 package jx3
 
-//JxApi Ws
+// JxApi Ws
 import (
 	"time"
 
