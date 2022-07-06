@@ -1237,7 +1237,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		return
 	}
 	// server := commandPart[0]
-	//name := commandPart[1]
+	// name := commandPart[1]
 	//if normServer, ok := allServer[server]; ok {
 	//	var user User
 	//	zone := normServer[1]
