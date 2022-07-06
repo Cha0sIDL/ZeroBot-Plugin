@@ -69,16 +69,15 @@
                         </div>
                         <div class="col-4">
                             <p style="margin:1px;">{{ one.Name }}</p>
-                            <p style="margin:1px;">{{ one.modifyType }}</p>
-                            <p style="margin:1px;">{{ one.equipBelongs }}</p>
+                            <!--  <p style="margin:1px;">{{ one.modifyType }}</p>-->
+                            <!--  <p style="margin:1px;">{{ one.equipBelongs }}</p>-->
                         </div>
                         <div class="col text-end fs-5 offset-md-3 justify-content-end">
-                            <p style="margin:1px;">
-
-                                {% for i in one.EquipBoxStrengthLevel %}
-                                <img src="img/star.png" width="25" height="25">
-                                {% endfor %}
-                            </p>
+                            <!--<p style="margin:1px;">
+                               {% for i in one.EquipBoxStrengthLevel %}
+                               <img src="img/star.png" width="25" height="25">
+                               {% endfor %}
+                           </p>-->
                             <p style="margin:1px;">{{ one.WPermanentEnchant.Name }}</p>
                             <p style="margin:1px;">
                                 {% for icon in one.FiveStone %}

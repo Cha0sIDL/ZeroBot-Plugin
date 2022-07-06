@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/FloatTech/zbputils/binary"
@@ -52,6 +53,7 @@ RETRY:
 }
 
 func (ws *userWsClient) listen() {
+	var rw sync.RWMutex
 	tableName := dbUser
 	err := db.Create(tableName, &User{})
 	if err != nil {
@@ -75,10 +77,13 @@ func (ws *userWsClient) listen() {
 			if len(roleName) == 0 || len(server) == 0 {
 				continue
 			}
+			rw.Lock()
 			db.Insert(tableName, &User{
 				ID:   roleName + "_" + server,
 				Data: binary.BytesToString(payload),
 			})
+			rw.Unlock()
+			time.Sleep(time.Millisecond * 500)
 		}
 	}
 }
