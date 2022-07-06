@@ -6,8 +6,8 @@ require (
 	github.com/DanPlayer/timefinder v1.1.110
 	github.com/FloatTech/AnimeAPI v1.4.1-0.20220613042537-0adf8c5616ec
 	github.com/FloatTech/sqlite v0.3.2
-	github.com/FloatTech/zbpctrl v1.4.1-0.20220705050928-b798cd57bc48
-	github.com/FloatTech/zbputils v1.4.1-0.20220705054031-c98b2e5448f1
+	github.com/FloatTech/zbpctrl v1.4.1-0.20220706075314-7fdbbc2a2345
+	github.com/FloatTech/zbputils v1.4.1-0.20220706075514-0ba0bb2b8953
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v0.0.1
 	github.com/antchfx/htmlquery v1.2.5
@@ -36,8 +36,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smallnest/rpcx v1.7.4
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.435
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.435
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.436
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.436
 	github.com/tidwall/gjson v1.14.1
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.5.2-0.20220610070647-9eeffcb277ee
