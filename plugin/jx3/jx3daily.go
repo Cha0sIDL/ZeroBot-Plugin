@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/flosch/pongo2/v5"
 	"image"
 	"io"
 	"io/ioutil"
@@ -17,6 +16,8 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/flosch/pongo2/v5"
 
 	"github.com/antchfx/htmlquery"
 
@@ -185,7 +186,7 @@ type xiaohei struct {
 
 func init() {
 	go startWs()
-	//for _, chat := range *config.Cfg.JxChat {
+	// for _, chat := range *config.Cfg.JxChat {
 	//	go startChatWs(chat)
 	//}
 	pongo2.RegisterFilter("genSlices", func(in *pongo2.Value, param *pongo2.Value) (out *pongo2.Value, err *pongo2.Error) {
@@ -1229,13 +1230,13 @@ func updateTalk() error {
 }
 
 func attributes(ctx *zero.Ctx, datapath string) {
-	//ts := "20220705054932497"
+	// ts := "20220705054932497"
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
 	if len(commandPart) != 2 {
 		ctx.SendChain(message.Text("参数输入有误！\n" + "物价 绝代天骄 xxx"))
 		return
 	}
-	//server := commandPart[0]
+	// server := commandPart[0]
 	//name := commandPart[1]
 	//if normServer, ok := allServer[server]; ok {
 	//	var user User
@@ -4392,7 +4393,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		"data":   util.JsonToMap(jsonObj)}
 	fmt.Println(util.Template2html("equip.html", templateData))
 
-	//} else {
+	// } else {
 	//	ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
 	//}
 }
