@@ -7,8 +7,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/FloatTech/zbputils/process"
-	"github.com/go-resty/resty/v2"
 	"image"
 	"io"
 	"io/ioutil"
@@ -22,6 +20,9 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/FloatTech/zbputils/process"
+	"github.com/go-resty/resty/v2"
 
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 
@@ -209,7 +210,7 @@ type xiaohei struct {
 
 func init() {
 	go startWs()
-	//for _, chat := range *config.Cfg.JxChat {
+	// for _, chat := range *config.Cfg.JxChat {
 	//	go startChatWs(chat)
 	//}
 	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
@@ -1470,7 +1471,7 @@ func checkServer(ctx *zero.Ctx, grp int64, server string) {
 		}
 		var ip Ip
 		find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
-		if find != nil { //没找到
+		if find != nil { // 没找到
 			insert(dbIp, &Ip{
 				ID: server,
 				Ok: ok,
