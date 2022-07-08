@@ -79,6 +79,11 @@ type User struct {
 	Data string `db:"data"` // 服务器的json数据
 }
 
+type Ip struct {
+	ID string `db:"id"`
+	Ok bool   `db:"ok"`
+}
+
 func getMental(mentalName string) string {
 	var mental mental
 	var rwMutex sync.RWMutex
@@ -338,4 +343,11 @@ func updateAdventure(data *Adventure) {
 	rwMutex.RLock()
 	db.Insert(dbAdventure, data)
 	rwMutex.RUnlock()
+}
+
+func insert(tableName string, data interface{}) error {
+	var Mutex sync.Mutex
+	Mutex.Lock()
+	defer Mutex.Unlock()
+	return db.Insert(tableName, data)
 }

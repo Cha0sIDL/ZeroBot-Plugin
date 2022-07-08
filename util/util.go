@@ -395,3 +395,8 @@ func InMap(m map[string]struct{}, s string) bool {
 	_, ok := m[s]
 	return ok
 }
+
+// BytesCombine 将[]byte合并
+func BytesCombine(pBytes ...[]byte) []byte {
+	return bytes.Join(pBytes, []byte(""))
+}

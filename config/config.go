@@ -1,9 +1,11 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/wdvxdr1123/ZeroBot/message"
 	"io/ioutil"
-	"log"
 	"time"
 
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -49,12 +51,17 @@ type Chat struct {
 var Cfg Config
 
 func init() {
-	control.Register("config", &ctrl.Options[*zero.Ctx]{
+	en := control.Register("config", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- 加载配置文件",
-	}).OnKeyword("配置").SetBlock(true).
+	})
+	en.OnKeyword("配置").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			initConfig()
+		})
+	en.OnFullMatch("当前配置").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text(prettyPrint(Cfg)))
 		})
 	initConfig()
 }
@@ -66,5 +73,19 @@ func initConfig() {
 	}
 	Cfg = Config{TTS: &TTS{Start: time.Now().Format("2006-01-02")}}
 	json.Unmarshal(tmp, &Cfg)
-	log.Println("读取配置成功\n", Cfg.RpcHost, "\n", Cfg.TTS, "\n", Cfg.WsUrl)
+}
+
+func prettyPrint(v interface{}) string {
+	b, err := json.Marshal(v)
+	if err != nil {
+		fmt.Println(v)
+		return ""
+	}
+	var out bytes.Buffer
+	err = json.Indent(&out, b, "", "  ")
+	if err != nil {
+		fmt.Println(v)
+		return ""
+	}
+	return out.String()
 }

@@ -2,11 +2,17 @@ package jx3
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/FloatTech/zbputils/process"
+	"github.com/go-resty/resty/v2"
 	"image"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	goUrl "net/url"
 	"os"
@@ -95,6 +101,23 @@ var allServer = map[string][2]string{
 	"傲血戰意": {"傲血戰意"},
 	"巔峰再起": {"巔峰再起"},
 	"江海雲夢": {"江海雲夢"},
+}
+
+var serverIp = map[string]string{
+	"斗转星移": "125.88.195.133:3724",
+	"蝶恋花":  "125.88.195.112:3724",
+	"龙争虎斗": "125.88.195.69:3724",
+	"长安城":  "125.88.195.52:3724",
+	"幽月轮":  "125.88.195.117:3724",
+	"剑胆琴心": "125.88.195.42:3724",
+	"乾坤一掷": "125.88.195.154:3724",
+	"唯我独尊": "125.88.195.89:3724",
+	"梦江南":  "125.88.195.59:3724",
+	"绝代天骄": "125.88.195.178:3724",
+	"破阵子":  "103.228.229.128:3724",
+	"天鹅坪":  "103.228.229.129:3724",
+	"飞龙在天": "103.228.229.130:3724",
+	"青梅煮酒": "103.228.229.127:3724",
 }
 
 type cd struct {
@@ -186,9 +209,9 @@ type xiaohei struct {
 
 func init() {
 	go startWs()
-	for _, chat := range *config.Cfg.JxChat {
-		go startChatWs(chat)
-	}
+	//for _, chat := range *config.Cfg.JxChat {
+	//	go startChatWs(chat)
+	//}
 	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
@@ -221,7 +244,17 @@ func init() {
 		}
 	})
 	c.AddFunc("@every 30s", func() {
-		news()
+		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+			for _, g := range ctx.GetGroupList().Array() {
+				grp := g.Get("group_id").Int()
+				isEnable, server := isEnable(grp)
+				if isEnable {
+					news(ctx, grp)
+					checkServer(ctx, grp, server)
+				}
+			}
+			return true
+		})
 	})
 	if err == nil {
 		c.Start()
@@ -234,27 +267,9 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			decorator(daily)(ctx)
 		})
-	en.OnRegex(`^开服检查(.*)`).SetBlock(true).
+	en.OnFullMatch("开服").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			str := ctx.State["regex_matched"].([]string)[1]
-			data := map[string]string{"server": strings.Replace(str, " ", "", -1)}
-			reqbody, err := json.Marshal(data)
-			rsp, err := util.SendHttp(url+"check", reqbody)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			json := gjson.ParseBytes(rsp)
-			var text []interface{}
-			for _, value := range json.Get("data").Array() {
-				if value.Get("status").Int() == 1 {
-					text = append(text, value.Get("server").Str+"：开服\n")
-				} else {
-					text = append(text, value.Get("server").Str+"：停服\n")
-				}
-			}
-			ctx.SendChain(message.Text(
-				fmt.Sprint(text),
-			))
+			decorator(server)(ctx)
 		})
 	en.OnPrefixGroup([]string{"金价", "金价查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -677,8 +692,8 @@ func init() {
 	en.OnPrefix("绑定区服", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := strings.Replace(ctx.State["args"].(string), " ", "", -1)
-			if _, ok := allServer[area]; ok {
-				bindArea(ctx.Event.GroupID, area)
+			if val, ok := allServer[area]; ok {
+				bindArea(ctx.Event.GroupID, val[0])
 				ctx.Send(message.Text("绑定成功"))
 			} else {
 				ctx.Send(message.Text("区服输入有误"))
@@ -959,6 +974,32 @@ func init() {
 			attributes(ctx, datapath)
 		},
 	)
+	en.OnPrefixGroup([]string{"战绩"}).SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			indicator(ctx, datapath)
+		},
+	)
+}
+
+func server(ctx *zero.Ctx, server string) {
+	if val, ok := serverIp[server]; ok {
+		ctx.SendChain(message.Text("正在尝试Ping ", server))
+		process.SleepAbout1sTo2s()
+		err := tcpGather(val)
+		if err != nil {
+			ctx.SendChain(message.Text(server, " 垃圾服务器又在维护中  w(ﾟДﾟ)w~"))
+			insert(dbIp, &Ip{
+				ID: server,
+				Ok: false,
+			})
+			return
+		}
+		insert(dbIp, &Ip{
+			ID: server,
+			Ok: true,
+		})
+		ctx.SendChain(message.Text(server, " 已经开服啦ヽ(✿ﾟ▽ﾟ)ノ~"))
+	}
 }
 
 func daily(ctx *zero.Ctx, server string) {
@@ -1224,11 +1265,69 @@ func updateTalk() error {
 	}
 }
 
-func attributes(ctx *zero.Ctx, datapath string) {
-	ts := "20220705054932497"
+func indicator(ctx *zero.Ctx, datapath string) {
+	ts := ts()
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
 	if len(commandPart) != 2 {
-		ctx.SendChain(message.Text("参数输入有误！\n" + "物价 绝代天骄 xxx"))
+		ctx.SendChain(message.Text("参数输入有误！\n" + "战绩 绝代天骄 xxx"))
+		return
+	}
+	server := commandPart[0]
+	name := commandPart[1]
+	if normServer, ok := allServer[server]; ok {
+		zone := normServer[1]
+		server = normServer[0]
+		var user User
+		err := db.Find(dbUser, &user, fmt.Sprintf("WHERE id = '%s'", name+"_"+chatServer[server]))
+		gameRoleId := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
+		if err != nil {
+			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
+			return
+		}
+		body := struct {
+			RoleId string `json:"role_id"`
+			Server string `json:"server"`
+			Zone   string `json:"zone"`
+			Ts     string `json:"ts"`
+		}{
+			RoleId: gameRoleId,
+			Server: server,
+			Zone:   zone,
+			Ts:     ts,
+		}
+		b, _ := json.Marshal(body)
+		xSk := sign(b)
+		client := resty.New()
+		res, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetHeader("Host", "m.pvp.xoyo.com").
+			SetHeader("Connection", "keep-alive").
+			SetHeader("Accept", "application/json").
+			SetHeader("fromsys", "APP").
+			SetHeader("gamename", "jx3").
+			SetHeader("X-Sk", xSk).
+			SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
+			SetHeader("apiversion", "3").
+			SetHeader("platform", "ios").
+			SetHeader("token", (*config.Cfg.JxChat)[0].Token).
+			SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
+			SetHeader("Cache-Control", "no-cache").
+			SetHeader("clientkey", "1").
+			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
+			SetHeader("sign", "true").
+			SetBody(body).
+			Post("https://m.pvp.xoyo.com/role/indicator")
+		fmt.Println(string(res.Body()))
+	} else {
+		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
+	}
+}
+
+func attributes(ctx *zero.Ctx, datapath string) {
+	ts := ts()
+	commandPart := util.SplitSpace(ctx.State["args"].(string))
+	if len(commandPart) != 2 {
+		ctx.SendChain(message.Text("参数输入有误！\n" + "属性 绝代天骄 xxx"))
 		return
 	}
 	server := commandPart[0]
@@ -1361,7 +1460,37 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 	}
 }
 
-func news() {
+func checkServer(ctx *zero.Ctx, grp int64, server string) {
+	if val, ok := serverIp[server]; ok {
+		msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
+		ok := true
+		err := tcpGather(val)
+		if err != nil {
+			ok = false
+		}
+		var ip Ip
+		find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
+		if find != nil { //没找到
+			insert(dbIp, &Ip{
+				ID: server,
+				Ok: ok,
+			})
+			return
+		}
+		if ip.Ok != ok {
+			insert(dbIp, &Ip{
+				ID: server,
+				Ok: ok,
+			})
+			if !ok {
+				msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+			}
+			ctx.SendGroupMessage(grp, message.Text(msg))
+		}
+	}
+}
+
+func news(ctx *zero.Ctx, grp int64) {
 	var msg []News
 	count, _ := db.Count(dbNews)
 	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
@@ -1394,18 +1523,9 @@ func news() {
 	if count == 0 {
 		return
 	}
-	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-		for _, g := range ctx.GetGroupList().Array() {
-			grp := g.Get("group_id").Int()
-			isEnable, _ := isEnable(grp)
-			if isEnable {
-				for _, data := range msg {
-					ctx.SendGroupMessage(grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
-				}
-			}
-		}
-		return true
-	})
+	for _, data := range msg {
+		ctx.SendGroupMessage(grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
+	}
 }
 
 func sendNotice(payload gjson.Result) {
@@ -1531,4 +1651,25 @@ func average(price gjson.Result) string {
 			return true
 		})
 	return fmt.Sprintf("%.2f", a/price.Get("#").Float())
+}
+
+func ts() string {
+	return carbon.Now().Layout("20060102150405", carbon.UTC) + util.Interface2String(carbon.Now(carbon.UTC).Millisecond())
+}
+
+func sign(data []byte) string {
+	data = util.BytesCombine(data, []byte("@#?.#@"))
+	key := []byte("MaYoaMQ3zpWJFWtN9mqJqKpHrkdFwLd9DDlFWk2NnVR1mChVRI6THVe6KsCnhpoR")
+	h := hmac.New(sha256.New, key)
+	h.Write(data)
+	sha := hex.EncodeToString(h.Sum(nil))
+	return sha
+}
+
+func tcpGather(address string) (err error) {
+	conn, err := net.DialTimeout("tcp", address, 3*time.Second)
+	if err == nil {
+		defer conn.Close()
+	}
+	return err
 }
