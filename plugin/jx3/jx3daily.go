@@ -983,7 +983,7 @@ func init() {
 
 func server(ctx *zero.Ctx, server string) {
 	if val, ok := serverIp[server]; ok {
-		ctx.SendChain(message.Text("正在尝试Ping ", server))
+		ctx.SendChain(message.Text("正在尝试Ping ", server, "  ٩(๑´0`๑)۶"))
 		process.SleepAbout1sTo2s()
 		err := tcpGather(val)
 		if err != nil {
