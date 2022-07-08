@@ -210,9 +210,9 @@ type xiaohei struct {
 
 func init() {
 	go startWs()
-	// for _, chat := range *config.Cfg.JxChat {
-	//	go startChatWs(chat)
-	//}
+	for _, chat := range *config.Cfg.JxChat {
+		go startChatWs(chat)
+	}
 	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
