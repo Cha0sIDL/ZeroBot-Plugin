@@ -400,3 +400,17 @@ func InMap(m map[string]struct{}, s string) bool {
 func BytesCombine(pBytes ...[]byte) []byte {
 	return bytes.Join(pBytes, []byte(""))
 }
+
+func Retry(tryTimes int, sleep time.Duration, f func() error) (err error) {
+	for i := 0; ; i++ {
+		err = f()
+		if err == nil {
+			return
+		}
+		if i >= (tryTimes - 1) {
+			break
+		}
+		time.Sleep(sleep)
+	}
+	return fmt.Errorf("after %d attempts, last error: %v", tryTimes, err)
+}

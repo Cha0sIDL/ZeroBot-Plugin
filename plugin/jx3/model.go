@@ -27,6 +27,7 @@ type jxControl struct {
 	GroupID int64  `db:"gid"`     // GroupID 群号
 	Disable bool   `db:"disable"` // Disable 是否启用推送
 	Area    string `db:"area"`    // 绑定的区服
+	//BotId   int64  `db:"botId"`
 }
 
 // Team 的结构体

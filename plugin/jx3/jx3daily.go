@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	"io"
@@ -208,6 +209,11 @@ type xiaohei struct {
 	Message interface{} `json:"message"`
 }
 
+type GroupList struct {
+	grp    int64
+	server string
+}
+
 func init() {
 	go startWs()
 	for _, chat := range *config.Cfg.JxChat {
@@ -246,14 +252,19 @@ func init() {
 	})
 	c.AddFunc("@every 30s", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
 				isEnable, server := isEnable(grp)
 				if isEnable {
-					news(ctx, grp)
-					checkServer(ctx, grp, server)
+					grpList = append(grpList, GroupList{
+						grp:    grp,
+						server: server,
+					})
 				}
 			}
+			news(ctx, grpList)
+			checkServer(ctx, grpList)
 			return true
 		})
 	})
@@ -660,12 +671,10 @@ func init() {
 			area := enable(ctx.Event.GroupID)
 			if len(area) == 0 {
 				var server []string
-				rsp, _ := util.SendHttp(url+"check", nil)
-				json := gjson.ParseBytes(rsp)
-				for _, value := range json.Get("data").Array() {
-					server = append(server, value.Get("server").String())
+				for key, _ := range serverIp {
+					server = append(server, key)
 				}
-				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定，可选服务器有：\n" + fmt.Sprint(server)))
+				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定，可选服务器有：\n" + util.PrettyPrint(server)))
 			} else {
 				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
@@ -986,7 +995,7 @@ func server(ctx *zero.Ctx, server string) {
 	if val, ok := serverIp[server]; ok {
 		ctx.SendChain(message.Text("正在尝试Ping ", server, "  ٩(๑´0`๑)۶"))
 		process.SleepAbout1sTo2s()
-		err := tcpGather(val)
+		err := tcpGather(val, 3)
 		if err != nil {
 			ctx.SendChain(message.Text(server, " 垃圾服务器又在维护中  w(ﾟДﾟ)w~"))
 			insert(dbIp, &Ip{
@@ -1461,37 +1470,44 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 	}
 }
 
-func checkServer(ctx *zero.Ctx, grp int64, server string) {
-	if val, ok := serverIp[server]; ok {
-		msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
-		ok := true
-		err := tcpGather(val)
+func checkServer(ctx *zero.Ctx, grpList []GroupList) {
+	var ipList = make(map[string]bool)
+	for key, val := range serverIp {
+		err := tcpGather(val, 3)
 		if err != nil {
-			ok = false
+			ipList[key] = false
+			continue
 		}
-		var ip Ip
-		find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
-		if find != nil { // 没找到
-			insert(dbIp, &Ip{
-				ID: server,
-				Ok: ok,
-			})
-			return
-		}
-		if ip.Ok != ok {
-			insert(dbIp, &Ip{
-				ID: server,
-				Ok: ok,
-			})
-			if !ok {
-				msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+		ipList[key] = true
+	}
+	for _, grpListData := range grpList {
+		server := grpListData.server
+		if _, ok := serverIp[server]; ok {
+			msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
+			var ip Ip
+			find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
+			if find != nil { // 没找到
+				insert(dbIp, &Ip{
+					ID: server,
+					Ok: ipList[server],
+				})
+				return
 			}
-			ctx.SendGroupMessage(grp, message.Text(msg))
+			if ip.Ok != ipList[server] {
+				insert(dbIp, &Ip{
+					ID: server,
+					Ok: ipList[server],
+				})
+				if !ipList[server] {
+					msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+				}
+				ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
+			}
 		}
 	}
 }
 
-func news(ctx *zero.Ctx, grp int64) {
+func news(ctx *zero.Ctx, grpList []GroupList) {
 	var msg []News
 	count, _ := db.Count(dbNews)
 	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
@@ -1525,8 +1541,10 @@ func news(ctx *zero.Ctx, grp int64) {
 		return
 	}
 	log.Println("Jx3 news data", msg)
-	for _, data := range msg {
-		ctx.SendGroupMessage(grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
+	for _, grpListData := range grpList {
+		for _, data := range msg {
+			ctx.SendGroupMessage(grpListData.grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
+		}
 	}
 }
 
@@ -1668,10 +1686,16 @@ func sign(data []byte) string {
 	return sha
 }
 
-func tcpGather(address string) (err error) {
-	conn, err := net.DialTimeout("tcp", address, 3*time.Second)
-	if err == nil {
-		defer conn.Close()
+func tcpGather(address string, tryTime int) error {
+	for i := 1; i <= tryTime; i++ {
+		conn, err := net.DialTimeout("tcp", address, 3*time.Second)
+		if err == nil {
+			conn.Close()
+			return err
+		}
+		if i == tryTime {
+			return errors.New("tryTime over")
+		}
 	}
-	return err
+	return nil
 }
