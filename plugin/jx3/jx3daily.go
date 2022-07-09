@@ -671,7 +671,7 @@ func init() {
 			area := enable(ctx.Event.GroupID)
 			if len(area) == 0 {
 				var server []string
-				for key, _ := range serverIp {
+				for key := range serverIp {
 					server = append(server, key)
 				}
 				ctx.Send(message.Text("开启成功，检测到当前未绑定区服，请输入\n绑定区服xxx\n进行绑定，可选服务器有：\n" + util.PrettyPrint(server)))
