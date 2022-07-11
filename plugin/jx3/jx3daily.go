@@ -1473,7 +1473,7 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 	var ipList = make(map[string]bool)
 	for key, val := range serverIp {
-		err := tcpGather(val, 3)
+		err := tcpGather(val, 5)
 		if err != nil {
 			ipList[key] = false
 			continue
@@ -1501,6 +1501,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 				if !ipList[server] {
 					msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
 				}
+				log.Warn("debug server", ipList)
 				ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 			}
 		}
@@ -1688,7 +1689,7 @@ func sign(data []byte) string {
 
 func tcpGather(address string, tryTime int) error {
 	for i := 1; i <= tryTime; i++ {
-		conn, err := net.DialTimeout("tcp", address, 3*time.Second)
+		conn, err := net.Dial("tcp", address)
 		if err == nil {
 			conn.Close()
 			return err
