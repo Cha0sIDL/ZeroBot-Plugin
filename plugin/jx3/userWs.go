@@ -72,7 +72,7 @@ func (ws *userWsClient) listen() {
 			if rsp.Get("cmd").Int() != 100120 {
 				continue
 			}
-			log.Println("World Chat", binary.BytesToString(payload))
+			//log.Println("World Chat", binary.BytesToString(payload))
 			server := rsp.Get("body.msg.0.extra.CenterID.0").String()
 			roleName := rsp.Get("body.msg.0.sName").String()
 			if len(roleName) == 0 || len(server) == 0 {
