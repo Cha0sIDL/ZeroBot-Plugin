@@ -998,16 +998,8 @@ func server(ctx *zero.Ctx, server string) {
 		err := tcpGather(val, 3)
 		if err != nil {
 			ctx.SendChain(message.Text(server, " 垃圾服务器又在维护中  w(ﾟДﾟ)w~"))
-			insert(dbIp, &Ip{
-				ID: server,
-				Ok: false,
-			})
 			return
 		}
-		insert(dbIp, &Ip{
-			ID: server,
-			Ok: true,
-		})
 		ctx.SendChain(message.Text(server, " 已经开服啦ヽ(✿ﾟ▽ﾟ)ノ~"))
 	}
 }
