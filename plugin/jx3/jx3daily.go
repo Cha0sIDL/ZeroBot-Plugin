@@ -243,7 +243,7 @@ func init() {
 			"- 绑定区服xxx\n" +
 			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
 	})
-	c := cron.New()
+	c := cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger)))
 	_, err := c.AddFunc("0 5 * * *", func() {
 		err := updateTalk()
 		if err != nil {
@@ -1473,7 +1473,7 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 	var ipList = make(map[string]bool)
 	for key, val := range serverIp {
-		err := tcpGather(val, 5)
+		err := tcpGather(val, 3)
 		if err != nil {
 			ipList[key] = false
 			continue
@@ -1689,7 +1689,7 @@ func sign(data []byte) string {
 
 func tcpGather(address string, tryTime int) error {
 	for i := 1; i <= tryTime; i++ {
-		conn, err := net.Dial("tcp", address)
+		conn, err := net.DialTimeout("tcp", address, time.Second*2)
 		if err == nil {
 			conn.Close()
 			return err
