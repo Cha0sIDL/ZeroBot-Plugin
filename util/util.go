@@ -426,7 +426,7 @@ func RandStr(length int) string {
 	return string(result)
 }
 
-//SliceDeduplicate 任意类型切片去重
+// SliceDeduplicate 任意类型切片去重
 func SliceDeduplicate(data interface{}) {
 	dataVal := reflect.ValueOf(data)
 	if dataVal.Kind() != reflect.Ptr {
