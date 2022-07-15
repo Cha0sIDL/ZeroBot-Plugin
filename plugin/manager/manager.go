@@ -608,7 +608,12 @@ func init() { // 插件主体
 		var msg string
 		msg += "检测到以下地址正在窥屏：\n"
 		name := util.RandStr(util.Rand(3, 10))
-		cq := fmt.Sprintf("[CQ:cardimage,file=https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png,icon=http://8.210.53.24:9090/?id=%s]", name, name)
+		img := []string{"https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+			"https://www.baidu.com/favicon.ico",
+			"https://www.google.com.hk/favicon.ico",
+			""}
+		util.Shuffle(img)
+		cq := fmt.Sprintf("[CQ:cardimage,file=%s,icon=http://8.210.53.24:9090/?id=%s]", img[0], name)
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
 		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
