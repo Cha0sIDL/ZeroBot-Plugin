@@ -624,8 +624,9 @@ func init() { // 插件主体
 			}
 			jsonIp := gjson.ParseBytes(ipData)
 			msg += jsonIp.Get("country").String() + jsonIp.Get("province").String() + jsonIp.Get("city").String()
+			msg += "  "
+			msg += ua.Device + " " + ua.OSVersion
 			msg += "\n"
-			msg += ua.Device + ua.OSVersion
 		}
 		ctx.DeleteMessage(msgId)
 		delId := ctx.SendChain(message.Text(msg))
