@@ -612,7 +612,7 @@ func init() { // 插件主体
 			"https://www.baidu.com/favicon.ico",
 			"https://www.google.com.hk/favicon.ico"}
 		util.Shuffle(img)
-		cq := fmt.Sprintf("[CQ:cardimage,file=%s,icon=http://8.210.53.24:9090/?id=%s]", img[0], name)
+		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", img[0], name)
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
 		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
