@@ -609,10 +609,13 @@ func init() { // 插件主体
 		msg += "检测到以下地址正在窥屏：\n"
 		name := util.RandStr(util.Rand(3, 10))
 		img := []string{"https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-			"https://www.baidu.com/favicon.ico",
-			"https://www.google.com.hk/favicon.ico"}
+			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newbaike-889054f349.png",
+			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newzhidao-da1cf444b0.png",
+			"https://dss2.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/weather/icons/a1.png",
+			"https://www.baidu.com/img/flexible/logo/pc/result.png",
+			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/mancard/img/side/qrcode-hover@2x-f9b106a848.png"}
 		util.Shuffle(img)
-		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", img[0], name)
+		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", name, img[0])
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
 		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
