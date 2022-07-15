@@ -3,10 +3,6 @@ package manager
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-	"github.com/FloatTech/zbputils/web"
-	ua "github.com/mileusna/useragent"
-	"github.com/tidwall/gjson"
 	"io"
 	"math/rand"
 	"net/http"
@@ -14,6 +10,12 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/FloatTech/zbputils/web"
+	ua "github.com/mileusna/useragent"
+	"github.com/tidwall/gjson"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
