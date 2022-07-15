@@ -610,8 +610,7 @@ func init() { // 插件主体
 		name := util.RandStr(util.Rand(3, 10))
 		img := []string{"https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
 			"https://www.baidu.com/favicon.ico",
-			"https://www.google.com.hk/favicon.ico",
-			""}
+			"https://www.google.com.hk/favicon.ico"}
 		util.Shuffle(img)
 		cq := fmt.Sprintf("[CQ:cardimage,file=%s,icon=http://8.210.53.24:9090/?id=%s]", img[0], name)
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
