@@ -414,3 +414,47 @@ func Retry(tryTimes int, sleep time.Duration, f func() error) (err error) {
 	}
 	return fmt.Errorf("after %d attempts, last error: %v", tryTimes, err)
 }
+
+func RandStr(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	bytes := []byte(str)
+	var result []byte
+	rand.Seed(time.Now().UnixNano() + int64(rand.Intn(100)))
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[rand.Intn(len(bytes))])
+	}
+	return string(result)
+}
+
+//SliceDeduplicate 任意类型切片去重
+func SliceDeduplicate(data interface{}) {
+	dataVal := reflect.ValueOf(data)
+	if dataVal.Kind() != reflect.Ptr {
+		fmt.Println("input data.kind is not pointer")
+		return
+	}
+	tmpData := Deduplicate(dataVal.Elem().Interface())
+	tmpDataVal := reflect.ValueOf(tmpData)
+	dataVal.Elem().Set(tmpDataVal)
+}
+
+func Deduplicate(data interface{}) interface{} {
+	inArr := reflect.ValueOf(data)
+	if inArr.Kind() != reflect.Slice && inArr.Kind() != reflect.Array {
+		return data
+	}
+
+	existMap := make(map[interface{}]bool)
+	outArr := reflect.MakeSlice(inArr.Type(), 0, inArr.Len())
+
+	for i := 0; i < inArr.Len(); i++ {
+		iVal := inArr.Index(i)
+
+		if _, ok := existMap[iVal.Interface()]; !ok {
+			outArr = reflect.Append(outArr, inArr.Index(i))
+			existMap[iVal.Interface()] = true
+		}
+	}
+
+	return outArr.Interface()
+}

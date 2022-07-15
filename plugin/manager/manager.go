@@ -3,7 +3,13 @@ package manager
 
 import (
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"github.com/FloatTech/zbputils/web"
+	ua "github.com/mileusna/useragent"
+	"github.com/tidwall/gjson"
+	"io"
 	"math/rand"
+	"net/http"
 	"sort"
 	"strconv"
 	"strings"
@@ -595,6 +601,36 @@ func init() { // 插件主体
 	})
 	engine.OnFullMatch("使用手册").SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		ctx.SendChain(message.Text("https://www.yuque.com/docs/share/34aee3c7-defc-4f29-b45a-1c7f8f4ab535?# 《ZeroBot使用手册》"))
+	})
+	engine.OnFullMatch("谁在窥屏", zero.OnlyGroup, zero.AdminPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		var msg string
+		msg += "检测到以下地址正在窥屏：\n"
+		name := util.RandStr(util.Rand(3, 10))
+		cq := fmt.Sprintf("[CQ:cardimage,file=https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png,icon=http://8.210.53.24:9090/?id=%s]", name, name)
+		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
+		time.Sleep(time.Second * 30)
+		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
+		body, err := io.ReadAll(rsp.Body)
+		if err != nil {
+			ctx.SendChain(message.Text("获取失败,请稍后重试,,Ծ‸Ծ,,"))
+		}
+		for _, data := range gjson.ParseBytes(body).Array() {
+			ip := data.Get("ip").String()
+			userAgent := data.Get("userAgent").String()
+			ua := ua.Parse(userAgent)
+			ipData, err := web.GetData(fmt.Sprintf("https://ip.useragentinfo.com/json?ip=%s", ip))
+			if err != nil {
+				continue
+			}
+			jsonIp := gjson.ParseBytes(ipData)
+			msg += jsonIp.Get("country").String() + jsonIp.Get("province").String() + jsonIp.Get("city").String()
+			msg += "\n"
+			msg += ua.Device + ua.OSVersion
+		}
+		ctx.DeleteMessage(msgId)
+		delId := ctx.SendChain(message.Text(msg))
+		time.Sleep(time.Second * 20)
+		ctx.DeleteMessage(delId)
 	})
 }
 

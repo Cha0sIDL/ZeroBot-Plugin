@@ -243,7 +243,7 @@ func init() {
 			"- 绑定区服xxx\n" +
 			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
 	})
-	c := cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger)))
+	c := cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger), cron.SkipIfStillRunning(cron.DefaultLogger)))
 	_, err := c.AddFunc("0 5 * * *", func() {
 		err := updateTalk()
 		if err != nil {
@@ -264,6 +264,22 @@ func init() {
 				}
 			}
 			news(ctx, grpList)
+			return true
+		})
+	})
+	c.AddFunc("@every 2m", func() {
+		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+			var grpList []GroupList
+			for _, g := range ctx.GetGroupList().Array() {
+				grp := g.Get("group_id").Int()
+				isEnable, server := isEnable(grp)
+				if isEnable {
+					grpList = append(grpList, GroupList{
+						grp:    grp,
+						server: server,
+					})
+				}
+			}
 			checkServer(ctx, grpList)
 			return true
 		})
@@ -1681,7 +1697,7 @@ func sign(data []byte) string {
 
 func tcpGather(address string, tryTime int) error {
 	for i := 1; i <= tryTime; i++ {
-		conn, err := net.DialTimeout("tcp", address, time.Second*2)
+		conn, err := net.DialTimeout("tcp", address, time.Second*5)
 		if err == nil {
 			conn.Close()
 			return err
