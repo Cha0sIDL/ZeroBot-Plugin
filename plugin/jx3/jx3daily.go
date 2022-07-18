@@ -267,7 +267,7 @@ func init() {
 			return true
 		})
 	})
-	c.AddFunc("@every 5m", func() {
+	c.AddFunc("@every 3m", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
@@ -1479,39 +1479,41 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 }
 
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
-	var ipList = make(map[string]bool)
+	type status struct {
+		serverStatus bool
+		dbStatus     bool
+	}
+	var ipList = make(map[string]status)
 	for key, val := range serverIp {
+		var ip Ip
+		db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
 		err := tcpGather(val, 3)
 		if err != nil {
-			ipList[key] = false
+			ipList[key] = status{serverStatus: false, dbStatus: ip.Ok}
+			insert(dbIp, &Ip{
+				ID: key,
+				Ok: false,
+			})
 			continue
 		}
-		ipList[key] = true
+		ipList[key] = status{
+			serverStatus: true,
+			dbStatus:     ip.Ok,
+		}
+		insert(dbIp, &Ip{
+			ID: key,
+			Ok: true,
+		})
 	}
-	log.Errorln("checkServer", ipList, grpList)
 	for _, grpListData := range grpList {
 		server := grpListData.server
 		if _, ok := serverIp[server]; ok {
+			s := ipList[server]
 			msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
-			var ip Ip
-			find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
-			if find != nil { // 没找到
-				log.Errorln("error checkServer", find)
-				insert(dbIp, &Ip{
-					ID: server,
-					Ok: ipList[server],
-				})
-				return
-			}
-			if ip.Ok != ipList[server] {
-				insert(dbIp, &Ip{
-					ID: server,
-					Ok: ipList[server],
-				})
-				if !ipList[server] {
+			if s.dbStatus != s.serverStatus {
+				if !s.serverStatus {
 					msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
 				}
-				log.Warn("debug server", ipList)
 				ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 			}
 		}
