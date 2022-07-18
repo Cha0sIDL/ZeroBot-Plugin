@@ -57,7 +57,9 @@ func init() {
 						if msg == "确定" {
 							ctx.SendChain(message.Text("正在发送..."))
 							zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-								for _, g := range ctx.GetGroupList().Array() {
+								grpList := ctx.GetGroupList().Array()
+								time.Sleep(time.Second * 10)
+								for _, g := range grpList {
 									gid := g.Get("group_id").Int()
 									ctx.SendGroupMessage(gid, origin)
 									process.SleepAbout1sTo2s()
