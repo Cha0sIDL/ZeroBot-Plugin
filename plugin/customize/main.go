@@ -1,6 +1,7 @@
 package customize
 
 import (
+	"github.com/FloatTech/zbputils/process"
 	"os"
 	"strconv"
 	"time"
@@ -22,11 +23,14 @@ func init() {
 	})
 	engine.OnCommandGroup([]string{"pause", "kill"}, zero.OnlyToMe, zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text("正在自爆...(我会想你们的)"))
+			time.Sleep(time.Second * 5)
+			ctx.SendChain(message.Face(55))
 			os.Exit(0)
 		})
 	engine.OnCommand("发送公告", zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			next := zero.NewFutureEvent("message", 999, false, zero.OnlyGroup, ctx.CheckSession())
+			next := zero.NewFutureEvent("message", 999, false, zero.CheckUser(ctx.Event.UserID), ctx.CheckSession())
 			recv, stop := next.Repeat()
 			defer stop()
 			ctx.SendChain(message.Text("请输入公告内容"))
@@ -55,6 +59,7 @@ func init() {
 								for _, g := range ctx.GetGroupList().Array() {
 									gid := g.Get("group_id").Int()
 									ctx.SendGroupMessage(gid, origin)
+									process.SleepAbout1sTo2s()
 								}
 								return true
 							})
