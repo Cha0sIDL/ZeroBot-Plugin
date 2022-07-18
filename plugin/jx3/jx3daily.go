@@ -267,7 +267,7 @@ func init() {
 			return true
 		})
 	})
-	c.AddFunc("@every 2m", func() {
+	c.AddFunc("@every 5m", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
