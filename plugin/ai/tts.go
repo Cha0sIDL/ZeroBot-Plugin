@@ -63,7 +63,7 @@ func init() {
 				ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
 			}
 		})
-	en.OnMessage(zero.OnlyToMe).SetBlock(false).Limit(ctxext.LimitByUser).
+	en.OnMessage(zero.OnlyToMe, zero.OnlyGroup).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
 			r := nlp.NewAIReply(getReplyMode(ctx))
