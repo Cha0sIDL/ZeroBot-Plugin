@@ -139,7 +139,7 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/game" // steam游戏查询
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" //一些自定义插件
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" // 一些自定义插件
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //

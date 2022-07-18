@@ -1,10 +1,11 @@
 package customize
 
 import (
-	"github.com/FloatTech/zbputils/process"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/FloatTech/zbputils/process"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
