@@ -1488,6 +1488,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 		}
 		ipList[key] = true
 	}
+	log.Errorln("checkServer", ipList, grpList)
 	for _, grpListData := range grpList {
 		server := grpListData.server
 		if _, ok := serverIp[server]; ok {
@@ -1495,6 +1496,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 			var ip Ip
 			find := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", server))
 			if find != nil { // 没找到
+				log.Errorln("error checkServer", find)
 				insert(dbIp, &Ip{
 					ID: server,
 					Ok: ipList[server],
