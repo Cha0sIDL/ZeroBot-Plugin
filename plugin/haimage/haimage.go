@@ -14,7 +14,7 @@ const url = "https://cdn.seovx.com/ha/?mom=302"
 func init() {
 	control.Register("haimage", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "古风小姐姐\n",
+		Help:             "- 古风小姐姐图片\n",
 	}).OnKeywordGroup([]string{"古风"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		r, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
 		if err != nil {

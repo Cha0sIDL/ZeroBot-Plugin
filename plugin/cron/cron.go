@@ -39,7 +39,7 @@ func init() { // 一些定时器
 	}
 	control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "一些定时任务\n",
+		Help:             "- 一些定时任务\n- 目前有地震播报功能",
 	})
 }
 

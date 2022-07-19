@@ -20,8 +20,9 @@ func init() { // 插件主体
 	engine := control.Register("crazy", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		PublicDataFolder: "Crazy",
-		Help: "喝什么\n" +
-			"吃什么\n",
+		Help: "选择困难症帮手\n" +
+			"- 喝什么\n" +
+			"- 吃什么\n",
 	})
 	go func() {
 		dbpath := engine.DataFolder()

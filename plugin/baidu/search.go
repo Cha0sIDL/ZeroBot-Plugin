@@ -21,8 +21,8 @@ func init() {
 		DisableOnDefault: false,
 		Help: "baidu\n" +
 			"- 百度下[xxx]\n" +
-			"维基|百科[xxx]\n" +
-			"百度百科[xxx]",
+			"- 维基|百科[xxx]\n" +
+			"- 百度百科[xxx]",
 	})
 	en.OnPrefixGroup([]string{"百度下"}).SetBlock(true).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {

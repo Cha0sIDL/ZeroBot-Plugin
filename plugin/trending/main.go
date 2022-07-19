@@ -20,9 +20,10 @@ import (
 func init() { // 插件主体
 	engine := control.Register("trending", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help: "微博热搜\n" +
-			"知乎热搜\n" +
-			"github热搜",
+		Help: "一个查热搜的插件\n" +
+			"- 微博热搜\n" +
+			"- 知乎热搜\n" +
+			"- github热搜",
 	})
 	engine.OnSuffix("热搜").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {

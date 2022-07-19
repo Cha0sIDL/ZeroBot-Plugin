@@ -65,7 +65,7 @@ func init() { // 插件主体
 	}
 	control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "每周日常定时推送\n",
+		Help:             "- 剑网每周日常定时推送\n",
 	})
 }
 

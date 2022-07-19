@@ -13,7 +13,7 @@ func init() {
 	engine := control.Register("arknight", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		//	PublicDataFolder: "ArkNights",
-		Help: "查公招\n" + "方舟今日资源",
+		Help: "明日方舟相关插件\n" + "- 查公招\n" + "- 方舟今日资源",
 	})
 	engine.OnRegex("^查公招$").Handle(recruit)
 	engine.OnKeyword("方舟资源").Handle(daily)

@@ -23,7 +23,7 @@ const (
 func init() {
 	engine := control.Register("curse", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "骂他@qq(求骂,自卫)",
+		Help:             "- 骂他@qq(求骂,自卫)",
 		PublicDataFolder: "Curse",
 	})
 

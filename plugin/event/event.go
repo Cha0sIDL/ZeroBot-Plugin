@@ -16,7 +16,7 @@ import (
 func init() { // 来自mayuri的插件
 	engine := control.Register("event", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "好友申请以及群聊邀请事件处理，默认发送给主人列表第一位",
+		Help:             "- 好友申请以及群聊邀请事件处理，默认发送给主人列表第一位",
 	})
 	engine.OnRequest().SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {

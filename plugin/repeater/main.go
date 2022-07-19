@@ -5,11 +5,9 @@ import (
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/message"
-
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
@@ -37,6 +35,7 @@ type msgCompareFunc func(string, string) bool
 func init() {
 	engine := control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Help:             "复读机\n- 自启动(8条消息中有四条重复则进行复读)",
 	})
 	instance = &autoCopy{}
 	instance.groupMsg = newGroupMsg()
@@ -51,7 +50,7 @@ func init() {
 
 // 判断群消息是否是复读，如果是，则加入
 func (m *autoCopy) autoCopyAndJoinIn(ctx *zero.Ctx) {
-	msgStr := ctx.ExtractPlainText()
+	msgStr := ctx.Event.RawMessage
 	if len(msgStr) == 0 {
 		return
 	}
@@ -61,7 +60,7 @@ func (m *autoCopy) autoCopyAndJoinIn(ctx *zero.Ctx) {
 	}
 	// 复读，清空复读消息历史记录，并开始复读
 	m.groupMsg.reset(ctx.Event.GroupID)
-	ctx.SendChain(message.Text(msgStr))
+	ctx.Send(msgStr)
 }
 
 // 判断用户消息是否属于复读，并更新消息队列
