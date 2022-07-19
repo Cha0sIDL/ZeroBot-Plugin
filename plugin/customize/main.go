@@ -1,6 +1,7 @@
 package customize
 
 import (
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"os"
 	"strconv"
 	"time"
@@ -56,13 +57,21 @@ func init() {
 						}
 						if msg == "确定" {
 							ctx.SendChain(message.Text("正在发送..."))
+							var fail []int64
 							zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 								grpList := ctx.GetGroupList().Array()
 								time.Sleep(time.Second * 10)
 								for _, g := range grpList {
 									gid := g.Get("group_id").Int()
-									ctx.SendGroupMessage(gid, origin)
+									if id := ctx.SendGroupMessage(gid, origin); id == 0 {
+										fail = append(fail, id)
+									}
 									process.SleepAbout1sTo2s()
+								}
+								if len(fail) == 0 {
+									ctx.SendChain(message.Text("发送成功"))
+								} else {
+									ctx.SendChain(message.Text("检测到公告发送失败,群号为:", util.PrettyPrint(fail)))
 								}
 								return true
 							})
