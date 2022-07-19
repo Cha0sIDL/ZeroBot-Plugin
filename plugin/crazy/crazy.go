@@ -44,12 +44,13 @@ func init() { // 插件主体
 			panic(err)
 		}
 	}()
-	engine.OnFullMatch("Crazy").SetBlock(true).
+	engine.OnRegex(`疯狂星期(一|二|三|四|五|六|日|天)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t crazy
 			db.Pick("crazy", &t)
 			ctx.SendChain(message.Text(t.Crazy), message.AtAll())
 		})
+
 	engine.OnKeyword("吃什么").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t menu
@@ -84,15 +85,46 @@ func init() { // 插件主体
 func now() string {
 	var text string
 	now := time.Now().Hour()
+	word := map[string][]string{
+		"breakfast": {
+			"7点啦，吃早餐啦！",
+			"起床啦起床啦！现在还没起床的都是懒狗！",
+			"哦哈哟米娜桑！今日も元気でね！🥳",
+			"新的一天又是全气满满哦！",
+			"一日之计在于晨，懒狗还不起床？",
+		},
+		"lunch": {
+			"12点啦，吃午餐啦！",
+			"恰饭啦恰饭啦！再不去食堂就没吃的啦！",
+			"中午还不恰点好的？整点碳水大餐嗯造吧！",
+		},
+		"snack": {
+			"三点了，饮茶了先！",
+			"摸鱼时刻，整点恰滴先~",
+			"做咩啊做，真给老板打工啊！快来摸鱼！",
+		},
+		"dinner": {
+			"6点了！不会真有人晚上加班恰外卖吧？",
+			"下班咯，这不开造？",
+			"当务之急是下班！",
+		},
+		"midnight": {
+			"10点啦，整个夜宵犒劳自己吧！",
+			"夜宵这不来个外卖？",
+			"夜宵这不整点好的？",
+		},
+	}
 	switch {
 	case now < 6: // 凌晨
-		text = "凌晨了，还在这吃"
+		text = word["midnight"][rand.Intn(len(word["midnight"]))] + "\n 恰"
 	case now >= 6 && now < 9:
-		text = "早上吃"
-	case now >= 9 && now < 18:
-		text = "中午吃"
+		text = word["breakfast"][rand.Intn(len(word["breakfast"]))] + "\n 恰"
+	case now >= 9 && now < 14:
+		text = word["lunch"][rand.Intn(len(word["lunch"]))] + "\n 恰"
+	case now >= 14 && now < 18:
+		text = word["snack"][rand.Intn(len(word["snack"]))] + "\n 恰"
 	case now >= 18 && now < 24:
-		text = "晚上吃"
+		text = word["dinner"][rand.Intn(len(word["dinner"]))] + "\n 恰"
 	}
 	return text
 }
