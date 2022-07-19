@@ -5,9 +5,10 @@ import (
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
