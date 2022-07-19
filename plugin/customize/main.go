@@ -68,13 +68,13 @@ func init() {
 									}
 									process.SleepAbout1sTo2s()
 								}
-								if len(fail) == 0 {
-									ctx.SendChain(message.Text("发送成功"))
-								} else {
-									ctx.SendChain(message.Text("检测到公告发送失败,群号为:", util.PrettyPrint(fail)))
-								}
 								return true
 							})
+							if len(fail) == 0 {
+								ctx.SendChain(message.Text("发送成功"))
+							} else {
+								ctx.SendChain(message.Text("检测到公告发送失败,群号为:", util.PrettyPrint(fail)))
+							}
 							return
 						}
 						ctx.SendChain(message.Text("已经取消发送了哟~"))
