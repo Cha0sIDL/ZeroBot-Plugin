@@ -24,7 +24,7 @@ func init() { // 插件主体
 			"- 喝什么\n" +
 			"- 吃什么\n",
 	})
-	//"https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_crazy_thursday/beta/nonebot_plugin_crazy_thursday/post.json"
+	// "https://raw.fastgit.org/MinatoAquaCrews/nonebot_plugin_crazy_thursday/beta/nonebot_plugin_crazy_thursday/post.json"
 	go func() {
 		dbpath := engine.DataFolder()
 		db.DBPath = dbpath + "crazy.db"
