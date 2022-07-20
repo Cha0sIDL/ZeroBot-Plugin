@@ -4,7 +4,6 @@ package guessmusic
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"io/fs"
 	"io/ioutil"
 	"math/rand"
@@ -15,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	"github.com/sirupsen/logrus"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
