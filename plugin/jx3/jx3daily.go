@@ -1517,6 +1517,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 				if !s.serverStatus {
 					msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
 				}
+				log.Errorln("debug server", grpList, ipList)
 				ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 			}
 		}
