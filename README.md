@@ -333,6 +333,18 @@ print("run[CQ:image,file="+j["img"]+"]")
 </details>
 
 ### *中优先级*
+<details>
+  <summary>customize</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize"`
+
+- [x] /kill 停止机器人运行(仅超管可用)
+
+- [x] /发送公告(仅超管可用)
+- 
+- [x] @bot给主人留言<内容>(自动发消息给机器人超管)
+
+</details>
 
 <details>
   <summary>AIfalse</summary>
