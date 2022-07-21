@@ -1489,8 +1489,11 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 	var ipList = make(map[string]status)
 	for key, val := range serverIp {
 		var ip Ip
-		db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
-		err := tcpGather(val, 3)
+		err := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
+		if err != nil {
+			continue
+		}
+		err = tcpGather(val, 3)
 		if err != nil {
 			ipList[key] = status{serverStatus: false, dbStatus: ip.Ok}
 			insert(dbIp, &Ip{
@@ -1511,14 +1514,15 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 	for _, grpListData := range grpList {
 		server := grpListData.server
 		if _, ok := serverIp[server]; ok {
-			s := ipList[server]
-			msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
-			if s.dbStatus != s.serverStatus {
-				if !s.serverStatus {
-					msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+			if s, ok := ipList[server]; ok {
+				msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
+				if s.dbStatus != s.serverStatus {
+					if !s.serverStatus {
+						msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+					}
+					log.Errorln("debug server", grpList, ipList)
+					ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 				}
-				log.Errorln("debug server", grpList, ipList)
-				ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 			}
 		}
 	}
