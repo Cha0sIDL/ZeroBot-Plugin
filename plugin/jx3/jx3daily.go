@@ -1561,7 +1561,6 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 	if count == 0 {
 		return
 	}
-	log.Println("Jx3 news data", msg)
 	for _, grpListData := range grpList {
 		for _, data := range msg {
 			ctx.SendGroupMessage(grpListData.grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
