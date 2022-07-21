@@ -59,7 +59,8 @@ const (
 		"- 测试欢迎语\n" +
 		"- 设置告别辞 参数同设置欢迎语\n" +
 		"- 测试告别辞\n" +
-		"- [开启 | 关闭]入群验证"
+		"- [开启 | 关闭]入群验证\n" +
+		"- 谁在窥屏(仅群管可用，bot会自动发送一张图片30秒后撤回)"
 )
 
 var (
@@ -601,7 +602,7 @@ func init() { // 插件主体
 			}
 		}
 	})
-	engine.OnFullMatch("使用手册").SetBlock(true).Handle(func(ctx *zero.Ctx) {
+	engine.OnFullMatchGroup([]string{"菜单", "使用手册", "使用说明"}).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		ctx.SendChain(message.Text("https://www.yuque.com/docs/share/34aee3c7-defc-4f29-b45a-1c7f8f4ab535?# 《ZeroBot使用手册》"))
 	})
 	engine.OnFullMatch("谁在窥屏", zero.OnlyGroup, zero.AdminPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {
