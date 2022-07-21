@@ -65,7 +65,7 @@ func init() {
 								for _, g := range grpList {
 									gid := g.Get("group_id").Int()
 									if id := ctx.SendGroupMessage(gid, origin); id == 0 {
-										fail = append(fail, id)
+										fail = append(fail, gid)
 									}
 									process.SleepAbout1sTo2s()
 								}
