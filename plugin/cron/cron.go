@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"runtime"
+
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/process"
-	"runtime"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"

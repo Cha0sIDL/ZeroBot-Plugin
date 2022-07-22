@@ -133,7 +133,7 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron" // 各种定时任务
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" //力扣每日一题
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" // 力扣每日一题
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜

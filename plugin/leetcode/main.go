@@ -2,6 +2,9 @@ package leetcode
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -11,8 +14,6 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"regexp"
-	"strings"
 )
 
 func init() {
