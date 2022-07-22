@@ -204,6 +204,7 @@ func weeklyEpic() {
 			if data.ChatType == "私聊" {
 				ctx.SendPrivateMessage(data.QQ, msg)
 			}
+			process.SleepAbout1sTo2s()
 		}
 		return true
 	})

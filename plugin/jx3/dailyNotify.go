@@ -2,6 +2,7 @@ package jx3
 
 import (
 	"fmt"
+	"github.com/FloatTech/zbputils/process"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/fumiama/cron"
@@ -83,10 +84,11 @@ func sendMessage() {
 				for time, msg := range daily {
 					diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
 					if diff == -notify {
-						ctx.SendGroupMessage(grp, []message.MessageSegment{message.AtAll(), message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg))})
+						ctx.SendGroupMessage(grp, []message.MessageSegment{message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg))})
 					}
 				}
 			}
+			process.SleepAbout1sTo2s()
 		}
 		return true
 	})

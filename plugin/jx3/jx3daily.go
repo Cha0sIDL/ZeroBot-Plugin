@@ -1522,6 +1522,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 					}
 					log.Errorln("debug server", grpList, ipList)
 					ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
+					process.SleepAbout1sTo2s()
 				}
 			}
 		}
@@ -1564,6 +1565,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 	for _, grpListData := range grpList {
 		for _, data := range msg {
 			ctx.SendGroupMessage(grpListData.grp, fmt.Sprintf("有新的资讯请查收:\n%s\n%s\n%s\n%s", data.Kind, data.Title, data.ID, data.Date))
+			process.SleepAbout1sTo2s()
 		}
 	}
 }

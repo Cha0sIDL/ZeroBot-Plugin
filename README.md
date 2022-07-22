@@ -1195,6 +1195,15 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 
+<details>
+  <summary>搜索steam游戏,Epic喜加一订阅</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode"`
+
+- [x] (leetcode|力扣)每日一题，每日算法
+
+</details>
+
 
 
 ### *低优先级*

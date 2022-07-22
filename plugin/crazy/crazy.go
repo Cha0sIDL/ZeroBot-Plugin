@@ -49,7 +49,7 @@ func init() { // 插件主体
 		Handle(func(ctx *zero.Ctx) {
 			var t crazy
 			db.Pick("crazy", &t)
-			ctx.SendChain(message.Text(t.Crazy), message.AtAll())
+			ctx.SendChain(message.Text(t.Crazy))
 		})
 
 	engine.OnKeyword("吃什么").SetBlock(true).

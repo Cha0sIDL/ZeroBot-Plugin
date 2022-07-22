@@ -47,7 +47,7 @@ func init() {
 				case c := <-recv:
 					switch step {
 					case 0:
-						origin = c.Event.RawMessage
+						origin = "来自开发者的信息：\n" + c.Event.RawMessage
 						ctx.SendChain(message.Text("请输入\"确定\"或者\"取消\"来决定是否发送此公告"))
 						step++
 					case 1:

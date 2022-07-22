@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"runtime"
-
 	"github.com/FloatTech/zbputils/binary"
+	"github.com/FloatTech/zbputils/process"
+	"runtime"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
@@ -88,6 +88,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 				ctx.SendGroupMessage(grpId, []message.MessageSegment{
 					message.Text(fmt.Sprintf("检测到 %s 于 "+carbon.CreateFromTimestamp(d.Get("time").Int()/1000).ToDateTimeString()+" 发生 %.1f 级地震，请处于震中位置人员注意安全~", d.Get("loc_name").String(), lv)),
 				})
+				process.SleepAbout1sTo2s()
 			}
 			history[d.Get("time").Int()] = struct{}{}
 			if len(history) > 128 {
