@@ -29,7 +29,7 @@ func init() {
 			"- 设置活跃度 xx\n" +
 			"- 查询活跃度",
 	})
-	en.OnRegex(`设置活跃度(\d+)`, zero.SuperUserPermission, zero.OnlyGroup).SetBlock(true).
+	en.OnRegex(`设置活跃度(\d+)`, zero.AdminPermission, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			arg := ctx.State["regex_matched"].([]string)[1]
 			active, _ := strconv.Atoi(arg)

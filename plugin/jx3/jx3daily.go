@@ -496,6 +496,7 @@ func init() {
 				for _, meta := range m.Get("post_meta.data").Array() {
 					rsp += "\n" + meta.Get("desc").String() + "\n" + meta.Get("name").String() + ":\n" + meta.Get("macro").String() + "\n" + "----------------------------------------------\n"
 				}
+				rsp += fmt.Sprintf("详情请点击: https://www.jx3box.com/macro/%s", m.Get("ID").String()) + "\n"
 				rsp += "数据来源于JXBOX，dps请自行测试"
 				ctx.SendChain(message.Text(rsp))
 				time.Sleep(time.Second * 4)
