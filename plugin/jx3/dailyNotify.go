@@ -17,7 +17,7 @@ import (
 
 const (
 	ServiceName       = "dailyNotify"
-	notify      int64 = 15
+	notify      int64 = 30
 )
 
 var date = map[int]map[string]string{
@@ -85,7 +85,7 @@ func sendMessage() {
 				for time, msg := range daily {
 					diff := carbon.Parse(carbon.Now().ToDateString() + " " + time).DiffInMinutes(carbon.Now())
 					if diff == -notify {
-						ctx.SendGroupMessage(grp, []message.MessageSegment{message.Text(fmt.Sprintf(" 还有%d分钟 %s 活动就要开始了~", notify, msg))})
+						ctx.SendGroupMessage(grp, []message.MessageSegment{message.Text(fmt.Sprintf("还有%d分钟 %s 活动就要开始了~", notify, msg))})
 					}
 				}
 			}
