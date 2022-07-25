@@ -8,8 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/tidwall/sjson"
 	"image"
 	"io"
 	"io/ioutil"
@@ -23,6 +21,9 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+
+	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/tidwall/sjson"
 
 	"github.com/FloatTech/zbputils/process"
 	"github.com/go-resty/resty/v2"

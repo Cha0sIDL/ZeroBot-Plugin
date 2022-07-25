@@ -468,7 +468,6 @@ func DiffTime(start int64, end int64) string {
 			return fmt.Sprintf("%d分%d秒", min, sec)
 		}
 		return fmt.Sprintf("%d分", min)
-
 	} else {
 		return fmt.Sprintf("%d秒", diff)
 	}

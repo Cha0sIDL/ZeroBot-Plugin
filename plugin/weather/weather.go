@@ -2,9 +2,10 @@ package weather
 
 import (
 	"fmt"
-	ctrl "github.com/FloatTech/zbpctrl"
 	"net/url"
 	"strings"
+
+	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -24,7 +25,7 @@ import (
 //	Location []location `json:"location"`
 //}
 //
-//type location struct {
+// type location struct {
 //	Name string `json:"name"`
 //	Id   string `json:"id"`
 //	Lat  string `json:"lat"`
