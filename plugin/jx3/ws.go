@@ -48,9 +48,9 @@ func (ws *wsClient) listen() {
 			ws.connect()
 		}
 		if t == websocket.TextMessage {
-			rsp := gjson.Parse(helper.BytesToString(payload))
+			gjson.Parse(helper.BytesToString(payload))
 			log.Println("收到JXApi推送", helper.BytesToString(payload))
-			sendNotice(rsp)
+			//sendNotice(rsp)
 		}
 	}
 }

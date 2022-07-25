@@ -27,6 +27,7 @@ type Config struct {
 	SecretKey string        `json:"secretKey"` // 腾讯npl
 	Picture   *PictureToken `json:"picture"`
 	JxChat    *[]Chat       `json:"jxChat"`
+	SignKey   string        `json:"signKey"`
 }
 
 type TTS struct {

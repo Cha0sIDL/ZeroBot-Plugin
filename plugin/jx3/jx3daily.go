@@ -1702,7 +1702,7 @@ func ts() string {
 
 func sign(data []byte) string {
 	data = util.BytesCombine(data, []byte("@#?.#@"))
-	key := []byte("MaYoaMQ3zpWJFWtN9mqJqKpHrkdFwLd9DDlFWk2NnVR1mChVRI6THVe6KsCnhpoR")
+	key := []byte(config.Cfg.SignKey)
 	h := hmac.New(sha256.New, key)
 	h.Write(data)
 	sha := hex.EncodeToString(h.Sum(nil))
