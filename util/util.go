@@ -458,3 +458,18 @@ func Deduplicate(data interface{}) interface{} {
 
 	return outArr.Interface()
 }
+
+func DiffTime(start int64, end int64) string {
+	diff := end - start
+	if diff > 60 {
+		min := diff / 60
+		sec := diff % 60
+		if sec > 0 {
+			return fmt.Sprintf("%d分%d秒", min, sec)
+		}
+		return fmt.Sprintf("%d分", min)
+
+	} else {
+		return fmt.Sprintf("%d秒", diff)
+	}
+}

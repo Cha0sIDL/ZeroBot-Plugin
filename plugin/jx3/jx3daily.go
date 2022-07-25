@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/tidwall/sjson"
 	"image"
 	"io"
 	"io/ioutil"
@@ -999,12 +1001,12 @@ func init() {
 			num, _ := db.Count(dbTalk)
 			ctx.SendChain(message.Text(fmt.Sprintf("更新成功,本次共更新%d条骚话", num)))
 		})
-	en.OnPrefixGroup([]string{"属性"}).SetBlock(true).Handle(
+	en.OnPrefixGroup([]string{"属性"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			attributes(ctx, datapath)
 		},
 	)
-	en.OnPrefixGroup([]string{"战绩"}).SetBlock(true).Handle(
+	en.OnPrefixGroup([]string{"战绩"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			indicator(ctx, datapath)
 		},
@@ -1288,7 +1290,6 @@ func updateTalk() error {
 }
 
 func indicator(ctx *zero.Ctx, datapath string) {
-	ts := ts()
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
 	if len(commandPart) != 2 {
 		ctx.SendChain(message.Text("参数输入有误！\n" + "战绩 绝代天骄 xxx"))
@@ -1306,7 +1307,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
 		}
-		body := struct {
+		_, err = getIndicator(struct {
 			RoleId string `json:"role_id"`
 			Server string `json:"server"`
 			Zone   string `json:"zone"`
@@ -1315,34 +1316,97 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			RoleId: gameRoleId,
 			Server: server,
 			Zone:   zone,
-			Ts:     ts,
+			Ts:     ts(),
+		})
+		if err != nil {
+			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
+			return
 		}
-		b, _ := json.Marshal(body)
-		xSk := sign(b)
-		client := resty.New()
-		res, err := client.R().
-			SetHeader("Content-Type", "application/json").
-			SetHeader("Host", "m.pvp.xoyo.com").
-			SetHeader("Connection", "keep-alive").
-			SetHeader("Accept", "application/json").
-			SetHeader("fromsys", "APP").
-			SetHeader("gamename", "jx3").
-			SetHeader("X-Sk", xSk).
-			SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
-			SetHeader("apiversion", "3").
-			SetHeader("platform", "ios").
-			SetHeader("token", (*config.Cfg.JxChat)[0].Token).
-			SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
-			SetHeader("Cache-Control", "no-cache").
-			SetHeader("clientkey", "1").
-			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
-			SetHeader("sign", "true").
-			SetBody(body).
-			Post("https://m.pvp.xoyo.com/role/indicator")
-		fmt.Println(string(res.Body()))
+		history, err := getPersonHistory(struct {
+			Ts       string `json:"ts"`
+			PersonId string `json:"person_id"`
+			Cursor   int    `json:"cursor"`
+			Size     int    `json:"size"`
+		}{
+			Ts:       ts(),
+			PersonId: gjson.Parse(user.Data).Get("body.msg.0.sPersonId").String(),
+			Size:     10,
+			Cursor:   0,
+		})
+		if err != nil {
+			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
+			return
+		}
+		historyStr := binary.BytesToString(history)
+		for idx, historyData := range gjson.Parse(historyStr).Get("data").Array() {
+			startTime := historyData.Get("start_time").Int()
+			endTime := historyData.Get("end_time").Int()
+			historyStr, _ = sjson.Set(historyStr, "data."+fmt.Sprintf("%d", idx)+".time",
+				util.DiffTime(startTime, endTime))
+			historyStr, _ = sjson.Set(historyStr, "data."+fmt.Sprintf("%d", idx)+".ago", carbon.CreateFromTimestamp(endTime).ToDateTimeString())
+		}
+		templateData := map[string]interface{}{
+			"name":   name,
+			"server": zone + "_" + server,
+			"data": map[string]interface{}{
+				"history": util.JsonToMap(historyStr),
+			}}
+		html := util.Template2html("match.html", templateData)
+		finName, err := util.Html2pic(datapath, name+"_match", "match.html", html)
+		ctx.SendChain(message.Image("file:///" + finName))
 	} else {
 		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
 	}
+}
+
+func getIndicator(body interface{}) ([]byte, error) {
+	xSk := sign(body)
+	client := resty.New()
+	res, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Host", "m.pvp.xoyo.com").
+		SetHeader("Connection", "keep-alive").
+		SetHeader("Accept", "application/json").
+		SetHeader("fromsys", "APP").
+		SetHeader("gamename", "jx3").
+		SetHeader("X-Sk", xSk).
+		SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
+		SetHeader("apiversion", "3").
+		SetHeader("platform", "ios").
+		SetHeader("token", (*config.Cfg.JxChat)[0].Token).
+		SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
+		SetHeader("Cache-Control", "no-cache").
+		SetHeader("clientkey", "1").
+		SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
+		SetHeader("sign", "true").
+		SetBody(body).
+		Post("https://m.pvp.xoyo.com/role/indicator")
+	return res.Body(), err
+}
+
+func getPersonHistory(body interface{}) ([]byte, error) {
+	xSk := sign(body)
+	client := resty.New()
+	res, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Host", "m.pvp.xoyo.com").
+		SetHeader("Connection", "keep-alive").
+		SetHeader("Accept", "application/json").
+		SetHeader("fromsys", "APP").
+		SetHeader("gamename", "jx3").
+		SetHeader("X-Sk", xSk).
+		SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
+		SetHeader("apiversion", "3").
+		SetHeader("platform", "ios").
+		SetHeader("token", (*config.Cfg.JxChat)[0].Token).
+		SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
+		SetHeader("Cache-Control", "no-cache").
+		SetHeader("clientkey", "1").
+		SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
+		SetHeader("sign", "true").
+		SetBody(body).
+		Post("https://m.pvp.xoyo.com/mine/match/person-history")
+	return res.Body(), err
 }
 
 func attributes(ctx *zero.Ctx, datapath string) {
@@ -1700,11 +1764,12 @@ func ts() string {
 	return carbon.Now().Layout("20060102150405", carbon.UTC) + util.Interface2String(carbon.Now(carbon.UTC).Millisecond())
 }
 
-func sign(data []byte) string {
-	data = util.BytesCombine(data, []byte("@#?.#@"))
+func sign(data interface{}) string {
+	bData, _ := json.Marshal(data)
+	CombineData := util.BytesCombine(bData, []byte("@#?.#@"))
 	key := []byte(config.Cfg.SignKey)
 	h := hmac.New(sha256.New, key)
-	h.Write(data)
+	h.Write(CombineData)
 	sha := hex.EncodeToString(h.Sum(nil))
 	return sha
 }

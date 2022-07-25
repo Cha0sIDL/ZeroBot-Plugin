@@ -2,6 +2,7 @@ package weather
 
 import (
 	"fmt"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"net/url"
 	"strings"
 
@@ -38,7 +39,7 @@ const (
 )
 
 func init() {
-	engine := control.Register(servicename, &control.Options{
+	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help:             "- xxx天气\n",
 		PublicDataFolder: "Weather",
