@@ -50,7 +50,7 @@ func (ws *wsClient) listen() {
 		if t == websocket.TextMessage {
 			gjson.Parse(helper.BytesToString(payload))
 			log.Println("收到JXApi推送", helper.BytesToString(payload))
-			//sendNotice(rsp)
+			// sendNotice(rsp)
 		}
 	}
 }
