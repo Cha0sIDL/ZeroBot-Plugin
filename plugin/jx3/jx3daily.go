@@ -1308,7 +1308,8 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
 		}
-		_, err = getIndicator(struct {
+		var data = make(map[string]interface{})
+		indicator, err := getIndicator(struct {
 			RoleId string `json:"role_id"`
 			Server string `json:"server"`
 			Zone   string `json:"zone"`
@@ -1323,6 +1324,39 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
 			return
 		}
+		strIndicator := binary.BytesToString(indicator)
+		templateData := map[string]interface{}{
+			"name":   gjson.Get(strIndicator, "data.role_info.name").String(),
+			"server": gjson.Get(strIndicator, "data.role_info.zone").String() + "_" + gjson.Get(strIndicator, "data.role_info.server").String(),
+			"data":   data,
+		}
+		performanceData := make(map[string]interface{})
+		for _, indicatorData := range gjson.Get(strIndicator, "data.indicator").Array() {
+			t := indicatorData.Get("type").String()
+			var key string
+			performance := indicatorData.Get("performance").IsObject()
+			if !performance {
+				continue
+			}
+			switch t {
+			case "2c":
+				key = "pvp2"
+			case "3c":
+				key = "pvp3"
+			case "5c":
+				key = "pvp5"
+			}
+			performanceData[key] = map[string]string{
+				"totalCount": indicatorData.Get("performance.total_count").String(),
+				"mvpCount":   indicatorData.Get("performance.mvp_count").String(),
+				"winCount":   indicatorData.Get("performance.win_count").String(),
+				"mmr":        indicatorData.Get("performance.mmr").String(),
+				"ranking":    indicatorData.Get("performance.ranking").String(),
+				"winRate":    fmt.Sprintf("%.2f", indicatorData.Get("performance.win_count").Float()/indicatorData.Get("performance.total_count").Float()*100),
+				"grade":      indicatorData.Get("performance.grade").String(),
+			}
+		}
+		data["performance"] = performanceData
 		history, err := getPersonHistory(struct {
 			Ts       string `json:"ts"`
 			PersonId string `json:"person_id"`
@@ -1346,12 +1380,8 @@ func indicator(ctx *zero.Ctx, datapath string) {
 				util.DiffTime(startTime, endTime))
 			historyStr, _ = sjson.Set(historyStr, "data."+fmt.Sprintf("%d", idx)+".ago", carbon.CreateFromTimestamp(endTime).ToDateTimeString())
 		}
-		templateData := map[string]interface{}{
-			"name":   name,
-			"server": zone + "_" + server,
-			"data": map[string]interface{}{
-				"history": util.JsonToMap(historyStr),
-			}}
+		data["history"] = util.JsonToMap(historyStr)
+		templateData["data"] = data
 		html := util.Template2html("match.html", templateData)
 		finName, err := util.Html2pic(datapath, name+"_match", "match.html", html)
 		ctx.SendChain(message.Image("file:///" + finName))
