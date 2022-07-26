@@ -15,6 +15,7 @@ import (
 	"net/http"
 	goUrl "net/url"
 	"os"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -290,7 +291,7 @@ func init() {
 			return true
 		})
 	})
-	if err == nil {
+	if err == nil && runtime.GOOS == "linux" {
 		c.Start()
 	}
 	go func() {
