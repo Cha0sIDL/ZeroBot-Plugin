@@ -4,10 +4,6 @@ package bilibili
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-	binary2 "github.com/FloatTech/zbputils/binary"
-	"github.com/go-resty/resty/v2"
-	"github.com/tidwall/gjson"
 	"image"
 	"image/color"
 	"os"
@@ -16,6 +12,12 @@ import (
 	"sort"
 	"strconv"
 	"time"
+
+	binary2 "github.com/FloatTech/zbputils/binary"
+	"github.com/go-resty/resty/v2"
+	"github.com/tidwall/gjson"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
