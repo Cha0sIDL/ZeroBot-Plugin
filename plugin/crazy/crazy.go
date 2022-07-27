@@ -117,15 +117,15 @@ func now() string {
 	}
 	switch {
 	case now < 6: // 凌晨
-		text = word["midnight"][rand.Intn(len(word["midnight"]))] + "\n 恰"
+		text = word["midnight"][rand.Intn(len(word["midnight"]))] + "\n恰"
 	case now >= 6 && now < 9:
-		text = word["breakfast"][rand.Intn(len(word["breakfast"]))] + "\n 恰"
+		text = word["breakfast"][rand.Intn(len(word["breakfast"]))] + "\n恰"
 	case now >= 9 && now < 14:
-		text = word["lunch"][rand.Intn(len(word["lunch"]))] + "\n 恰"
+		text = word["lunch"][rand.Intn(len(word["lunch"]))] + "\n恰"
 	case now >= 14 && now < 18:
-		text = word["snack"][rand.Intn(len(word["snack"]))] + "\n 恰"
+		text = word["snack"][rand.Intn(len(word["snack"]))] + "\n恰"
 	case now >= 18 && now < 24:
-		text = word["dinner"][rand.Intn(len(word["dinner"]))] + "\n 恰"
+		text = word["dinner"][rand.Intn(len(word["dinner"]))] + "\n恰"
 	}
 	return text
 }

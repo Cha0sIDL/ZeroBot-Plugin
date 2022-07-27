@@ -2,6 +2,7 @@ package chat_record
 
 import (
 	"os"
+	"strconv"
 	"sync"
 	"time"
 
@@ -27,8 +28,7 @@ func init() { // 插件主体
 		if file.IsNotExist(db.DBPath) {
 			_ = os.MkdirAll(dbpath, 0755)
 		}
-		db.Open(time.Hour * 24)
-		err := db.Create("record", &record{})
+		err := db.Open(time.Hour * 24)
 		if err != nil {
 			panic(err)
 		}
@@ -40,13 +40,14 @@ func init() { // 插件主体
 			go func() {
 				m.Lock()
 				defer m.Unlock()
-				var dbMsg string
-				for _, msg := range ctx.Event.Message {
-					dbMsg += msg.String() + "#Split#"
+				gidStr := strconv.FormatInt(ctx.Event.GroupID, 10)
+				err := db.Create(gidStr, &record{})
+				if err != nil {
+					return
 				}
-				db.Insert("record", &record{
+				db.Insert(gidStr, &record{
 					MId:     ctx.Event.MessageID,
-					Message: dbMsg,
+					Message: ctx.Event.RawMessage,
 					GroupId: ctx.Event.GroupID,
 					Time:    ctx.Event.Time,
 					UserID:  ctx.Event.UserID,
