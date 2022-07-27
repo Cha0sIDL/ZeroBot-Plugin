@@ -1034,7 +1034,7 @@ func daily(ctx *zero.Ctx, server string) {
 	riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
 	daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
 	if err != nil || gjson.Get(binary.BytesToString(daily), "code").Int() != 0 {
-		ctx.SendChain(message.Text("出错了联系管理员看看吧~"))
+		ctx.SendChain(util.HttpError()...)
 		return
 	}
 	for _, d := range gjson.Get(binary.BytesToString(daily), "data").Array() {
@@ -1074,7 +1074,7 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 		data, err := web.RequestDataWith(web.NewDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
 		strData := binary.BytesToString(data)
 		if err != nil || gjson.Get(strData, "code").Int() != 0 {
-			ctx.SendChain(message.Text("出错了，请稍后再试吧"))
+			ctx.SendChain(util.HttpError()...)
 			return
 		}
 		jin := gjson.Get(strData, fmt.Sprintf("data.%s", val[0]))

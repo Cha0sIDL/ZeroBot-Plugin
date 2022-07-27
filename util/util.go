@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/wdvxdr1123/ZeroBot/message"
 	"image"
 	"image/jpeg"
 	"io"
@@ -471,4 +472,10 @@ func DiffTime(start int64, end int64) string {
 	} else {
 		return fmt.Sprintf("%d秒", diff)
 	}
+}
+
+func HttpError() []message.MessageSegment {
+	var msg []message.MessageSegment
+	msg = append(msg, message.Text("垃圾服务器又抽风了，稍后再试试吧,,Ծ‸Ծ,,"))
+	return msg
 }

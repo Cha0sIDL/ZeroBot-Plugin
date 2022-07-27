@@ -4,6 +4,10 @@ package bilibili
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
+	binary2 "github.com/FloatTech/zbputils/binary"
+	"github.com/go-resty/resty/v2"
+	"github.com/tidwall/gjson"
 	"image"
 	"image/color"
 	"os"
@@ -38,7 +42,8 @@ func init() {
 			"- >user info [xxx]\n" +
 			"- 查成分 [xxx]\n" +
 			"- 设置b站cookie SESSDATA=82da790d,1663822823,06ecf*31\n" +
-			"- 更新vup",
+			"- 更新vup\n" +
+			"- [1-7]日新番",
 		PublicDataFolder: "Bilibili",
 	})
 	cachePath := engine.DataFolder() + "cache/"
@@ -274,6 +279,58 @@ func init() {
 				return
 			}
 			ctx.SendChain(message.Text("vup已更新"))
+		})
+	engine.OnRegex(`^(\d+)日新番`, zero.OnlyGroup).SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			day, _ := strconv.Atoi(ctx.State["regex_matched"].([]string)[1])
+			if day > 7 || day <= 0 {
+				ctx.SendChain(message.Text("只能查询7天内的番剧呢(•̀ᴗ• )"))
+				return
+			}
+			client := resty.New()
+			res, err := client.R().SetHeaders(map[string]string{
+				"accept":          "application/json, text/plain, */*",
+				"accept-encoding": "gzip, deflate",
+				"accept-language": "zh-CN,zh;q=0.9",
+				"origin":          "https://www.bilibili.com",
+				"referer":         "https://www.bilibili.com/",
+				"sec-fetch-dest":  "empty",
+				"sec-fetch-mode":  "cors",
+				"sec-fetch-site":  "same-site",
+				"user-agent":      web.RandUA(),
+			}).Post("https://bangumi.bilibili.com/web_api/timeline_global")
+			strJson := binary2.BytesToString(res.Body())
+			if err != nil || gjson.Get(strJson, "code").Int() != 0 {
+				ctx.SendChain(util.HttpError()...)
+				return
+			}
+			resArr := gjson.Get(strJson, "result").Array()
+			resArr = resArr[len(resArr)-7:]
+			var msg message.Message
+			for idx, data := range resArr {
+				if idx+1 > day {
+					break
+				}
+				var fakeNode []message.MessageSegment
+				date := data.Get("date").String()
+				week := data.Get("day_of_week").String()
+				fakeNode = append(fakeNode, message.Text(fmt.Sprintf("日期:%s,周%s\n", date, week)))
+				seasons := data.Get("seasons").Array()
+				for _, s := range seasons {
+					var m string
+					cover := s.Get("cover").String()
+					title := s.Get("title").String()
+					url := s.Get("url").String()
+					pubIndex := s.Get("pub_index").String()
+					m = fmt.Sprintf("%s\n地址:%s\n%s", title, url, pubIndex)
+					if s.Get("delay_index").Exists() {
+						m += "(本周停播)\n"
+					}
+					fakeNode = append(fakeNode, message.Text(m), message.Image(cover), message.Text(""))
+				}
+				msg = append(msg, ctxext.FakeSenderForwardNode(ctx, fakeNode...))
+			}
+			ctx.SendGroupForwardMessage(ctx.Event.GroupID, msg)
 		})
 }
 
