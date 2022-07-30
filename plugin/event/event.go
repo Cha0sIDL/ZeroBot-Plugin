@@ -1,10 +1,11 @@
 package event
 
 import (
-	"github.com/FloatTech/zbputils/ctxext"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/FloatTech/zbputils/ctxext"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
