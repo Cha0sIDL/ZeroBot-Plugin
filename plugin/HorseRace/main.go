@@ -2,16 +2,17 @@ package HorseRace
 
 import (
 	"fmt"
-	"sync"
-	"time"
-
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
+	"github.com/FloatTech/zbputils/img/text"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"github.com/wdvxdr1123/ZeroBot/utils/helper"
+	"sync"
+	"time"
 )
 
 type rwRace struct {
@@ -36,9 +37,7 @@ func init() {
 			race.Lock()
 			defer race.Unlock()
 			if val, ok := race.race[ctx.Event.GroupID]; ok {
-				if val.start == 0 && carbon.Now().Timestamp()-val.time < settingOverTime {
-					ctx.SendChain(message.Text(fmt.Sprintf("> 创建赛马比赛失败!\n> 原因:赫尔正在打扫赛马场...\n> 解决方案:等赫尔打扫完...\n> 可以在%d秒后开始下局比赛", settingOverTime-(carbon.Now().Timestamp()-val.time))))
-				} else if val.start == 1 {
+				if val.start == 1 {
 					ctx.SendChain(message.Text("一场赛马正在进行中..."))
 				} else {
 					race.race[ctx.Event.GroupID] = new(globalGame)
@@ -87,22 +86,27 @@ func init() {
 			defer race.Unlock()
 			if val, ok := race.race[ctx.Event.GroupID]; !ok {
 				ctx.SendChain(message.Text("赛马活动未开始，请输入“赛马创建”开场"))
+				return
 			} else {
 				if len(val.players) < minPlayer {
 					ctx.SendChain(message.Text(fmt.Sprintf("> 开始失败\n> 原因:赛马开局需要最少%d人参与", minPlayer)))
+					return
 				} else if val.start == 1 {
 					ctx.SendChain(message.Text("一场赛马正在进行中..."))
 					return
 				}
+				val.time = carbon.Now().Timestamp()
 				val.changStatus(1)
 				for race.race[ctx.Event.GroupID].start == 1 {
 					display := ""
 					val.roundAdd()
+					val.delBuffOvertime()
 					display += val.eventStart()
 					val.move()
 					display += val.display()
-					// ctx.SendChain(message.Text(display))
-					fmt.Println(display)
+					data, _ := text.RenderToBase64(display, text.FontFile, 250, 20)
+					ctx.SendChain(message.Image("base64://" + helper.BytesToString(data)))
+					//	ctx.SendChain(message.Text(display))
 					if val.isDieAll() {
 						delete(race.race, ctx.Event.GroupID)
 						ctx.SendChain(message.Text("比赛已结束，鉴定为无马生还"))
@@ -116,9 +120,14 @@ func init() {
 						ctx.SendChain(message.Text("比赛已结束，胜者为：" + winner))
 						return
 					}
-					time.Sleep(time.Second * 4)
+					time.Sleep(time.Second * 5)
 				}
 			}
+		})
+	engine.OnFullMatch("赛马事件重载", zero.SuperUserPermission).SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			initConfig(cacheDir)
+			ctx.SendChain(message.Text("事件重载成功共加载：", len(events), "条事件"))
 		})
 	engine.OnFullMatch("测试赛马", zero.OnlyGroup).SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {
@@ -146,6 +155,7 @@ func init() {
 			for race.race[123456].start == 1 {
 				display := ""
 				val.roundAdd()
+				race.race[123456].delBuffOvertime()
 				display += val.eventStart()
 				val.move()
 				display += val.display()

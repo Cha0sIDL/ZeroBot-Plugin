@@ -1,8 +1,6 @@
 package HorseRace
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
@@ -124,9 +122,8 @@ func (h *horse) move() int {
 	}
 	moveMin := 0
 	moveMax := 0
-	log.Println(h.selfBuff)
 	for i := 0; i < len(h.selfBuff); i++ {
-		if h.selfBuff[i].roundStart <= h.round {
+		if h.selfBuff[i].roundStart <= h.round && h.selfBuff[i].roundEnd >= h.round {
 			moveMin += h.selfBuff[i].moveMin
 			moveMax += h.selfBuff[i].moveMax
 		}
