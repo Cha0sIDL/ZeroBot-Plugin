@@ -2,6 +2,9 @@ package HorseRace
 
 import (
 	"fmt"
+	"sync"
+	"time"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
@@ -9,8 +12,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"sync"
-	"time"
 )
 
 type rwRace struct {
@@ -47,7 +48,6 @@ func init() {
 				race.race[ctx.Event.GroupID] = new(globalGame)
 				ctx.SendChain(message.Text("创建赛马成功"))
 			}
-
 		})
 	engine.OnPrefix("赛马加入", zero.OnlyGroup).SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {
@@ -101,7 +101,7 @@ func init() {
 					display += val.eventStart()
 					val.move()
 					display += val.display()
-					//ctx.SendChain(message.Text(display))
+					// ctx.SendChain(message.Text(display))
 					fmt.Println(display)
 					if val.isDieAll() {
 						delete(race.race, ctx.Event.GroupID)

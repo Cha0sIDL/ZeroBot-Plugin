@@ -1,9 +1,9 @@
 package HorseRace
 
 type horse struct {
-	horseName       string //马的名字
-	playerName      string //QQ名字
-	playerUid       int64  //QQ号
+	horseName       string // 马的名字
+	playerName      string // QQ名字
+	playerUid       int64  // QQ号
 	selfBuff        []buff
 	delayEvent      []event
 	round           int
@@ -12,16 +12,16 @@ type horse struct {
 	locationAdd     int
 }
 
-type globalGame struct { //全局游戏数据结构
+type globalGame struct { // 全局游戏数据结构
 	players      []horse
-	round        int //全局的回合数
-	start        int //用于控制游戏状态
+	round        int // 全局的回合数
+	start        int // 用于控制游戏状态
 	time         int64
 	raceOnlyKeys []string
 	events       []event
 }
 
-type buff struct { //buff结构
+type buff struct { // buff结构
 	buffName    string
 	roundStart  int
 	roundEnd    int
@@ -31,7 +31,7 @@ type buff struct { //buff结构
 	buffTag     string
 }
 
-type event struct { //配置事件的数据结构
+type event struct { // 配置事件的数据结构
 	RaceOnlyExist         int                `json:"race_only_exist,omitempty"`
 	EventName             string             `json:"event_name,omitempty"`
 	Describe              string             `json:"describe,omitempty"`
@@ -45,7 +45,7 @@ type event struct { //配置事件的数据结构
 	BuffTimeAdd           int                `json:"buff_time_add,omitempty"`
 	DelBuff               string             `json:"del_buff,omitempty"`
 	TrackExchangeLocation int                `json:"track_exchange_location,omitempty"`
-	RandomEventOnce       []probabilityEvent `json:"random_event_once,omitempty"` //修改了结构
+	RandomEventOnce       []probabilityEvent `json:"random_event_once,omitempty"` // 修改了结构
 	Die                   int                `json:"die,omitempty"`
 	DieName               string             `json:"die_name,omitempty"`
 	Away                  int                `json:"away,omitempty"`
@@ -58,7 +58,7 @@ type event struct { //配置事件的数据结构
 	Vertigo               int                `json:"vertigo,omitempty"`
 	Hiding                int                `json:"hiding,omitempty"`
 	OtherBuff             []string           `json:"other_buff,omitempty"`
-	RandomEvent           []probabilityEvent `json:"random_event,omitempty"` //修改了结构
+	RandomEvent           []probabilityEvent `json:"random_event,omitempty"` // 修改了结构
 	DelayEvent            []otherEvent       `json:"delay_event,omitempty"`
 	DelayEventSelf        []otherEvent       `json:"delay_event_self,omitempty"`
 	AnotherEvent          *event             `json:"another_event,omitempty"`

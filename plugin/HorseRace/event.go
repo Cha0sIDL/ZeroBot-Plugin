@@ -2,9 +2,11 @@ package HorseRace
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-	log "github.com/sirupsen/logrus"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
@@ -25,7 +27,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		targets = append(targets, i)
 	}
 	switch target {
-	case 0: //目标自己
+	case 0: // 目标自己
 		targets = []int{mover}
 		targetName1 = race.players[mover].horseName
 	case 1: //# 1为随机选择一个非自己的目标（即<1>）
@@ -37,7 +39,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 	case 3:
 		targets = append(targets[:mover], targets[mover+1:]...)
 		targetName1 = "其他所有马儿"
-	case 4: //随机一个目标
+	case 4: // 随机一个目标
 		util.Shuffle(targets)
 		targets = []int{targets[0]}
 		targetName1 = race.players[targets[0]].horseName
@@ -96,7 +98,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		randomEventOnceNum := len(randomEventOnce)
 		for _, i := range targets {
 			for j := 0; j < randomEventOnceNum; j++ {
-				//TODO 可能需要优化
+				// TODO 可能需要优化
 				randomEventOnceRate := util.Rand(0, randomEventOnce[randomEventOnceNum-1].Probability)
 				if randomEventOnceRate <= randomEventOnce[j].Probability {
 					eventOnce = randomEventOnce[j].Other
@@ -207,7 +209,7 @@ func eventMove(race globalGame, targets []int, move int) string {
 	return msg
 }
 
-//func eventTrackToLocation(race globalGame, targets []int, moveTo int) string {
+// func eventTrackToLocation(race globalGame, targets []int, moveTo int) string {
 //	var msg string
 //	for _, i := range targets {
 //		race.players[i].locationMoveToEvent(moveTo)

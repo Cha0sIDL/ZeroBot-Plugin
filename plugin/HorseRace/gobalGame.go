@@ -1,8 +1,9 @@
 package HorseRace
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	"math"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 func (global *globalGame) changStatus(status int) {

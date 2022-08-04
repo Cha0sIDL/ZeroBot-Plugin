@@ -1,8 +1,9 @@
 package HorseRace
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 //#=====替换为其他马,指定数据（用于天灾马系列事件）
