@@ -5,9 +5,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/FloatTech/zbputils/ctxext"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -132,6 +133,7 @@ func init() { // 来自mayuri的插件
 	}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			ctx.DeleteMessage(message.NewMessageIDFromString(ctx.Event.Message[0].Data["id"]))
+			ctx.DeleteMessage(message.NewMessageIDFromInteger(ctx.Event.MessageID.(int64)))
 			return
 		})
 	/*
