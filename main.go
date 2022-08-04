@@ -144,6 +144,8 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" // 一些自定义插件
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace" // 群内赛马小游戏
+
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //
