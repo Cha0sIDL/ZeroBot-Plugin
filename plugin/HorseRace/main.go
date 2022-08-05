@@ -179,7 +179,17 @@ func init() {
 				horseName:  "test2",
 				playerName: "test2",
 				playerUid:  654321,
-			})
+			},
+				horse{
+					horseName:  "test3",
+					playerName: "test3",
+					playerUid:  65432,
+				},
+				horse{
+					horseName:  "test4",
+					playerName: "test4",
+					playerUid:  6543,
+				})
 			race.Set("123456", &globalGame{
 				players:      players,
 				round:        0,
