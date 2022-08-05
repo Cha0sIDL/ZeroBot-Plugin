@@ -7,11 +7,11 @@ import (
 
 const (
 	// 跑道长度
-	settingTrackLength = 20
+	settingTrackLength = 15
 	// 随机位置事件，最小能到的跑道距离
 	settingRandomMinLength = 0
 	// 随机位置事件，最大能到的跑道距离
-	settingRandomMaxLength = 15
+	settingRandomMaxLength = 10
 	// 每回合基础移动力最小值
 	baseMoveMin = 1
 	// 每回合基础移动力最大值
