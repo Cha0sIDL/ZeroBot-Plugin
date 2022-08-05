@@ -34,21 +34,21 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		targets = append(targets[:mover], targets[mover+1:]...)
 		util.Shuffle(targets)
 		targetName1 = race.players[targets[0]].horseName
-	case 2: //所有人
+	case 2: // 所有人
 		targetName1 = "所有马儿"
-	case 3: //除自己外所有人
+	case 3: // 除自己外所有人
 		targets = append(targets[:mover], targets[mover+1:]...)
 		targetName1 = "其他所有马儿"
 	case 4: // 随机一个目标
 		util.Shuffle(targets)
 		targets = []int{targets[0]}
 		targetName1 = race.players[targets[0]].horseName
-	case 5: //自己和一个其他目标
+	case 5: // 自己和一个其他目标
 		targets = append(targets[:mover], targets[mover+1:]...)
 		util.Shuffle(targets)
 		targets = []int{targets[0], mover}
 		targetName1 = race.players[targets[0]].horseName
-	case 6: //随机一侧的马儿
+	case 6: // 随机一侧的马儿
 		max := len(targets)
 		min := 0
 		if mover >= max {
@@ -63,7 +63,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 			targets = []int{targets[0]}
 			targetName1 = race.players[targets[0]].horseName
 		}
-	case 7: //两侧的马儿
+	case 7: // 两侧的马儿
 		max := len(targets)
 		min := 0
 		targetName1 = fmt.Sprintf("在%s两侧的马儿", race.players[mover].horseName)
