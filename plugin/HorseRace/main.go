@@ -126,7 +126,7 @@ func init() {
 						}
 						winner := val.Winner()
 						if len(winner) != 0 {
-							ctx.SendChain(message.Text("> 比赛结束\n> 赫尔正在为您生成战报..."))
+							ctx.SendChain(message.Text(fmt.Sprintf("> 比赛结束\n> %s正在为您生成战报...", zero.BotConfig.NickName[0])))
 							time.Sleep(time.Second * 2)
 							race.Remove(strKey)
 							ctx.SendChain(message.Text("比赛已结束，胜者为：" + winner))
