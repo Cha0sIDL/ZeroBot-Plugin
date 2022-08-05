@@ -2,11 +2,13 @@ package HorseRace
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
-	cmap "github.com/orcaman/concurrent-map/v2"
-	log "github.com/sirupsen/logrus"
 	"sync"
 	"time"
+
+	cmap "github.com/orcaman/concurrent-map/v2"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"

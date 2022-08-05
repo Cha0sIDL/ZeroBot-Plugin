@@ -4,7 +4,7 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
-//#=====替换为其他马,指定数据（用于天灾马系列事件）
+// #=====替换为其他马,指定数据（用于天灾马系列事件）
 func (h *horse) replaceHorseEx(horseName string, uid int64, playerName string) {
 	h.horseName = horseName
 	h.playerUid = uid
@@ -24,7 +24,7 @@ func (h *horse) addBuff(buffs buff) {
 	h.selfBuff = append(h.selfBuff, buffs)
 }
 
-//#=====马儿指定buff移除：
+// #=====马儿指定buff移除：
 func (h *horse) delBuff(buffKey string) {
 	var buffs []buff
 	for i := 0; i < len(h.selfBuff); i++ {

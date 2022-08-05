@@ -9,7 +9,6 @@ type crazy struct {
 	Crazy string `db:"crazy"`
 }
 
-//
 type menu struct {
 	Menu string `db:"menu"`
 }

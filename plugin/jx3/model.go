@@ -22,7 +22,6 @@ type mental struct {
 	Relation    int    `db:"relation"`
 }
 
-//
 type jxControl struct {
 	GroupID int64  `db:"gid"`     // GroupID 群号
 	Disable bool   `db:"disable"` // Disable 是否启用推送

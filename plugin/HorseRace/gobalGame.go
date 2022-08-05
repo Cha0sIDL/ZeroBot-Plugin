@@ -50,14 +50,14 @@ func (global *globalGame) delBuffOvertime() {
 	}
 }
 
-//#所有马儿移动，移动计算已包含死亡/离开/止步判定
+// #所有马儿移动，移动计算已包含死亡/离开/止步判定
 func (global *globalGame) move() {
 	for i := 0; i < len(global.players); i++ {
 		global.players[i].locationMove()
 	}
 }
 
-//#所有马儿数据显示（须先移动)
+// #所有马儿数据显示（须先移动)
 func (global *globalGame) display() string {
 	display := ""
 	for i := 0; i < len(global.players); i++ {
@@ -66,7 +66,7 @@ func (global *globalGame) display() string {
 	return display
 }
 
-//#所有马儿是否死亡/离开
+// #所有马儿是否死亡/离开
 func (global *globalGame) isDieAll() bool {
 	for i := 0; i < len(global.players); i++ {
 		if global.players[i].isDie() == false && global.players[i].isAway() == false {
@@ -87,7 +87,7 @@ func (global *globalGame) Winner() string {
 	return winName
 }
 
-//#事件触发
+// #事件触发
 func (global *globalGame) eventStart() string {
 	eventDisplay := ""
 	var newDelayEvent []event
@@ -138,7 +138,7 @@ func (global *globalGame) eventStart() string {
 	return eventDisplay
 }
 
-//#事件唯一码查询
+// #事件唯一码查询
 func (global *globalGame) isRaceOnlyKeyIn(key string) bool {
 	for _, keys := range global.raceOnlyKeys {
 		if keys == key {
@@ -148,7 +148,7 @@ func (global *globalGame) isRaceOnlyKeyIn(key string) bool {
 	return false
 }
 
-//#事件唯一码增加
+// #事件唯一码增加
 func (global *globalGame) addRaceOnlyKey(key string) {
 	global.raceOnlyKeys = append(global.raceOnlyKeys, key)
 }

@@ -218,7 +218,7 @@ func eventMove(race globalGame, targets []int, move int) string {
 //	return msg
 //}
 
-//#移动对象至随机位置
+// #移动对象至随机位置
 func eventTrackRandomLocation(race globalGame, targets []int) string {
 	var msg string
 	for _, i := range targets {
