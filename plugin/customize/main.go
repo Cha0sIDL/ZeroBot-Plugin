@@ -34,7 +34,7 @@ func init() {
 		})
 	engine.OnCommandGroup([]string{"restart"}, zero.OnlyToMe, zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			os.Exit(1) //systemd会把服务拉起来
+			os.Exit(1) // systemd会把服务拉起来
 		})
 	engine.OnCommand("发送公告", zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
