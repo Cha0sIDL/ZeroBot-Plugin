@@ -22,6 +22,7 @@ func init() {
 		Help: "自定义插件集合\n" +
 			" - /kill\n" +
 			" - /发送公告\n" +
+			" - /restart\n" +
 			" - @bot给主人留言<内容>",
 	})
 	engine.OnCommandGroup([]string{"pause", "kill"}, zero.OnlyToMe, zero.SuperUserPermission).SetBlock(true).
@@ -30,6 +31,10 @@ func init() {
 			time.Sleep(time.Second * 5)
 			ctx.SendChain(message.Face(55))
 			os.Exit(0)
+		})
+	engine.OnCommandGroup([]string{"restart"}, zero.OnlyToMe, zero.SuperUserPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			os.Exit(1) //systemd会把服务拉起来
 		})
 	engine.OnCommand("发送公告", zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
