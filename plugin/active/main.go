@@ -49,7 +49,7 @@ func init() {
 			ctx.SendChain(message.Text("本群当前活跃度为:", active))
 		})
 	en.OnMessage(func(ctx *zero.Ctx) bool {
-		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx) && util.Ignore(ctx)
+		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx)
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			if zero.HasPicture(ctx) {
@@ -73,9 +73,7 @@ func init() {
 				}
 			} else {
 				msg := ctx.ExtractPlainText()
-				t := []string{"青云客", "腾讯", "小爱"}
-				util.Shuffle(t)
-				r := nlp.NewAIReply(t[0])
+				r := nlp.NewAIReply(util.RandSlice([]string{"青云客", "腾讯", "小爱"}).(string))
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 		})

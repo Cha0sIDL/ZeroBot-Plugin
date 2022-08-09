@@ -11,8 +11,6 @@ import (
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/file"
 	zero "github.com/wdvxdr1123/ZeroBot"
-
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 var m sync.Mutex
@@ -34,7 +32,7 @@ func init() { // 插件主体
 		}
 	}()
 	engine.OnMessage(func(ctx *zero.Ctx) bool {
-		return zero.OnlyGroup(ctx) && util.Ignore(ctx)
+		return zero.OnlyGroup(ctx)
 	}).SetBlock(false).Handle(
 		func(ctx *zero.Ctx) {
 			go func() {

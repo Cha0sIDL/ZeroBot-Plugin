@@ -7,8 +7,6 @@ import (
 
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
-
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
@@ -42,7 +40,7 @@ func init() {
 	instance.groupMsg = newGroupMsg()
 	engine.OnMessage(
 		func(ctx *zero.Ctx) bool {
-			return zero.OnlyGroup(ctx) && util.Ignore(ctx)
+			return zero.OnlyGroup(ctx)
 		}).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
 			instance.autoCopyAndJoinIn(ctx)

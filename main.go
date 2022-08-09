@@ -148,6 +148,8 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace" // 群内赛马小游戏
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
+
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //

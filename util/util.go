@@ -23,13 +23,11 @@ import (
 
 	"github.com/wdvxdr1123/ZeroBot/message"
 
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/zbputils/web"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/smallnest/rpcx/client"
-	zero "github.com/wdvxdr1123/ZeroBot"
-
-	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
 type Args struct {
@@ -317,14 +315,13 @@ func Shuffle(slice interface{}) { // 切片乱序
 	return
 }
 
-func Ignore(ctx *zero.Ctx) (rsp bool) {
-	rsp = true
-	for _, ignore := range config.Cfg.Ignore {
-		if ignore == ctx.ExtractPlainText() {
-			rsp = false
-		}
+func RandSlice(slice interface{}) interface{} { // 随机取切片
+	rv := reflect.ValueOf(slice)
+	if rv.Type().Kind() != reflect.Slice {
+		return slice
 	}
-	return
+	length := rv.Len()
+	return rv.Index(rand.Intn(length)).Interface()
 }
 
 // Unicode2Zh Unicode转中文
@@ -417,6 +414,7 @@ func Retry(tryTimes int, sleep time.Duration, f func() error) (err error) {
 	return fmt.Errorf("after %d attempts, last error: %v", tryTimes, err)
 }
 
+// RandStr 返回指定长度随机字符串
 func RandStr(length int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	bytes := []byte(str)
