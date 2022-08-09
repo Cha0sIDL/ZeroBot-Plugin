@@ -106,7 +106,7 @@ func init() { // 插件主体
 						"只能..一点点..哦?",
 					}[rand.Intn(23)],
 				))
-				//ctx.SendChain(message.Text("喂(#`O′) 戳", nickname, "干嘛！，我也要戳你！！！！"))
+				// ctx.SendChain(message.Text("喂(#`O′) 戳", nickname, "干嘛！，我也要戳你！！！！"))
 				time.Sleep(time.Second * 2)
 				for i := 0; i < util.Rand(1, 3); i++ {
 					ctx.Send(message.UnescapeCQCodeText(fmt.Sprintf("run[CQ:poke,qq=%d]", ctx.Event.UserID)))
