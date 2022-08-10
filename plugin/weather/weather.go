@@ -59,7 +59,7 @@ func init() {
 			JMap := util.MergeMap(util.JsonToMap(todayWeather), util.JsonToMap(dailyWeather), util.JsonToMap(warning))
 			JMap["city"] = cityName
 			html := util.Template2html("weather.html", JMap)
-			finName, err := util.Html2pic(datapath, util.TodayFileName(), "weather.html", html)
+			finName, err := util.Html2pic(datapath, util.TodayFileName(), html)
 			if city == "" {
 				ctx.SendChain(message.Text("你还没有输入城市名字呢！"))
 				return

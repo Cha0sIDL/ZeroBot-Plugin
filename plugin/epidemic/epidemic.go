@@ -95,7 +95,7 @@ func init() {
 					Width:  playwright.Float(1100),
 					Height: playwright.Float(450),
 				})
-			finName, err := util.Html2pic(datapath, util.TodayFileName(), "yiqing.html", html, Clip)
+			finName, err := util.Html2pic(datapath, util.TodayFileName(), html, Clip)
 			ctx.SendChain(
 				// message.Text(
 				//	"【", data.Name, "】疫情数据\n",

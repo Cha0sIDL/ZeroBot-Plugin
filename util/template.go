@@ -18,7 +18,7 @@ func Template2html(templateName string, arg pongo2.Context) string {
 	return out
 }
 
-func Html2pic(dataPath string, fileName string, pageName string, html string, Clip ...*playwright.PageScreenshotOptionsClip) (finName string, err error) {
+func Html2pic(dataPath string, fileName string, html string, Clip ...*playwright.PageScreenshotOptionsClip) (finName string, err error) {
 	pw, err := playwright.Run()
 	finName = ""
 	if err != nil {
@@ -36,7 +36,7 @@ func Html2pic(dataPath string, fileName string, pageName string, html string, Cl
 	if err != nil {
 		return
 	}
-	_, err = page.Goto(pageName)
+	_, err = page.Goto("")
 	if err != nil {
 		return
 	}

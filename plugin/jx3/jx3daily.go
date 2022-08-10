@@ -1086,7 +1086,7 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 		rsp += "数据来源万宝楼\n"
 		json.Unmarshal([]byte(jin.Get("trend").String()), &lineStruct)
 		html := jibPrice2line(lineStruct, datapath)
-		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), "price.html", html)
+		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), html)
 		ctx.SendChain(message.Text(rsp), message.Image("file:///"+finName))
 	} else {
 		ctx.SendChain(message.Text("没有找到这个服呢，你是不是乱输的哦~"))
@@ -1251,7 +1251,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 		}
 		lineHtml := priceData2line(price, datapath)
 		html := util.Template2html("price.html", d)
-		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), "price.html", html+lineHtml)
+		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), html+lineHtml)
 		controlCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
 			fileName: "file:///" + finName,
@@ -1384,7 +1384,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 		data["history"] = util.JsonToMap(historyStr)
 		templateData["data"] = data
 		html := util.Template2html("match.html", templateData)
-		finName, err := util.Html2pic(datapath, name+"_match", "match.html", html)
+		finName, err := util.Html2pic(datapath, name+"_match", html)
 		ctx.SendChain(message.Image("file:///" + finName))
 	} else {
 		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
@@ -1476,7 +1476,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 			"server": zone + "_" + server,
 			"data":   util.JsonToMap(jsonObj)}
 		html := util.Template2html("equip.html", templateData)
-		finName, err := util.Html2pic(datapath, name, "equip.html", html)
+		finName, err := util.Html2pic(datapath, name, html)
 		ctx.SendChain(message.Image("file:///" + finName))
 	} else {
 		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
