@@ -11,8 +11,8 @@ import (
 
 const (
 	serviceName     = "repeater"
-	maxRepeat       = 4 // 触发自动复读次数
-	msgTraceBackNum = 8 // 复读消息追溯条数，只根据前 5 条判定是否复读
+	maxRepeat       = 3 // 触发自动复读次数
+	msgTraceBackNum = 5 // 复读消息追溯条数，只根据前 5 条判定是否复读
 )
 
 type autoCopy struct {
