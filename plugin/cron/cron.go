@@ -2,7 +2,8 @@ package cron
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"strings"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
@@ -15,14 +16,15 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"strings"
+
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 const (
 	ServiceName = "cron"
 )
 
-//var history = make(map[int64]struct{}, 128)
+
 var history []int64
 
 var last = carbon.Now().Timestamp() - carbon.Now().Timestamp()%60
@@ -59,7 +61,7 @@ func sendMessage30s() {
 	})
 }
 
-//func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
+// func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 //	now := carbon.Now().Timestamp()
 //	data, _ := json.Marshal(map[string]string{
 //		"action":     "requestMonitorDataAction",
@@ -134,7 +136,7 @@ func sliceFind(id int64) bool {
 }
 
 func regionFind(str string) bool {
-	for key, _ := range provinces {
+	for key := range provinces {
 		if strings.Contains(str, key) {
 			return true
 		}
