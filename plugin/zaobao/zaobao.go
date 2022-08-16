@@ -9,10 +9,9 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
+	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/web"
 )
 
 const (
@@ -44,7 +43,7 @@ func init() { // 插件主体
 				ctx.SendChain(message.Text("ERROR:", err))
 				return
 			}
-			ctx.SendChain(message.Image(gjson.Get(binary.BytesToString(data), "imageUrl").String()))
+			ctx.SendChain(message.Image(gjson.Get(binarys.BytesToString(data), "imageUrl").String()))
 		})
 }
 
@@ -58,7 +57,7 @@ func getdata() error { // 获取图片链接并且下载
 	if err != nil {
 		return err
 	}
-	picdata, err = web.RequestDataWith(web.NewDefaultClient(), gjson.Get(binary.BytesToString(data), "url").String(), "GET", referer, ua)
+	picdata, err = web.RequestDataWith(web.NewDefaultClient(), gjson.Get(binarys.BytesToString(data), "url").String(), "GET", referer, ua)
 	if err != nil {
 		return err
 	}

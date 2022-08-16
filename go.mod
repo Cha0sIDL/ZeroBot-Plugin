@@ -3,11 +3,13 @@ module github.com/FloatTech/ZeroBot-Plugin
 go 1.18
 
 require (
+	github.com/Coloured-glaze/gg v1.3.2
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.5.0
+	github.com/FloatTech/AnimeAPI v1.5.1-0.20220816053000-8a1d0dd9500b
+	github.com/FloatTech/floatbox v0.0.0-20220816052111-cbf40c78757a
 	github.com/FloatTech/sqlite v0.3.3
 	github.com/FloatTech/zbpctrl v1.4.1-0.20220715042842-93f081cb0133
-	github.com/FloatTech/zbputils v1.5.1-0.20220811111557-511c3fc0b485
+	github.com/FloatTech/zbputils v1.5.1-0.20220816052531-0efa59cfb7b5
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v0.0.1
 	github.com/antchfx/htmlquery v1.2.5
@@ -22,6 +24,7 @@ require (
 	github.com/fumiama/sqlite3 v1.14.6
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-resty/resty/v2 v2.7.0
+	github.com/gogo/protobuf v1.3.2
 	github.com/golang-module/carbon/v2 v2.1.9
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.3.0
@@ -39,8 +42,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.8
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.473
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.473
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.475
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.475
 	github.com/tidwall/gjson v1.14.2
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
@@ -73,7 +76,6 @@ require (
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect

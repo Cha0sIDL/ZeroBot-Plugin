@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/FloatTech/zbputils/binary"
-	"github.com/FloatTech/zbputils/web"
+	binutils "github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/floatbox/web"
 	"github.com/tidwall/gjson"
 
 	"github.com/FloatTech/ZeroBot-Plugin/config"
@@ -46,7 +46,7 @@ func (*XiaoGuo) Picture(msg string) (data []string, err error) {
 		return
 	}
 	jsondata, _ := io.ReadAll(resp.Body)
-	gjson.Get(binary.BytesToString(jsondata), "data").ForEach(
+	gjson.Get(binutils.BytesToString(jsondata), "data").ForEach(
 		func(key, value gjson.Result) bool {
 			data = append(data, value.Get("imagelink").String())
 			return true

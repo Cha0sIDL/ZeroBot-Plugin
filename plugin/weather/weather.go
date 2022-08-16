@@ -7,11 +7,11 @@ import (
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
-	"github.com/FloatTech/zbputils/binary"
+	binutils "github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/floatbox/file"
+	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/file"
-	"github.com/FloatTech/zbputils/web"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -99,17 +99,17 @@ func init() {
 func getGeo(city string) string {
 	api := geoUrl + fmt.Sprintf("key=%s", config.Cfg.Weather) + "&location=" + url.QueryEscape(city)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
-	return binary.BytesToString(data)
+	return binutils.BytesToString(data)
 }
 
 func getWeather(apiType string, lat float64, lon float64) string {
 	api := weatherUrl + apiType + "?" + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
-	return binary.BytesToString(data)
+	return binutils.BytesToString(data)
 }
 
 func getWarning(lat float64, lon float64) string {
 	api := weatherWarningUrl + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
-	return binary.BytesToString(data)
+	return binutils.BytesToString(data)
 }

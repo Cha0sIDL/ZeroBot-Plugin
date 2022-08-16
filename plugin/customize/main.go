@@ -7,7 +7,7 @@ import (
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 
-	"github.com/FloatTech/zbputils/process"
+	"github.com/FloatTech/floatbox/process"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"

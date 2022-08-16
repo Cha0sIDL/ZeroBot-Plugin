@@ -2,16 +2,16 @@ package cron
 
 import (
 	"fmt"
+	"github.com/golang-module/carbon/v2"
 	"strings"
 
+	binutils "github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/floatbox/process"
+	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/process"
-	"github.com/FloatTech/zbputils/web"
 	"github.com/fumiama/cron"
 	"github.com/gogo/protobuf/sortkeys"
-	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -23,7 +23,6 @@ import (
 const (
 	ServiceName = "cron"
 )
-
 
 var history []int64
 
@@ -71,13 +70,13 @@ func sendMessage30s() {
 //	})
 //	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
 //	// data, _ := web.GetData("http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6")
-//	// gjson.Get(strings.Trim(binary.BytesToString(data), "()"), "shuju")
+//	// gjson.Get(strings.Trim(binutils.BytesToString(data), "()"), "shuju")
 //	rspData, err := web.PostData("http://api.dizhensubao.getui.com/api.htm", "application/json", bytes.NewReader(data))
 //	if err != nil {
 //		log.Errorln("cron error ", err)
 //		return
 //	}
-//	strData := binary.BytesToString(rspData)
+//	strData := binutils.BytesToString(rspData)
 //	for _, d := range gjson.Get(strData, "values").Array() {
 //		last = now
 //		_, ok := provinces[d.Get("loc_province").String()]
@@ -105,7 +104,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	if err != nil {
 		return
 	}
-	earth := gjson.Get(strings.Trim(binary.BytesToString(data), "()"), "shuju").Array()
+	earth := gjson.Get(strings.Trim(binutils.BytesToString(data), "()"), "shuju").Array()
 	count := len(history)
 	for _, earthData := range earth {
 		id := earthData.Get("id").Int()

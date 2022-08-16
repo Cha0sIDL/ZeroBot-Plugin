@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/FloatTech/zbputils/file"
+	"github.com/FloatTech/floatbox/file"
 	"github.com/flosch/pongo2/v5"
 	"github.com/playwright-community/playwright-go"
 )

@@ -22,10 +22,11 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/extension/rate"
 
 	// 画图
-	"github.com/FloatTech/zbputils/file"
+	"github.com/Coloured-glaze/gg"
+	fcext "github.com/FloatTech/floatbox/ctxext"
+	"github.com/FloatTech/floatbox/file"
+	"github.com/FloatTech/floatbox/img/writer"
 	"github.com/FloatTech/zbputils/img/text"
-	"github.com/FloatTech/zbputils/img/writer"
-	"github.com/fogleman/gg"
 )
 
 //nolint: asciicheck
@@ -289,7 +290,7 @@ func init() {
 			"--------------------------------\n以下技能每人只能三选一\n   CD12H，不跨天刷新\n--------------------------------\n" +
 			"- (娶|嫁)@对方QQ\n- 当[对方Q号|@对方QQ]的小三\n- 闹离婚",
 	})
-	getdb := ctxext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
+	getdb := fcext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		民政局.db.DBPath = engine.DataFolder() + "结婚登记表.db"
 		// 如果数据库不存在则下载
 		// _, _ = engine.GetLazyData("结婚登记表.db", false)

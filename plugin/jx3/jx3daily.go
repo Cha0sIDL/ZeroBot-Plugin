@@ -8,6 +8,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-resty/resty/v2"
+	"github.com/golang-module/carbon/v2"
+	"github.com/playwright-community/playwright-go"
 	"image"
 	"io"
 	"io/ioutil"
@@ -26,31 +29,26 @@ import (
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/tidwall/sjson"
 
-	"github.com/FloatTech/zbputils/process"
-	"github.com/go-resty/resty/v2"
-
 	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/floatbox/process"
 
 	"github.com/antchfx/htmlquery"
 
 	"github.com/fumiama/cron"
 
-	"github.com/playwright-community/playwright-go"
-
 	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/DanPlayer/timefinder"
-	"github.com/FloatTech/zbputils/binary"
+	binutils "github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/floatbox/file"
+	"github.com/FloatTech/floatbox/math"
+	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/file"
 	"github.com/FloatTech/zbputils/img/text"
-	"github.com/FloatTech/zbputils/math"
-	"github.com/FloatTech/zbputils/web"
 	"github.com/fogleman/gg"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -374,7 +372,7 @@ func init() {
 						}
 						data, _ := io.ReadAll(response.Body)
 						response.Body.Close()
-						strData := binary.BytesToString(data)
+						strData := binutils.BytesToString(data)
 						if gjson.Get(strData, "msg").String() != "success" {
 							ctx.SendChain(message.Text("请求出错了稍后再试试吧~"))
 							return
@@ -486,7 +484,7 @@ func init() {
 			mental := getMentalData(strings.Replace(name, " ", "", -1))
 			mentalUrl := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
 			data, err := web.RequestDataWith(web.NewDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
-			DataList := gjson.Get(binary.BytesToString(data), "data.list").Array()
+			DataList := gjson.Get(binutils.BytesToString(data), "data.list").Array()
 			if err != nil || len(DataList) == 0 {
 				ctx.SendChain(message.Text("出错了请检查参数或稍后试试吧~"))
 				return
@@ -531,14 +529,14 @@ func init() {
 	//			dbData := getAdventure(name)
 	//			if len(dbData.Pic) == 0 || carbon.Now().DiffAbsInSeconds(carbon.CreateFromTimestamp(dbData.Time)) > 3600*10 {
 	//				dwData, _ := web.GetData(fmt.Sprintf("https://node.jx3box.com/serendipities?name=%s", goUrl.QueryEscape(name)))
-	//				dwList := gjson.Get(binary.BytesToString(dwData), "list").Array()
+	//				dwList := gjson.Get(binutils.BytesToString(dwData), "list").Array()
 	//				if len(dwList) == 0 {
 	//					ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s呢，你是不是乱输的哦~", name)))
 	//					return
 	//				}
 	//				dwId := dwList[0].Get("dwID").String()
 	//				json, _ := web.GetData("https://icon.jx3box.com/pvx/serendipity/output/serendipity.json")
-	//				articleId := gjson.Get(binary.BytesToString(json), dwId).String()
+	//				articleId := gjson.Get(binutils.BytesToString(json), dwId).String()
 	//				articleUrl := fmt.Sprintf("https://www.jx3box.com/cj/#/view/%s", articleId)
 	//				pw, err := playwright.Run()
 	//				if err != nil {
@@ -594,14 +592,14 @@ func init() {
 				dbData := getAdventure(name)
 				if len(dbData.Pic) == 0 || carbon.Now().DiffAbsInSeconds(carbon.CreateFromTimestamp(dbData.Time)) > 3600*10 {
 					dwData, _ := web.GetData(fmt.Sprintf("https://node.jx3box.com/serendipities?name=%s", goUrl.QueryEscape(name)))
-					dwList := gjson.Get(binary.BytesToString(dwData), "list").Array()
+					dwList := gjson.Get(binutils.BytesToString(dwData), "list").Array()
 					if len(dwList) == 0 {
 						ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s呢，你是不是乱输的哦~", name)))
 						return
 					}
 					dwId := dwList[0].Get("dwID").String()
 					json, _ := web.GetData("https://icon.jx3box.com/pvx/serendipity/output/serendipity.json")
-					articleId := gjson.Get(binary.BytesToString(json), dwId).String()
+					articleId := gjson.Get(binutils.BytesToString(json), dwId).String()
 					articleUrl := fmt.Sprintf("https://www.jx3box.com/cj/#/view/%s", articleId)
 					pw, err := playwright.Run()
 					if err != nil {
@@ -944,11 +942,11 @@ func init() {
 			name := commandPart[1]
 			qiyuUrl := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
 			rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
-			if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 0 {
+			if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 0 {
 				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 				return
 			}
-			jData := gjson.Get(binary.BytesToString(rspData), "data.data")
+			jData := gjson.Get(binutils.BytesToString(rspData), "data.data")
 			if len(jData.String()) == 0 {
 				ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 				return
@@ -972,11 +970,11 @@ func init() {
 			// rspData, err := util.SendHttp(qiyuUrl, []byte(""))
 			////rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
 			////log.Errorln(qiyuUrl, string(rspData), "err", err)
-			// if err != nil || gjson.Get(binary.BytesToString(rspData), "code").Int() != 200 {
+			// if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 200 {
 			//	ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			//	return
 			//}
-			// jData := gjson.Get(binary.BytesToString(rspData), "result")
+			// jData := gjson.Get(binutils.BytesToString(rspData), "result")
 			// if len(jData.Array()) == 0 {
 			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 			//	return
@@ -1033,11 +1031,11 @@ func daily(ctx *zero.Ctx, server string) {
 	msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
 	riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
 	daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
-	if err != nil || gjson.Get(binary.BytesToString(daily), "code").Int() != 0 {
+	if err != nil || gjson.Get(binutils.BytesToString(daily), "code").Int() != 0 {
 		ctx.SendChain(util.HttpError()...)
 		return
 	}
-	for _, d := range gjson.Get(binary.BytesToString(daily), "data").Array() {
+	for _, d := range gjson.Get(binutils.BytesToString(daily), "data").Array() {
 		msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
 	}
 	for k := range tuiKey {
@@ -1050,10 +1048,10 @@ func daily(ctx *zero.Ctx, server string) {
 	}
 	meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
 	meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
-	if err != nil || gjson.Get(binary.BytesToString(meiData), "code").Int() != 0 {
+	if err != nil || gjson.Get(binutils.BytesToString(meiData), "code").Int() != 0 {
 		msg += "美人图：今天没有美人图呢~\n"
 	} else {
-		msg += "美人图：" + gjson.Get(binary.BytesToString(meiData), "data.name").String() + "\n"
+		msg += "美人图：" + gjson.Get(binutils.BytesToString(meiData), "data.name").String() + "\n"
 	}
 	msg += fmt.Sprintf("今日活动：%s\n", util.PrettyPrint(date[carbon.Now().Week()]))
 	msg += "--------------------------------\n"
@@ -1072,7 +1070,7 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 	server := commandPart[0]
 	if val, ok := allServer[server]; ok {
 		data, err := web.RequestDataWith(web.NewDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
-		strData := binary.BytesToString(data)
+		strData := binutils.BytesToString(data)
 		if err != nil || gjson.Get(strData, "code").Int() != 0 {
 			ctx.SendChain(util.HttpError()...)
 			return
@@ -1130,7 +1128,7 @@ func jibPrice2line(lineStruct []JinPrice, datapath string) string {
 	defer f.Close()
 	page.Render(io.MultiWriter(f))
 	html, _ := ioutil.ReadFile(datapath + "line.html")
-	return binary.BytesToString(html)
+	return binutils.BytesToString(html)
 }
 
 func drawJinLine(XName, YName string, xdata []string, data map[string][]string) *charts.Line {
@@ -1192,14 +1190,14 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 	} else {
 		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
 		rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
-		if err != nil || gjson.Get(binary.BytesToString(rspData), "state").Int() != 0 {
+		if err != nil || gjson.Get(binutils.BytesToString(rspData), "state").Int() != 0 {
 			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			return
 		}
-		if len(gjson.Get(binary.BytesToString(rspData), "data").Array()) == 0 { // 如果输入无数据则请求
+		if len(gjson.Get(binutils.BytesToString(rspData), "data").Array()) == 0 { // 如果输入无数据则请求
 			searchUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward/search?step=0&page=1&size=20&name=%s", goUrl.QueryEscape(name))
 			searchData, err := web.PostData(searchUrl, "application/x-www-form-urlencoded", nil)
-			searchList := gjson.Get(binary.BytesToString(searchData), "data.list").Array()
+			searchList := gjson.Get(binutils.BytesToString(searchData), "data.list").Array()
 			if err != nil || len(searchList) == 0 {
 				ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s，你是不是乱输的哦~", name)))
 				return
@@ -1214,7 +1212,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 			wujia(ctx, datapath, control+1)
 			return
 		}
-		goodid := gjson.Get(binary.BytesToString(rspData), "data.0.id").Int() // 获得商品id
+		goodid := gjson.Get(binutils.BytesToString(rspData), "data.0.id").Int() // 获得商品id
 		infoUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
 		wuJiaData, err := web.PostData(infoUrl, "application/x-www-form-urlencoded", nil)
 		json.Unmarshal(wuJiaData, &data)
@@ -1245,7 +1243,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 			}
 		}
 		d := map[string]interface{}{
-			"image": gjson.Get(binary.BytesToString(wujiaPic), "data.images.0.image"),
+			"image": gjson.Get(binutils.BytesToString(wujiaPic), "data.images.0.image"),
 			"name":  name,
 			"data":  price,
 		}
@@ -1269,7 +1267,7 @@ func updateTalk() error {
 	defer Mutex.Unlock()
 	for {
 		data, err := web.GetData(fmt.Sprintf(url, per, page))
-		jsonData := binary.BytesToString(data)
+		jsonData := binutils.BytesToString(data)
 		if err != nil {
 			return err
 		}
@@ -1325,7 +1323,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
 			return
 		}
-		strIndicator := binary.BytesToString(indicator)
+		strIndicator := binutils.BytesToString(indicator)
 		templateData := map[string]interface{}{
 			"name":   gjson.Get(strIndicator, "data.role_info.name").String(),
 			"server": gjson.Get(strIndicator, "data.role_info.zone").String() + "_" + gjson.Get(strIndicator, "data.role_info.server").String(),
@@ -1373,7 +1371,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
 			return
 		}
-		historyStr := binary.BytesToString(history)
+		historyStr := binutils.BytesToString(history)
 		for idx, historyData := range gjson.Parse(historyStr).Get("data").Array() {
 			startTime := historyData.Get("start_time").Int()
 			endTime := historyData.Get("end_time").Int()
@@ -1520,7 +1518,7 @@ func priceData2line(price map[string][]map[string]interface{}, datapath string) 
 	defer f.Close()
 	page.Render(io.MultiWriter(f))
 	html, _ := ioutil.ReadFile(datapath + "line.html")
-	return binary.BytesToString(html)
+	return binutils.BytesToString(html)
 }
 
 func drawLine(XName, YName string, x, data []string) *charts.Line {
@@ -1712,7 +1710,7 @@ func tuilan(tuiType string) string {
 		m = map[string]interface{}{"id": id}
 		b, _ := json.Marshal(m)
 		tuilanData, _ := web.PostData(url, "application/json", bytes.NewReader(b))
-		return binary.BytesToString(tuilanData)
+		return binutils.BytesToString(tuilanData)
 	} else {
 		return ""
 	}

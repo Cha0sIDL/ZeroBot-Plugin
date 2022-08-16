@@ -6,9 +6,9 @@ import (
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
-	"github.com/FloatTech/zbputils/binary"
+	binutils "github.com/FloatTech/floatbox/binary"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/web"
+	"github.com/FloatTech/floatbox/web"
 	"github.com/antchfx/htmlquery"
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -50,7 +50,7 @@ func getWeiboTrending(ctx *zero.Ctx) {
 		ctx.SendChain(msg)
 		return
 	}
-	json := gjson.Get(binary.BytesToString(data), "data").Array()
+	json := gjson.Get(binutils.BytesToString(data), "data").Array()
 	for idx, hot := range json {
 		if hot.Get("word").String() == "" {
 			continue
@@ -70,7 +70,7 @@ func getZhihuTrending(ctx *zero.Ctx) {
 		ctx.SendChain(msg)
 		return
 	}
-	json := gjson.Get(binary.BytesToString(data), "data").Array()
+	json := gjson.Get(binutils.BytesToString(data), "data").Array()
 	for idx, hot := range json {
 		if hot.Get("target.title").String() == "" {
 			continue
@@ -107,10 +107,10 @@ func getTouTiaoTrending(ctx *zero.Ctx) {
 		ctx.SendChain(msg)
 		return
 	}
-	if gjson.Get(binary.BytesToString(data), "msg").String() != "success" {
+	if gjson.Get(binutils.BytesToString(data), "msg").String() != "success" {
 		return
 	}
-	json := gjson.Get(binary.BytesToString(data), "data").Array()
+	json := gjson.Get(binutils.BytesToString(data), "data").Array()
 	for idx, hot := range json[0].Get("words").Array() {
 		if hot.Get("word").String() == "" {
 			continue

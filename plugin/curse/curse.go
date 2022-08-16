@@ -4,14 +4,15 @@ package curse
 import (
 	"time"
 
+	"github.com/FloatTech/floatbox/math"
+	"github.com/FloatTech/floatbox/process"
 	control "github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/math"
-	"github.com/FloatTech/zbputils/process"
 	"github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
+	fcext "github.com/FloatTech/floatbox/ctxext"
 	ctrl "github.com/FloatTech/zbpctrl"
 )
 
@@ -27,7 +28,7 @@ func init() {
 		PublicDataFolder: "Curse",
 	})
 
-	getdb := ctxext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
+	getdb := fcext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		db.DBPath = engine.DataFolder() + "curse.db"
 		_, err := engine.GetLazyData("curse.db", true)
 		if err != nil {

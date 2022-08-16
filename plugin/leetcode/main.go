@@ -8,7 +8,7 @@ import (
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/web"
+	"github.com/FloatTech/floatbox/web"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-resty/resty/v2"
 	"github.com/tidwall/gjson"

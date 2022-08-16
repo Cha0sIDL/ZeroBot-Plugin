@@ -13,13 +13,13 @@ import (
 
 	"github.com/google/uuid"
 
+	binutils "github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/floatbox/file"
+	"github.com/FloatTech/floatbox/process"
+	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/FloatTech/zbputils/binary"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/file"
-	"github.com/FloatTech/zbputils/process"
-	"github.com/FloatTech/zbputils/web"
 	"github.com/fumiama/cron"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -174,7 +174,7 @@ func getEpicGame() (gameInfo string, err error) {
 			}
 			data, _ := io.ReadAll(response.Body)
 			response.Body.Close()
-			gameInfo = binary.BytesToString(data)
+			gameInfo = binutils.BytesToString(data)
 			return
 		}
 	}

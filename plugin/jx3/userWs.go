@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/FloatTech/zbputils/binary"
+	binutils "github.com/FloatTech/floatbox/binary"
 	"github.com/RomiChan/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -68,11 +68,11 @@ func (ws *userWsClient) listen() {
 			ws.connect()
 		}
 		if t == websocket.TextMessage {
-			rsp := gjson.Parse(binary.BytesToString(payload))
+			rsp := gjson.Parse(binutils.BytesToString(payload))
 			if rsp.Get("cmd").Int() != 100120 {
 				continue
 			}
-			// log.Println("World Chat", binary.BytesToString(payload))
+			// log.Println("World Chat", binutils.BytesToString(payload))
 			server := rsp.Get("body.msg.0.extra.CenterID.0").String()
 			roleName := rsp.Get("body.msg.0.sName").String()
 			if len(roleName) == 0 || len(server) == 0 {
@@ -81,7 +81,7 @@ func (ws *userWsClient) listen() {
 			rw.Lock()
 			db.Insert(tableName, &User{
 				ID:   roleName + "_" + server,
-				Data: binary.BytesToString(payload),
+				Data: binutils.BytesToString(payload),
 			})
 			rw.Unlock()
 			time.Sleep(time.Millisecond * 500)
