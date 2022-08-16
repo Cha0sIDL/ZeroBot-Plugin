@@ -2,9 +2,10 @@ package HorseRace
 
 import (
 	"fmt"
-	"github.com/golang-module/carbon/v2"
 	"sync"
 	"time"
+
+	"github.com/golang-module/carbon/v2"
 
 	cmap "github.com/orcaman/concurrent-map/v2"
 	log "github.com/sirupsen/logrus"

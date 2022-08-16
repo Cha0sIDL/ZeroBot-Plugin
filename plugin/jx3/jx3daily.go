@@ -8,9 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-resty/resty/v2"
-	"github.com/golang-module/carbon/v2"
-	"github.com/playwright-community/playwright-go"
 	"image"
 	"io"
 	"io/ioutil"
@@ -26,11 +23,16 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/go-resty/resty/v2"
+	"github.com/golang-module/carbon/v2"
+	"github.com/playwright-community/playwright-go"
+
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/tidwall/sjson"
 
-	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/floatbox/process"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 
 	"github.com/antchfx/htmlquery"
 

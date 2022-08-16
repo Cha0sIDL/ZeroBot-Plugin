@@ -2,8 +2,9 @@ package cron
 
 import (
 	"fmt"
-	"github.com/golang-module/carbon/v2"
 	"strings"
+
+	"github.com/golang-module/carbon/v2"
 
 	binutils "github.com/FloatTech/floatbox/binary"
 	"github.com/FloatTech/floatbox/process"
@@ -96,7 +97,7 @@ func sendMessage30s() {
 //			}
 //		}
 //	}
-//} 883734530
+// } 883734530
 
 func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"

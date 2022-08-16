@@ -1,12 +1,13 @@
 package picture
 
 import (
-	"github.com/FloatTech/ZeroBot-Plugin/picture"
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+
+	"github.com/FloatTech/ZeroBot-Plugin/picture"
 )
 
 const (
