@@ -71,7 +71,7 @@ func init() {
 			}
 			data, time, err := queryEpidemic(city)
 			if err != nil {
-				ctx.SendChain(message.Text("ERROR:", err))
+				ctx.SendChain(message.Text("ERROR: ", err))
 				return
 			}
 			if data == nil {

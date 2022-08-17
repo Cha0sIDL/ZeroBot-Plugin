@@ -141,7 +141,7 @@ func cloud163(keyword string) (msg message.MessageSegment) {
 	requestURL := "https://music.cyrilstudio.top/search?keywords=" + url.QueryEscape(keyword)
 	data, err := web.GetData(requestURL)
 	if err != nil {
-		msg = message.Text("ERROR:", err)
+		msg = message.Text("ERROR: ", err)
 		return
 	}
 	msg = message.Music("163", gjson.ParseBytes(data).Get("result.songs.0.id").Int())
@@ -153,7 +153,7 @@ func qqmusic(keyword string) (msg message.MessageSegment) {
 	requestURL := "https://c.y.qq.com/splcloud/fcgi-bin/smartbox_new.fcg?key=" + url.QueryEscape(keyword)
 	data, err := web.RequestDataWith(web.NewDefaultClient(), requestURL, "GET", "", web.RandUA())
 	if err != nil {
-		msg = message.Text("ERROR:", err)
+		msg = message.Text("ERROR: ", err)
 		return
 	}
 	info := gjson.ParseBytes(data).Get("data.song.itemlist.0")
