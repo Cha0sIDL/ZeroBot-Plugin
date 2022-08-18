@@ -3,8 +3,6 @@ package manager
 
 import (
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/go-resty/resty/v2"
 	"io"
 	"math/rand"
 	"net/http"
@@ -13,6 +11,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/go-resty/resty/v2"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 
 	"github.com/FloatTech/floatbox/web"
 	ua "github.com/mileusna/useragent"
@@ -647,7 +649,7 @@ func init() { // 插件主体
 	})
 	engine.On("notice/group_upload").SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
-			if ctx.Event.File.Size > 268435456 { //256MB
+			if ctx.Event.File.Size > 268435456 { // 256MB
 				return
 			}
 			fileURL := ctx.GetThisGroupFileUrl(ctx.Event.File.BusID, ctx.Event.File.ID)
