@@ -28,6 +28,7 @@ type Config struct {
 	Picture   *PictureToken `json:"picture"`
 	JxChat    *[]Chat       `json:"jxChat"`
 	SignKey   string        `json:"signKey"`
+	KasKey    string        `json:"kasKey"` //卡巴斯基软件检测的key
 }
 
 type TTS struct {

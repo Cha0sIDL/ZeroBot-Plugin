@@ -3,9 +3,12 @@ package manager
 
 import (
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/go-resty/resty/v2"
 	"io"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -642,6 +645,39 @@ func init() { // 插件主体
 		time.Sleep(time.Second * 20)
 		ctx.DeleteMessage(delId)
 	})
+	engine.On("notice/group_upload").SetBlock(false).
+		Handle(func(ctx *zero.Ctx) {
+			if ctx.Event.File.Size > 268435456 { //256MB
+				return
+			}
+			fileURL := ctx.GetThisGroupFileUrl(ctx.Event.File.BusID, ctx.Event.File.ID)
+			data, err := web.GetData(fileURL)
+			if err != nil {
+				return
+			}
+			res, err := resty.New().R().SetHeaders(map[string]string{"x-api-key": config.Cfg.KasKey, "Content-Type": "application/octet-stream"}).SetBody(data).Post("https://opentip.kaspersky.com/api/v1/scan/file?filename=" + url.QueryEscape(ctx.Event.File.Name))
+			resJson := gjson.ParseBytes(res.Body())
+			fileStatus := resJson.Get("FileGeneralInfo.FileStatus").String()
+			switch fileStatus {
+			case "Malware":
+				fileStatus = "病毒"
+			case "Adware":
+				fileStatus = "广告"
+			case "Other":
+				fileStatus = "其他"
+			case "Pornware":
+				fileStatus = "色情"
+			case "Clean":
+				fileStatus = "安全"
+			case "NoThreats":
+				fileStatus = "无威胁"
+			case "NotCategorized":
+				fileStatus = "未分类"
+			default:
+				fileStatus = "未知"
+			}
+			ctx.SendChain(message.Text(ctx.Event.File.Name, "\n文件安全扫描结果:", fileStatus))
+		})
 }
 
 // 传入 ctx 和 welcome格式string 返回cq格式string  使用方法:welcometocq(ctx,w.Msg)
