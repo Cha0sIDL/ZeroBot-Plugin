@@ -130,6 +130,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
+
 	// 其他
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
