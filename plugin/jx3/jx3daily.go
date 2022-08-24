@@ -1706,17 +1706,39 @@ func sendNotice(payload gjson.Result) {
 }
 
 func tuilan(tuiType string) string {
-	url := "https://m.pvp.xoyo.com/activitygw/activity/calendar/detail"
-	m := make(map[string]interface{})
 	if id, ok := tuiKey[tuiType]; ok {
-		m = map[string]interface{}{"id": id}
-		b, _ := json.Marshal(m)
-		tuilanData, _ := web.PostData(url, "application/json", bytes.NewReader(b))
-		return binutils.BytesToString(tuilanData)
+		body := struct {
+			Id string `json:"id"`
+			Ts string `json:"ts"`
+		}{
+			Id: id,
+			Ts: ts(),
+		}
+		xSk := sign(body)
+		client := resty.New()
+		res, _ := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetHeader("Host", "m.pvp.xoyo.com").
+			SetHeader("Connection", "keep-alive").
+			SetHeader("Accept", "application/json").
+			SetHeader("fromsys", "APP").
+			SetHeader("gamename", "jx3").
+			SetHeader("X-Sk", xSk).
+			SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
+			SetHeader("apiversion", "3").
+			SetHeader("platform", "ios").
+			SetHeader("token", (*config.Cfg.JxChat)[0].Token).
+			SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
+			SetHeader("Cache-Control", "no-cache").
+			SetHeader("clientkey", "1").
+			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
+			SetHeader("sign", "true").
+			SetBody(body).
+			Post("https://m.pvp.xoyo.com/activitygw/activity/calendar/detail")
+		return binutils.BytesToString(res.Body())
 	} else {
 		return ""
 	}
-	return ""
 }
 
 func parseDate(msg string) int64 {
