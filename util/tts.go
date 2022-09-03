@@ -79,7 +79,7 @@ func TTS(FileName string, text string, param nls.SpeechSynthesisStartParam, AppK
 		ttsUserParam := new(TtsUserParam)
 		fout, err := os.OpenFile(FileName, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755)
 		ttsUserParam.F = fout
-		tts, err := nls.NewSpeechSynthesis(config, nil,
+		tts, err := nls.NewSpeechSynthesis(config, nil, false,
 			onTaskFailed, onSynthesisResult, nil,
 			onCompleted, onClose, ttsUserParam)
 		if err != nil {
