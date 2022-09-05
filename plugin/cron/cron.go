@@ -32,7 +32,7 @@ var last = carbon.Now().Timestamp() - carbon.Now().Timestamp()%60
 var provinces = map[string]struct{}{"河北": {}, "山西": {}, "辽宁": {}, "吉林": {}, "黑龙江": {}, "江苏": {}, "浙江": {}, "安徽": {}, "福建": {}, "江西": {}, "山东": {}, "河南": {}, "湖北": {}, "湖南": {}, "广东": {}, "海南": {}, "四川": {}, "贵州": {}, "云南": {}, "陕西": {}, "甘肃": {}, "青海": {}, "台湾": {}, "内蒙古": {}, "广西": {}, "西藏": {}, "宁夏": {}, "新疆": {}, "北京": {}, "天津": {}, "上海": {}, "重庆": {}, "香港": {}, "澳门": {}}
 
 func init() { // 一些定时器
-	c := cron.New()
+	c := cron.New(cron.WithChain(cron.SkipIfStillRunning(cron.DefaultLogger)))
 	_, err := c.AddFunc("@every 30s", func() { sendMessage30s() })
 	if err == nil {
 		c.Start()
@@ -109,7 +109,8 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	count := len(history)
 	for _, earthData := range earth {
 		id := earthData.Get("id").Int()
-		if count != 0 && !sliceFind(id) && regionFind(earthData.Get("LOCATION_C").String()) && earthData.Get("M").Float() > 3.5 {
+		if count != 0 && !sliceFind(id) && regionFind(earthData.Get("LOCATION_C").String()) && earthData.Get("M").Float() > 4.0 {
+			log.Errorln("corn history:", history)
 			for _, grpId := range grpIds {
 				ctx.SendGroupMessage(grpId, []message.MessageSegment{
 					message.Text(fmt.Sprintf("检测到 %s 于 %s 发生 %.1f 级地震，请处于震中位置人员注意安全~", earthData.Get("LOCATION_C").String(), earthData.Get("O_TIME").String(), earthData.Get("M").Float())),
@@ -120,9 +121,9 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		history = append(history, id)
 	}
 	util.SliceDeduplicate(&history)
-	if len(history) > 12 {
+	if len(history) > 20 {
 		sortkeys.Int64s(history)
-		history = history[len(history)-10:]
+		history = history[len(history)-15:]
 	}
 }
 
