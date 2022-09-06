@@ -2,7 +2,7 @@ package antiabuse
 
 import "sync"
 
-//Set defines HashSet structure
+
 type Set[T comparable] struct {
 	sync.RWMutex
 	m map[T]struct{}
