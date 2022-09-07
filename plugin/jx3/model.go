@@ -1,12 +1,12 @@
 package jx3
 
 import (
+	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"sort"
 	"strconv"
 	"sync"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // type JxDb gorm.DB
@@ -345,9 +345,18 @@ func updateAdventure(data *Adventure) {
 	rwMutex.RUnlock()
 }
 
-func insert(tableName string, data interface{}) error {
+func insert(tableName string, data interface{}, tryTime int) error {
 	var Mutex sync.Mutex
 	Mutex.Lock()
 	defer Mutex.Unlock()
-	return db.Insert(tableName, data)
+	for i := 1; i <= tryTime; i++ {
+		err := db.Insert(tableName, data)
+		if err == nil {
+			return err
+		}
+		if i == tryTime {
+			return errors.New("tryTime over")
+		}
+	}
+	return nil
 }

@@ -1596,7 +1596,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 			insert(dbIp, &Ip{
 				ID: key,
 				Ok: false,
-			})
+			}, 3)
 			continue
 		}
 		ipList[key] = status{
@@ -1606,7 +1606,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 		insert(dbIp, &Ip{
 			ID: key,
 			Ok: true,
-		})
+		}, 3)
 	}
 	for _, grpListData := range grpList {
 		server := grpListData.server
