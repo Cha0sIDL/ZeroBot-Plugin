@@ -3,10 +3,11 @@ package jx3
 import (
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"sort"
 	"strconv"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // type JxDb gorm.DB
