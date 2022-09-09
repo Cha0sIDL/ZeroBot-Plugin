@@ -1604,7 +1604,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 			continue
 		}
 		ipList[key].dbStatus = ip.Ok
-		//ipList[key] = &status{
+		// ipList[key] = &status{
 		//	serverStatus: true,
 		//	dbStatus:     ip.Ok,
 		//}
