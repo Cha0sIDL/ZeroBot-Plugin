@@ -1583,26 +1583,31 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 		serverStatus bool
 		dbStatus     bool
 	}
-	var ipList = make(map[string]status)
+	var ipList = make(map[string]*status)
 	for key, val := range serverIp {
 		var ip Ip
 		err := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
 		if err != nil {
 			continue
 		}
+		ipList[key] = &status{
+			serverStatus: true,
+			dbStatus:     true,
+		}
 		err = tcpGather(val, 3)
 		if err != nil {
-			ipList[key] = status{serverStatus: false, dbStatus: ip.Ok}
+			ipList[key] = &status{serverStatus: false, dbStatus: ip.Ok}
 			insert(dbIp, &Ip{
 				ID: key,
 				Ok: false,
 			}, 3)
 			continue
 		}
-		ipList[key] = status{
-			serverStatus: true,
-			dbStatus:     ip.Ok,
-		}
+		ipList[key].dbStatus = ip.Ok
+		//ipList[key] = &status{
+		//	serverStatus: true,
+		//	dbStatus:     ip.Ok,
+		//}
 		insert(dbIp, &Ip{
 			ID: key,
 			Ok: true,
@@ -1836,6 +1841,7 @@ func tcpGather(address string, tryTime int) error {
 			return err
 		}
 		if i == tryTime {
+			log.Errorln("tcpGather tryTime over")
 			return errors.New("tryTime over")
 		}
 	}
