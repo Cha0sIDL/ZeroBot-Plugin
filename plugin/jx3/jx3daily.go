@@ -1597,10 +1597,13 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 		err = tcpGather(val, 3)
 		if err != nil {
 			ipList[key] = &status{serverStatus: false, dbStatus: ip.Ok}
-			insert(dbIp, &Ip{
+			err := insert(dbIp, &Ip{
 				ID: key,
 				Ok: false,
 			}, 3)
+			if err != nil {
+				log.Errorln("tcpGather insert err", err)
+			}
 			continue
 		}
 		ipList[key].dbStatus = ip.Ok
@@ -1608,10 +1611,13 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 		//	serverStatus: true,
 		//	dbStatus:     ip.Ok,
 		//}
-		insert(dbIp, &Ip{
+		err = insert(dbIp, &Ip{
 			ID: key,
 			Ok: true,
 		}, 3)
+		if err != nil {
+			log.Errorln("insert err", err)
+		}
 	}
 	for _, grpListData := range grpList {
 		server := grpListData.server
@@ -1622,7 +1628,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 					if !s.serverStatus {
 						msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
 					}
-					log.Errorln("debug server", grpList, ipList)
+					log.Errorln("debug server", grpList, ipList[server])
 					ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 					process.SleepAbout1sTo2s()
 				}
