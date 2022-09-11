@@ -355,6 +355,7 @@ func insert(tableName string, data interface{}, tryTime int) error {
 		if err == nil {
 			return err
 		}
+		log.Errorln("jx3daily insert error", err)
 		if i == tryTime {
 			return errors.New("tryTime over")
 		}

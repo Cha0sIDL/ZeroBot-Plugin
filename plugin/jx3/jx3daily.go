@@ -1846,6 +1846,7 @@ func tcpGather(address string, tryTime int) error {
 			conn.Close()
 			return err
 		}
+		log.Errorln("tcpGather error", err)
 		if i == tryTime {
 			log.Errorln("tcpGather tryTime over")
 			return errors.New("tryTime over")
