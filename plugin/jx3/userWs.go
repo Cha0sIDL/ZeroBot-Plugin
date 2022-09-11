@@ -43,6 +43,7 @@ func (ws *userWsClient) connect() {
 RETRY:
 	conn, res, err := websocket.DefaultDialer.Dial(ws.url, ws.header)
 	for err != nil {
+		conn.Close()
 		log.Warnf("连接JXChat Websocket服务器时出现错误: %v", err)
 		time.Sleep(2 * time.Second) // 等待两秒后重新连接
 		goto RETRY

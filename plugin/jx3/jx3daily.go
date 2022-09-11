@@ -1629,7 +1629,8 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 						msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
 					}
 					log.Errorln("debug server", grpList, ipList[server])
-					ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
+					ctx.SendPrivateMessage(zero.BotConfig.SuperUsers[0], message.Text(msg))
+					//	ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
 					process.SleepAbout1sTo2s()
 				}
 			}
@@ -1661,7 +1662,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 		if canFind {
 			continue
 		}
-		err := db.Insert(dbNews, &data)
+		err := insert(dbNews, &data, 1)
 		if err != nil {
 			continue
 		}
