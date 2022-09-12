@@ -1887,8 +1887,8 @@ func sign(data interface{}) string {
 func tcpGather(address string, tryTime int) error {
 	for i := 1; i <= tryTime; i++ {
 		conn, err := net.DialTimeout("tcp", address, time.Second*5)
-		conn.Close()
 		if err == nil {
+			conn.Close()
 			return err
 		}
 		log.Errorln("tcpGather error", err)
