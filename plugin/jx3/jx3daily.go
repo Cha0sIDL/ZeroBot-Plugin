@@ -1578,7 +1578,7 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 	}
 }
 
-//func checkServer(ctx *zero.Ctx, grpList []GroupList) {
+// func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 //	type status struct {
 //		serverStatus bool
 //		dbStatus     bool
