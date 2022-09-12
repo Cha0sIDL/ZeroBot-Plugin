@@ -1578,60 +1578,104 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 	}
 }
 
+//func checkServer(ctx *zero.Ctx, grpList []GroupList) {
+//	type status struct {
+//		serverStatus bool
+//		dbStatus     bool
+//	}
+//	var ipList = make(map[string]*status)
+//	for key, val := range serverIp {
+//		var ip Ip
+//		err := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
+//		if err != nil {
+//			continue
+//		}
+//		ipList[key] = &status{
+//			serverStatus: true,
+//			dbStatus:     true,
+//		}
+//		err = tcpGather(val, 3)
+//		if err != nil {
+//			ipList[key] = &status{serverStatus: false, dbStatus: ip.Ok}
+//			err := insert(dbIp, &Ip{
+//				ID: key,
+//				Ok: false,
+//			}, 3)
+//			if err != nil {
+//				log.Errorln("tcpGather insert err", err)
+//			}
+//			continue
+//		}
+//		ipList[key].dbStatus = ip.Ok
+//		// ipList[key] = &status{
+//		//	serverStatus: true,
+//		//	dbStatus:     ip.Ok,
+//		//}
+//		err = insert(dbIp, &Ip{
+//			ID: key,
+//			Ok: true,
+//		}, 3)
+//		if err != nil {
+//			log.Errorln("insert err", err)
+//		}
+//	}
+//	for _, grpListData := range grpList {
+//		server := grpListData.server
+//		if _, ok := serverIp[server]; ok {
+//			if s, ok := ipList[server]; ok {
+//				msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
+//				if s.dbStatus != s.serverStatus {
+//					if !s.serverStatus {
+//						msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+//					}
+//					log.Errorln("debug server", grpList, ipList[server])
+//					ctx.SendPrivateMessage(zero.BotConfig.SuperUsers[0], message.Text(msg))
+//					//	ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
+//					process.SleepAbout1sTo2s()
+//				}
+//			}
+//		}
+//	}
+//}
+
+var serverStatus = make(map[string]bool)
+
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
+	log.Errorln("serverStatus", serverStatus)
+	lenServer := len(serverStatus)
 	type status struct {
 		serverStatus bool
 		dbStatus     bool
 	}
 	var ipList = make(map[string]*status)
 	for key, val := range serverIp {
-		var ip Ip
-		err := db.Find(dbIp, &ip, fmt.Sprintf("WHERE id = '%s'", key))
-		if err != nil {
-			continue
-		}
 		ipList[key] = &status{
 			serverStatus: true,
 			dbStatus:     true,
 		}
-		err = tcpGather(val, 3)
+		err := tcpGather(val, 3)
 		if err != nil {
-			ipList[key] = &status{serverStatus: false, dbStatus: ip.Ok}
-			err := insert(dbIp, &Ip{
-				ID: key,
-				Ok: false,
-			}, 3)
-			if err != nil {
-				log.Errorln("tcpGather insert err", err)
-			}
+			ipList[key] = &status{serverStatus: false, dbStatus: serverStatus[key]}
+			serverStatus[key] = false
 			continue
 		}
-		ipList[key].dbStatus = ip.Ok
-		// ipList[key] = &status{
-		//	serverStatus: true,
-		//	dbStatus:     ip.Ok,
-		//}
-		err = insert(dbIp, &Ip{
-			ID: key,
-			Ok: true,
-		}, 3)
-		if err != nil {
-			log.Errorln("insert err", err)
-		}
+		ipList[key].dbStatus = serverStatus[key]
+		serverStatus[key] = true
 	}
-	for _, grpListData := range grpList {
-		server := grpListData.server
-		if _, ok := serverIp[server]; ok {
-			if s, ok := ipList[server]; ok {
-				msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
-				if s.dbStatus != s.serverStatus {
-					if !s.serverStatus {
-						msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+	if lenServer != 0 {
+		for _, grpListData := range grpList {
+			server := grpListData.server
+			if _, ok := serverIp[server]; ok {
+				if s, ok := ipList[server]; ok {
+					msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
+					if s.dbStatus != s.serverStatus {
+						if !s.serverStatus {
+							msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
+						}
+						log.Errorln("debug server", grpList, ipList[server])
+						ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
+						process.SleepAbout1sTo2s()
 					}
-					log.Errorln("debug server", grpList, ipList[server])
-					ctx.SendPrivateMessage(zero.BotConfig.SuperUsers[0], message.Text(msg))
-					//	ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
-					process.SleepAbout1sTo2s()
 				}
 			}
 		}
