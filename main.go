@@ -131,36 +131,34 @@ import (
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// 其他
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
-
-	// 其他
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/event"      // 一些事件插件
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron" // 各种定时任务
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" // 力扣每日一题
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather" // 天气插件
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/game" // steam游戏查询
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" // 一些自定义插件
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace" // 群内赛马小游戏
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/event"      // 一些事件插件
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron" // 各种定时任务
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" // 力扣每日一题
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/logo"     // 头像生成
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/trending" // 热搜
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/weather" // 天气插件
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/game" // steam游戏查询
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" // 一些自定义插件
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace" // 群内赛马小游戏
+	//
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
