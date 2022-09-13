@@ -220,7 +220,7 @@ type GroupList struct {
 
 func init() {
 	go startWs()
-	//if config.Cfg.JxChat != nil {
+	// if config.Cfg.JxChat != nil {
 	//	for _, chat := range *config.Cfg.JxChat {
 	//		go startChatWs(chat)
 	//	}
