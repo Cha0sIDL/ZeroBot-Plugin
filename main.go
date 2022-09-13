@@ -140,10 +140,9 @@ import (
 	//
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
 	//
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/event"      // 一些事件插件
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
 	//
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron" // 各种定时任务
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cron" // 各种定时任务
 	//
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" // 力扣每日一题
 	//
