@@ -131,7 +131,7 @@ import (
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// 其他
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
