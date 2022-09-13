@@ -101,7 +101,7 @@ func sendMessage30s() {
 
 func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 	// "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=6"
-	data, err := web.GetData("http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=1")
+	data, err := util.ProxyHttp(web.NewDefaultClient(), "http://www.ceic.ac.cn/ajax/speedsearch?page=1&&num=1", "GET", "", web.RandUA(), nil)
 	if err != nil {
 		return
 	}
