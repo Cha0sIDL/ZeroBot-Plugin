@@ -220,11 +220,11 @@ type GroupList struct {
 
 func init() {
 	go startWs()
-	if config.Cfg.JxChat != nil {
-		for _, chat := range *config.Cfg.JxChat {
-			go startChatWs(chat)
-		}
-	}
+	//if config.Cfg.JxChat != nil {
+	//	for _, chat := range *config.Cfg.JxChat {
+	//		go startChatWs(chat)
+	//	}
+	//}
 	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
