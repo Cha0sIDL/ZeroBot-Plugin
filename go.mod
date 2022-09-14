@@ -45,8 +45,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.3
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.492
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.492
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.495
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.495
 	github.com/tidwall/gjson v1.14.2
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
