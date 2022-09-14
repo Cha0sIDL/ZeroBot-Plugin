@@ -39,7 +39,7 @@ func init() {
 			Help:             "小鸡词典\n -[查梗|小鸡词典][梗]",
 		},
 	)
-	engine.OnPrefix("小鸡词典").Limit(ctxext.LimitByGroup).SetBlock(true).Handle(
+	engine.OnPrefixGroup([]string{"小鸡词典", "查梗"}).Limit(ctxext.LimitByGroup).SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {
 			keyWord := strings.Trim(ctx.State["args"].(string), " ")
 
@@ -108,6 +108,11 @@ func parseKeyword(keyWord string) (definition gjson.Result, err error) {
 	if err != nil {
 		return
 	}
-	definition = gjson.Get(binary.BytesToString(data), "data.0.definitions.0")
+	for _, data := range gjson.Get(binary.BytesToString(data), "data").Array() {
+		if len(data.Get("definitions").Array()) > 0 {
+			definition = data.Get("definitions.0")
+			break
+		}
+	}
 	return
 }
