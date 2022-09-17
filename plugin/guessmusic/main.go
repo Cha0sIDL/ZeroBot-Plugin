@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/fs"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -32,7 +31,6 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/extension/single"
 
 	// 图片输出
-
 	"github.com/FloatTech/zbputils/img/text"
 )
 
@@ -343,7 +341,7 @@ func init() { // 插件主体
 			if cfg.Local {
 				err = os.MkdirAll(cfg.MusicPath, 0755)
 				if err == nil {
-					files, err := ioutil.ReadDir(cfg.MusicPath)
+					files, err := os.ReadDir(cfg.MusicPath)
 					if err == nil {
 						if len(files) == 0 {
 							ctx.SendChain(message.Text("缓存目录没有读取到任何歌单"))
@@ -636,7 +634,7 @@ func getcatlist(pathOfMusic string) error {
 		err = errors.Errorf("[生成文件夹错误]ERROR: %s", err)
 		return err
 	}
-	files, err := ioutil.ReadDir(pathOfMusic)
+	files, err := os.ReadDir(pathOfMusic)
 	if err != nil {
 		err = errors.Errorf("[读取本地列表错误]ERROR: %s", err)
 		return err
@@ -655,7 +653,7 @@ func musicLottery(mode, musicPath string) (musicName, pathOfMusic string, err er
 		err = errors.Errorf("[生成文件夹错误]ERROR: %s", err)
 		return
 	}
-	files, err := ioutil.ReadDir(pathOfMusic)
+	files, err := os.ReadDir(pathOfMusic)
 	if err != nil {
 		err = errors.Errorf("[读取本地列表错误]ERROR: %s", err)
 		return
@@ -709,7 +707,7 @@ func musicLottery(mode, musicPath string) (musicName, pathOfMusic string, err er
 	return
 }
 
-func getLocalMusic(files []fs.FileInfo) (musicName string) {
+func getLocalMusic(files []fs.DirEntry) (musicName string) {
 	if len(files) > 1 {
 		musicName = files[rand.Intn(len(files))].Name()
 	} else {
