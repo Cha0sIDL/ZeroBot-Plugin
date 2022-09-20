@@ -5,12 +5,12 @@ go 1.19
 require (
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.5.1-0.20220917063131-65960e3dce08
+	github.com/FloatTech/AnimeAPI v1.5.1-0.20220917124909-ae9e70781efe
 	github.com/FloatTech/floatbox v0.0.0-20220917062226-31fb3ec4b135
 	github.com/FloatTech/sqlite v0.3.3
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
-	github.com/FloatTech/zbpctrl v1.5.1
-	github.com/FloatTech/zbputils v1.5.1-0.20220917064026-d7be79292669
+	github.com/FloatTech/zbpctrl v1.5.2-0.20220919124954-6ab7f2656545
+	github.com/FloatTech/zbputils v1.5.1-0.20220919151529-ea4fc5c54947
 	github.com/RomiChan/syncx v0.0.0-20220404072119-d7ea0ae15a4c
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -20,7 +20,7 @@ require (
 	github.com/fogleman/gg v1.3.0
 	github.com/fumiama/ahsai v0.1.0
 	github.com/fumiama/cron v1.3.0
-	github.com/fumiama/go-base16384 v1.5.5
+	github.com/fumiama/go-base16384 v1.6.1
 	github.com/fumiama/go-registry v0.1.6
 	github.com/fumiama/gofastTEA v0.0.10
 	github.com/fumiama/gotracemoe v0.0.3
@@ -45,8 +45,8 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.8
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.498
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.498
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.500
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.500
 	github.com/tidwall/gjson v1.14.3
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
