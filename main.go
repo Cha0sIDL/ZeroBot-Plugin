@@ -70,7 +70,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili" // b站相关
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/book_review" // 哀伤雪刃吧推书记录
 
-	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/breakrepeat"   // 打断复读
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cangtoushi" // 藏头诗
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/char_reverser" // 英文字符翻转
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"       // 选择困难症帮手
@@ -112,7 +111,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/omikuji"       // 浅草寺求签
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/qqwife"        // 一群一天一夫一妻制群老婆
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/reborn"        // 投胎
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/runcode"       // 在线运行代码
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/saucenao"      // 以图搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/scale"         // 叔叔的AI二次元图片放大
@@ -184,6 +182,9 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"     // 人工智能回复
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机
+
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/breakrepeat" // 打断复读
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
