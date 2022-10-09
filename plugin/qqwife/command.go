@@ -61,7 +61,7 @@ func init() {
 		DisableOnDefault:  false,
 		PrivateDataFolder: "qqwife",
 		Help: "一群一天一夫一妻制群老婆\n（每天凌晨刷新CP）\n" +
-			"- 娶群友\n- 群老婆列表\n- 允许/禁止自由恋爱\n- 允许/禁止牛头人\n- 设置CD为xx小时    →(默认12小时)\n- 重置花名册\n" +
+			"- 娶群友\n- 群老婆列表\n- 允许/禁止自由恋爱\n- 允许/禁止牛头人\n- 设置CD为xx小时    →(默认12小时)\n- 重置花名册\n- 重置所有花名册(用于清除所有群数据及其设置)\n" +
 			"--------------------------------\n以下指令存在CD,不跨天刷新,前两个受指令开关\n--------------------------------\n" +
 			"- (娶|嫁)@对方QQ\n自由选择对象，自由恋爱(好感度越高成功率越高,保底30%概率)\n" +
 			"- 当[对方Q号|@对方QQ]的小三\n我和你才是真爱，为了你我愿意付出一切(好感度越高成功率越高,保底10%概率)\n" +
@@ -89,7 +89,7 @@ func init() {
 		return true
 	})
 	// 技能CD设置
-	engine.OnRegex(`^设置CD为(\d+)小时`, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).
+	engine.OnRegex(`^设置CD为(\d+)小时`, zero.OnlyGroup, zero.AdminPermission, getdb).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			cdTime, err := strconv.ParseFloat(ctx.State["regex_matched"].([]string)[1], 64)
 			if err != nil {
@@ -104,7 +104,7 @@ func init() {
 			}
 			ctx.SendChain(message.Text("设置成功"))
 		})
-	engine.OnRegex(`^(允许|禁止)(自由恋爱|牛头人)$`, zero.AdminPermission, getdb).SetBlock(true).
+	engine.OnRegex(`^(允许|禁止)(自由恋爱|牛头人)$`, zero.OnlyGroup, zero.AdminPermission, getdb).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			status := ctx.State["regex_matched"].([]string)[1]
 			mode := ctx.State["regex_matched"].([]string)[2]
@@ -161,7 +161,7 @@ func init() {
 			case status == "攻": // 娶过别人
 				ctx.SendChain(
 					message.At(uid),
-					message.Text("\n今天你已经娶过了，群老婆是"),
+					message.Text("\n今天你在", targetinfo.Updatetime, "娶了群友"),
 					message.Image("http://q4.qlogo.cn/g?b=qq&nk="+strconv.FormatInt(targetinfo.Target, 10)+"&s=640").Add("cache", 0),
 					message.Text(
 						"\n",
@@ -173,12 +173,12 @@ func init() {
 			case status == "受": // 嫁给别人
 				ctx.SendChain(
 					message.At(uid),
-					message.Text("\n今天你被娶了，群老公是"),
+					message.Text("\n今天你在", targetinfo.Updatetime, "被群友"),
 					message.Image("http://q4.qlogo.cn/g?b=qq&nk="+strconv.FormatInt(targetinfo.User, 10)+"&s=640").Add("cache", 0),
 					message.Text(
 						"\n",
 						"[", targetinfo.Username, "]",
-						"(", targetinfo.User, ")哒",
+						"(", targetinfo.User, ")娶了",
 					),
 				)
 				return
@@ -243,6 +243,11 @@ func init() {
 			uid := ctx.Event.UserID
 			choice := ctx.State["regex_matched"].([]string)[1]
 			fiancee, _ := strconv.ParseInt(ctx.State["regex_matched"].([]string)[2], 10, 64)
+			// 写入CD
+			err := 民政局.writeCDtime(gid, uid, 1)
+			if err != nil {
+				ctx.SendChain(message.At(uid), message.Text("[qqwife]你的技能CD记录失败\n", err))
+			}
 			if uid == fiancee { // 如果是自己
 				switch rand.Intn(3) {
 				case 1:
@@ -307,6 +312,11 @@ func init() {
 			uid := ctx.Event.UserID
 			fid := ctx.State["regex_matched"].([]string)
 			fiancee, _ := strconv.ParseInt(fid[2]+fid[3], 10, 64)
+			// 写入CD
+			err := 民政局.writeCDtime(gid, uid, 2)
+			if err != nil {
+				ctx.SendChain(message.At(uid), message.Text("[qqwife]你的技能CD记录失败\n", err))
+			}
 			if fiancee == uid {
 				ctx.SendChain(message.Text("今日获得成就：自我攻略"))
 				return
@@ -391,6 +401,11 @@ func init() {
 			uid := ctx.Event.UserID
 			gayOne, _ := strconv.ParseInt(ctx.State["regex_matched"].([]string)[1], 10, 64)
 			gayZero, _ := strconv.ParseInt(ctx.State["regex_matched"].([]string)[2], 10, 64)
+			// 写入CD
+			err := 民政局.writeCDtime(gid, uid, 3)
+			if err != nil {
+				ctx.SendChain(message.At(uid), message.Text("[qqwife]你的技能CD记录失败\n", err))
+			}
 			favor, err := 民政局.getFavorability(gayOne, gayZero)
 			if err != nil {
 				ctx.SendChain(message.Text("[qqwife]好感度库发生问题力\n", err))
@@ -447,6 +462,11 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			gid := ctx.Event.GroupID
 			uid := ctx.Event.UserID
+			// 写入CD
+			err := 民政局.writeCDtime(gid, uid, 4)
+			if err != nil {
+				ctx.SendChain(message.At(uid), message.Text("[qqwife]你的技能CD记录失败\n", err))
+			}
 			info, uidstatus, err := 民政局.查户口(gid, uid)
 			mun := 2
 			var fiancee int64
@@ -466,7 +486,10 @@ func init() {
 				ctx.SendChain(message.Text("[qqwife]好感度库发生问题力\n", err))
 				return
 			}
-			if rand.Intn(1+favor) > favor/10 {
+			if favor < 20 {
+				favor = 10
+			}
+			if rand.Intn(101) > 100-favor {
 				ctx.SendChain(message.Text(sendtext[3][rand.Intn(len(sendtext[3]))]))
 				return
 			}

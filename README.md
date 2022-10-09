@@ -396,6 +396,34 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
+  <summary>base64卦加解密</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/base64gua"`
+
+  - [x] 六十四卦加密xxx
+
+  - [x] 六十四卦解密xxx
+
+  - [x] 六十四卦用yyy加密xxx
+
+  - [x] 六十四卦用yyy解密xxx
+
+</details>
+<details>
+  <summary>base天城文加解密</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/baseamasiro"`
+
+  - [x] 天城文加密xxx
+
+  - [x] 天城文解密xxx
+
+  - [x] 天城文用yyy加密xxx
+
+  - [x] 天城文用yyy解密xxx
+
+</details>
+<details>
   <summary>bilibili</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili"`
@@ -470,14 +498,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>英文字符翻转</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/char_reverser"`
-
-  - [x] 翻转 [英文字符串]
-
-</details>
-<details>
   <summary>选择困难症帮手</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"`
@@ -491,6 +511,14 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/chouxianghua"`
 
   - [x] 抽象翻译[xxx]
+
+</details>
+<details>
+  <summary>英文字符翻转</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"`
+
+  - [x] 翻转 I love you
 
 </details>
 <details>
@@ -945,11 +973,11 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/runcode"`
 
-  - [x] > runcode [language] help
+  - [x] >runcode [language] help
 
-  - [x] > runcode [language] [code block]
+  - [x] >runcode [language] [code block]
 
-  - [x] > runcoderaw [language] [code block]
+  - [x] >runcoderaw [language] [code block]
 
 </details>
 <details>
@@ -960,6 +988,8 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 以图搜图 | 搜索图片 | 以图识图[图片]
 
   - [x] 搜图[P站图片ID]
+
+  - [x] 设置 saucenao api key [apikey]
 
 </details>
 <details>
