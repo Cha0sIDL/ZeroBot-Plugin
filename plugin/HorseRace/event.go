@@ -2,6 +2,7 @@ package HorseRace
 
 import (
 	"fmt"
+	"github.com/samber/lo"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -32,21 +33,18 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		targetName1 = race.players[mover].horseName
 	case 1: //# 1为随机选择一个非自己的目标（即<1>）
 		targets = append(targets[:mover], targets[mover+1:]...)
-		util.Shuffle(targets)
-		targetName1 = race.players[targets[0]].horseName
+		targetName1 = race.players[lo.Sample(targets)].horseName
 	case 2: // 所有人
 		targetName1 = "所有马儿"
 	case 3: // 除自己外所有人
 		targets = append(targets[:mover], targets[mover+1:]...)
 		targetName1 = "其他所有马儿"
 	case 4: // 随机一个目标
-		util.Shuffle(targets)
-		targets = []int{targets[0]}
+		targets = []int{lo.Sample(targets)}
 		targetName1 = race.players[targets[0]].horseName
 	case 5: // 自己和一个其他目标
 		targets = append(targets[:mover], targets[mover+1:]...)
-		util.Shuffle(targets)
-		targets = []int{targets[0], mover}
+		targets = []int{lo.Sample(targets), mover}
 		targetName1 = race.players[targets[0]].horseName
 	case 6: // 随机一侧的马儿
 		max := len(targets)
@@ -59,8 +57,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 			targetName1 = race.players[targets[0]].horseName
 		} else {
 			targets = []int{mover - 1, mover + 1}
-			util.Shuffle(targets)
-			targets = []int{targets[0]}
+			targets = []int{lo.Sample(targets)}
 			targetName1 = race.players[targets[0]].horseName
 		}
 	case 7: // 两侧的马儿

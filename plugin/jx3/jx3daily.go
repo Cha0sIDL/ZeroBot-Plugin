@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/samber/lo"
 	"image"
 	"io"
 	"io/ioutil"
@@ -809,7 +810,7 @@ func init() {
 		})
 	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			SignUp := util.RemoveRepByMap(getSignUp(ctx.Event.UserID))
+			SignUp := lo.Uniq(getSignUp(ctx.Event.UserID))
 			var InfoTeam []Team
 			for _, d := range SignUp {
 				Team := getEfficientTeamInfo(

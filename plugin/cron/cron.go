@@ -2,6 +2,7 @@ package cron
 
 import (
 	"fmt"
+	"github.com/samber/lo"
 	"strings"
 
 	"github.com/golang-module/carbon/v2"
@@ -120,7 +121,7 @@ func sendEarthquake(ctx *zero.Ctx, grpIds []int64) {
 		}
 		history = append(history, id)
 	}
-	util.SliceDeduplicate(&history)
+	history = lo.Uniq(history)
 	if len(history) > 20 {
 		sortkeys.Int64s(history)
 		history = history[len(history)-15:]

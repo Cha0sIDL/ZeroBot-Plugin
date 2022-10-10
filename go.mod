@@ -113,6 +113,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rubyist/circuitbreaker v2.2.1+incompatible // indirect
+	github.com/samber/lo v1.31.0 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/smallnest/quick v0.0.0-20220703133648-f13409fa6c67 // indirect
 	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect

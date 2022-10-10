@@ -100,30 +100,6 @@ func ProxyHttp(client *http.Client, url, method, referer, ua string, body io.Rea
 	return
 }
 
-func Max(l []float64) (max float64) {
-	max = l[0]
-	for _, v := range l {
-		if v > max {
-			max = v
-		}
-	}
-	return
-}
-
-func Min(l []float64) (min float64) {
-	min = l[0]
-	for _, v := range l {
-		if v < min {
-			min = v
-		}
-	}
-	return
-}
-
-func AppendAny(a interface{}, b interface{}) string {
-	return fmt.Sprintf("%v", a) + "-" + fmt.Sprintf("%v", b)
-}
-
 func Rand(min, max int) int {
 	if min >= max || max == 0 {
 		return max
@@ -279,25 +255,12 @@ func Image2Base64(image image.Image) []byte {
 	return buffer.Bytes()
 }
 
-// RemoveRepByMap 通过map主键唯一的特性过滤重复元素
-func RemoveRepByMap(slc []int) []int {
-	result := []int{}
-	tempMap := map[int]byte{} // 存放不重复主键
-	for _, e := range slc {
-		l := len(tempMap)
-		tempMap[e] = 0
-		if len(tempMap) != l { // 加入map后，map长度变化，则元素不重复
-			result = append(result, e)
-		}
-	}
-	return result
-}
-
 // SplitSpace 按空格分隔
 func SplitSpace(text string) []string {
 	return strings.Fields(strings.TrimSpace(text))
 }
 
+// Deprecated: Use lo.Shuffle instead.
 func Shuffle(slice interface{}) { // 切片乱序
 	rv := reflect.ValueOf(slice)
 	if rv.Type().Kind() != reflect.Slice {
@@ -392,29 +355,9 @@ func ConvertStrSlice2Map(sl []string) map[string]struct{} {
 	return set
 }
 
-// InMap 判断字符串是否在 map 中。
-func InMap(m map[string]struct{}, s string) bool {
-	_, ok := m[s]
-	return ok
-}
-
 // BytesCombine 将[]byte合并
 func BytesCombine(pBytes ...[]byte) []byte {
 	return bytes.Join(pBytes, []byte(""))
-}
-
-func Retry(tryTimes int, sleep time.Duration, f func() error) (err error) {
-	for i := 0; ; i++ {
-		err = f()
-		if err == nil {
-			return
-		}
-		if i >= (tryTimes - 1) {
-			break
-		}
-		time.Sleep(sleep)
-	}
-	return fmt.Errorf("after %d attempts, last error: %v", tryTimes, err)
 }
 
 // RandStr 返回指定长度随机字符串
@@ -430,6 +373,7 @@ func RandStr(length int) string {
 }
 
 // SliceDeduplicate 任意类型切片去重
+// Deprecated: Use lo.Uniq instead.
 func SliceDeduplicate(data interface{}) {
 	dataVal := reflect.ValueOf(data)
 	if dataVal.Kind() != reflect.Ptr {

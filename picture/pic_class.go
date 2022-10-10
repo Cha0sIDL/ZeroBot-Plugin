@@ -1,9 +1,8 @@
 package picture
 
 import (
+	"github.com/samber/lo"
 	"math/rand"
-
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 var (
@@ -28,8 +27,7 @@ func NewPicture(mode string) Picture {
 }
 
 func GetPicture(msg string) (url string) {
-	kind := []string{"木小果", "Al"}
-	util.Shuffle(kind)
+	kind := lo.Shuffle[string]([]string{"木小果", "Al"})
 	for _, k := range kind {
 		p := modeMap[k]
 		data, err := p.Picture(msg)

@@ -1,6 +1,7 @@
 package crazy
 
 import (
+	"github.com/samber/lo"
 	"math/rand"
 	"os"
 	"time"
@@ -12,8 +13,6 @@ import (
 	"github.com/FloatTech/zbputils/control"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-
-	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
 func init() { // 插件主体
@@ -73,7 +72,7 @@ func init() { // 插件主体
 				dSlice = append(dSlice, d)
 				return nil
 			})
-			util.Shuffle(dSlice)
+			dSlice = lo.Shuffle(dSlice)
 			for i := 0; i < rand.Intn(len(dSlice)); i++ {
 				msg += dSlice[i].Drink
 			}
