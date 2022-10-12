@@ -826,7 +826,7 @@ func downloadByOvooa(playlistID int64, musicPath string) (musicName string, err 
 // 通过独角兽API随机抽取歌单歌曲ID(参数：歌单ID)
 func drawByOvooa(playlistID int64) (musicID int, err error) {
 	apiURL := "https://ovooa.com/API/163_Music_Rand/api.php?id=" + strconv.FormatInt(playlistID, 10)
-		data, err = web.GetData(musicURL)
+	data, err := web.GetData(apiURL)
 	if err != nil {
 		return
 	}
