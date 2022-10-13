@@ -1642,7 +1642,6 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 var serverStatus = make(map[string]bool)
 
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
-	log.Errorln("serverStatus", serverStatus)
 	lenServer := len(serverStatus)
 	type status struct {
 		serverStatus bool
