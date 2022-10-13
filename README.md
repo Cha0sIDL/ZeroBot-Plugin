@@ -701,7 +701,9 @@ print("run[CQ:image,file="+j["img"]+"]")
   
   - [x] 猜歌[开启/关闭][歌单/歌词]自动下载
   
-  - [x] 添加歌单 [网易云歌单链接/ID] [歌单名称]
+  - 现只有歌词指令有效
+  
+  - [ ] 添加歌单 [网易云歌单链接/ID] [歌单名称]
   
   - [x] 下载歌曲 [歌曲名称/网易云歌曲ID] [歌单名称]
   
@@ -722,6 +724,14 @@ print("run[CQ:image,file="+j["img"]+"]")
   - 猜歌内容必须以[-]开头才会识别
   
   - 本地歌曲命名规则为:\n歌名 - 歌手 - 其他(歌曲出处之类)
+
+</details>
+<details>
+  <summary>黑丝</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"`
+
+  - [x] 来点黑丝/白丝/jk/巨乳/足控/网红
 
 </details>
 <details>
