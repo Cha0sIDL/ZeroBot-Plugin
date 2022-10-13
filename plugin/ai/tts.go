@@ -52,7 +52,7 @@ func init() {
 		DisableOnDefault: false,
 		Help:             "- @Bot 任意文本(任意一句话回复)",
 	})
-	en.OnPrefix("说话").SetBlock(true).Handle(
+	en.OnPrefix("复读").SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {
 			text := ctx.State["args"]
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
@@ -76,16 +76,6 @@ func init() {
 			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
 			err := util.TTS(VoiceFile, r.TalkPlain(msg, zero.BotConfig.NickName[0]), arg, getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
 			if err != nil {
-				// data := map[string]string{"appkey": getCfg().TTS.Appkey, "access": getCfg().TTS.Access, "secret": getCfg().TTS.Secret, "voice": getVoice(), "text": r.TalkPlain(msg)}
-				// reqbody, _ := json.Marshal(data)
-				// JX3 api 已弃用
-				// rsp, _ := util.SendHttp("https://www.jx3api.com/share/aliyun", reqbody)
-				// json := gjson.ParseBytes(rsp)
-				// if json.Get("code").Int() != 200 {
-				//	ctx.SendChain(message.Text(r.TalkPlain(msg)))
-				// } else {
-				//	ctx.SendChain(message.Record(json.Get("data.url").String()))
-				//}
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 			ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
