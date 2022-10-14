@@ -1335,7 +1335,7 @@ print("run[CQ:image,file="+j["img"]+"]")
 </details>
 
 <details>
-  <summary>搜索steam游戏,Epic喜加一订阅</summary>
+  <summary>力扣每日一题</summary>
 
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode"`
 
