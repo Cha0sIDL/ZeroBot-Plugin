@@ -1,7 +1,6 @@
 package jx3
 
 import (
-	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -1461,17 +1460,38 @@ func attributes(ctx *zero.Ctx, datapath string) {
 			return
 		}
 		gameRoleId := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
-		body, _ := json.Marshal(map[string]string{
-			"ts":           ts,
-			"game_role_id": gameRoleId,
+		body := map[string]string{
 			"server":       server,
 			"zone":         zone,
-		})
-		data, err := web.PostData("https://m.pvp.xoyo.com/mine/equip/get-role-equip", "application/json", bytes.NewReader(body))
+			"game_role_id": gameRoleId,
+			"ts":           ts,
+		}
+		xSk := sign(body)
+		client := resty.New()
+		data, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetHeader("Host", "m.pvp.xoyo.com").
+			SetHeader("Connection", "keep-alive").
+			SetHeader("Accept", "application/json").
+			SetHeader("fromsys", "APP").
+			SetHeader("gamename", "jx3").
+			SetHeader("X-Sk", xSk).
+			SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
+			SetHeader("apiversion", "3").
+			SetHeader("platform", "ios").
+			SetHeader("token", (*config.Cfg.JxChat)[0].Token).
+			SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
+			SetHeader("Cache-Control", "no-cache").
+			SetHeader("clientkey", "1").
+			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
+			SetHeader("sign", "true").
+			SetBody(body).
+			Post("https://m.pvp.xoyo.com/mine/equip/get-role-equip")
 		if err != nil {
 			ctx.SendChain(message.Text("请求出错了，稍后试试吧~"))
+			return
 		}
-		jsonObj := gjson.ParseBytes(data).Get("data").String()
+		jsonObj := gjson.ParseBytes(data.Body()).Get("data").String()
 		templateData := map[string]interface{}{
 			"name":   name,
 			"server": zone + "_" + server,
