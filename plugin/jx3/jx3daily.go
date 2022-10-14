@@ -1488,7 +1488,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 			SetBody(body).
 			Post("https://m.pvp.xoyo.com/mine/equip/get-role-equip")
 		if err != nil {
-			ctx.SendChain(message.Text("请求出错了，稍后试试吧~"))
+			ctx.SendChain(message.Text("请求出错了，稍后试试吧~", err))
 			return
 		}
 		jsonObj := gjson.ParseBytes(data.Body()).Get("data").String()
