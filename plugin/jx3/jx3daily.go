@@ -226,7 +226,7 @@ func init() {
 			go startChatWs(chat)
 		}
 	}
-	en := control.Register("jx", &ctrl.Options[*zero.Ctx]{
+	en := control.Register("jx3", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
 		Help: "- 日常任务|日常(eg 日常任务绝代天骄)\n" +
