@@ -1470,7 +1470,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		client := resty.New()
 		data, err := client.R().
 			SetHeader("Content-Type", "application/json").
-			SetHeader("Host", "m.pvp.xoyo.com").
+			//SetHeader("Host", "m.pvp.xoyo.com").
 			SetHeader("Connection", "keep-alive").
 			SetHeader("Accept", "application/json").
 			SetHeader("fromsys", "APP").
@@ -1485,8 +1485,9 @@ func attributes(ctx *zero.Ctx, datapath string) {
 			SetHeader("clientkey", "1").
 			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
 			SetHeader("sign", "true").
+			SetHeader("proxy", "https://m.pvp.xoyo.com/mine/equip/get-role-equip").
 			SetBody(body).
-			Post("https://m.pvp.xoyo.com/mine/equip/get-role-equip")
+			Post("https://http-go-http-proxy-jvuuzynfbg.cn-hangzhou.fcapp.run")
 		if err != nil {
 			ctx.SendChain(message.Text("请求出错了，稍后试试吧~", err))
 			return
