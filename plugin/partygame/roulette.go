@@ -1,4 +1,4 @@
-// Package partygame 轮盘赌游戏
+// Package partygame 轮盘游戏
 package partygame
 
 import (
@@ -18,7 +18,7 @@ var dieMsg = []string{
 	"你死了...",
 	"很不幸, 你死了......",
 	"你扣下了扳机\n你死了...",
-	"你拿着手枪掂了掂, 你赌枪里没有子弹\n然后很不幸, 你死了...",
+	"你拿着手枪掂了掂, 你枪里没有子弹\n然后很不幸, 你死了...",
 	"你是一个有故事的人, 但是子弹并不想知道这些, 它只看见了白花花的脑浆\n你死了",
 	"你没有想太多, 扣下了扳机。你感觉到有什么东西从你的旁边飞过, 然后意识陷入了黑暗\n你死了",
 	"大多数人对自己活着并不心存感激, 但你不再是了\n你死了...",
@@ -91,7 +91,7 @@ func init() { // 插件主体
 
 			// 创建会话
 			addSession(gid, uid, dataPath)
-			ctx.SendChain(message.Text("游戏开始, 目前有1位玩家, 最多还能再加入4名玩家, 发送\"加入轮盘\"加入游戏"))
+			ctx.SendChain(message.Text("游戏开始, 目前有1位玩家, 最多还能再加入2名玩家, 发送\"加入轮盘\"加入游戏"))
 		})
 
 	// 加入轮盘
@@ -153,7 +153,7 @@ func init() { // 插件主体
 			for {
 				select {
 				case <-tick.C:
-					ctx.SendChain(message.Text("轮盘游戏, 还有15s过期"))
+					ctx.SendChain(message.Text("轮盘, 还有15s过期"))
 				case <-after.C:
 					ctx.Send(
 						message.ReplyWithMessage(ctx.Event.MessageID,
@@ -183,13 +183,13 @@ func init() { // 插件主体
 						s.close()
 						ctx.SendChain(message.Text("你长舒了一口气, 并反手击毙了"), message.At(s.Users[1]))
 						c.Event.UserID = s.Users[1]
-						_ = getTruthOrDare(c)
+						getTruthOrDare(c)
 						return
 					}
 					if s.openFire() {
 						s.close()
 						ctx.SendChain(message.Text(dieMsg[rand.Intn(len(dieMsg))]))
-						_ = getTruthOrDare(c)
+						getTruthOrDare(c)
 						return
 					}
 					ctx.SendChain(message.Text(aliveMsg[rand.Intn(len(aliveMsg))]), message.Text(",轮到"), message.At(s.Users[1]), message.Text("开火"))

@@ -93,7 +93,7 @@ func addSession(gid, uid int64, dataPath string) {
 	cls.Creator = uid
 	cls.Users = append(cls.Users, uid)
 	cls.IsValid = false
-	cls.Max = 5
+	cls.Max = 3
 	cls.Cartridges = cls.rotateRoulette()
 	cls.ExpireTime = 300
 	cls.CreateTime = time.Now().Unix()
