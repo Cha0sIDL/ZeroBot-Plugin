@@ -1258,6 +1258,16 @@ print("run[CQ:image,file="+j["img"]+"]")
 </details>
 
 <details>
+  <summary>古风小姐姐</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"`
+
+- [x] 来张古风小姐姐的图
+
+
+</details>
+
+<details>
   <summary>明日方舟公招tag查询</summary>
 
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"`
@@ -1285,6 +1295,18 @@ print("run[CQ:image,file="+j["img"]+"]")
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"`
 
 - [x] [xxx]表情  可能会偶尔抽风
+
+
+</details>
+
+<details>
+  <summary>早报</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"`
+
+- [x] api早上8点更新，推荐定时在8点30后配合插件job中的记录在\"cron\"触发的指令使用\n
+ 记录在\"0 9 * * *\"触发的指令\n
+- 今日早报
 
 
 </details>
@@ -1380,6 +1402,33 @@ print("run[CQ:image,file="+j["img"]+"]")
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode"`
 
 - [x] (leetcode|力扣)每日一题，每日算法
+
+</details>
+
+<details>
+  <summary>群内赛马小游戏</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace"`
+
+- [x] 赛马创建
+- [x] 赛马加入xxx xxx为马儿的名字
+- [x] 赛马开始
+- [x] 赛马事件重载
+- [x] 赛马暂停
+- [x] 赛马继续
+
+</details>
+
+<details>
+  <summary>群内轮盘小游戏</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame"`
+
+- [x] 创建轮盘
+- [x] 加入轮盘
+- [x] 开始轮盘
+- [x] 开火
+- [x] 终止轮盘
 
 </details>
 
