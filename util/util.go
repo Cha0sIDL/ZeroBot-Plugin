@@ -281,6 +281,7 @@ func Shuffle(slice interface{}) { // 切片乱序
 	return
 }
 
+// Deprecated: Use lo.Sample instead.
 func RandSlice(slice interface{}) interface{} { // 随机取切片
 	rv := reflect.ValueOf(slice)
 	if rv.Type().Kind() != reflect.Slice {

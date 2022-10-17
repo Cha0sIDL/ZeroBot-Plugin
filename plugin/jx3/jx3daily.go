@@ -219,7 +219,7 @@ type GroupList struct {
 }
 
 func init() {
-	go startWs()
+	//	go startWs()
 	if config.Cfg.JxChat != nil {
 		for _, chat := range *config.Cfg.JxChat {
 			go startChatWs(chat)
@@ -249,7 +249,7 @@ func init() {
 			"- 物价xxx\n" +
 			"- 绑定区服xxx\n" +
 			"- 团队相关见 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB",
-	})
+	}).ApplySingle(ctxext.DefaultSingle)
 	c := cron.New(cron.WithChain(cron.Recover(cron.DefaultLogger), cron.SkipIfStillRunning(cron.DefaultLogger)))
 	_, err := c.AddFunc("0 5 * * *", func() {
 		err := updateTalk()
@@ -298,15 +298,15 @@ func init() {
 		initialize()
 	}()
 	datapath := file.BOTPATH + "/" + en.DataFolder()
-	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).
+	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			decorator(daily)(ctx)
 		})
-	en.OnFullMatch("开服").SetBlock(true).
+	en.OnFullMatch("开服").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			decorator(server)(ctx)
 		})
-	en.OnPrefixGroup([]string{"金价", "金价查询"}).SetBlock(true).
+	en.OnPrefixGroup([]string{"金价", "金价查询"}).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			jinjia(ctx, datapath)
 		})
@@ -340,7 +340,7 @@ func init() {
 				ctx.SendChain(message.Text(text))
 			}
 		})
-	en.OnPrefixGroup([]string{"沙盘"}).SetBlock(true).
+	en.OnPrefixGroup([]string{"沙盘"}).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) != 1 {
@@ -386,7 +386,7 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
-	en.OnRegex(`^(装饰属性|装饰)(.*)`).SetBlock(true).
+	en.OnRegex(`^(装饰属性|装饰)(.*)`).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["regex_matched"].([]string)[2]
 			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
@@ -434,7 +434,7 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Image(fileUrl + "medicine.png"))
 		})
-	en.OnSuffix("配装").SetBlock(true).
+	en.OnSuffix("配装").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
 			if len(name) == 0 {
@@ -480,7 +480,7 @@ func init() {
 	//			)
 	//		}
 	//	})
-	en.OnPrefix("宏").SetBlock(true).
+	en.OnPrefix("宏").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
 			mental := getMentalData(strings.Replace(name, " ", "", -1))
@@ -583,7 +583,7 @@ func init() {
 	//			}
 	//		}
 	//	})
-	en.OnPrefix("攻略").SetBlock(true).
+	en.OnPrefix("攻略").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) != 1 {

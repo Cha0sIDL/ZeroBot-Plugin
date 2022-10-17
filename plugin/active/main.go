@@ -3,6 +3,7 @@ package active
 import (
 	"errors"
 	"fmt"
+	"github.com/samber/lo"
 	"strconv"
 	"strings"
 
@@ -73,7 +74,7 @@ func init() {
 				}
 			} else {
 				msg := ctx.ExtractPlainText()
-				r := nlp.NewAIReply(util.RandSlice([]string{"青云客", "腾讯", "小爱"}).(string))
+				r := nlp.NewAIReply(lo.Sample([]string{"青云客", "腾讯", "小爱"}))
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 		})

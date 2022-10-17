@@ -3,6 +3,7 @@ package manager
 
 import (
 	"fmt"
+	"github.com/samber/lo"
 	"io"
 	"math/rand"
 	"net/http"
@@ -617,7 +618,7 @@ func init() { // 插件主体
 			"https://dss2.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/weather/icons/a1.png",
 			"https://www.baidu.com/img/flexible/logo/pc/result.png",
 			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/mancard/img/side/qrcode-hover@2x-f9b106a848.png"}
-		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", name, util.RandSlice(img).(string))
+		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", name, lo.Sample(img))
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
 		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))

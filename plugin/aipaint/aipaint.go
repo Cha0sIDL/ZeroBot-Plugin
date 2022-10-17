@@ -6,12 +6,19 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
+	tmt "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt/v20180321"
+	"github.com/tidwall/gjson"
 	"image"
 	"net/url"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/FloatTech/floatbox/binary"
 	"github.com/FloatTech/floatbox/file"
@@ -69,7 +76,11 @@ func init() { // 插件主体
 			}
 			ctx.SendChain(message.Text("少女祈祷中..."))
 			args := ctx.State["args"].(string)
-			data, err := web.GetData(server + fmt.Sprintf(aipaintTxt2ImgURL, token, url.QueryEscape(strings.TrimSpace(strings.ReplaceAll(args, " ", "%20")))))
+			tags := strings.TrimSpace(strings.ReplaceAll(args, " ", "%20"))
+			if IsChinese(tags) {
+				tags = tencentTl(tags)
+			}
+			data, err := web.GetData(server + fmt.Sprintf(aipaintTxt2ImgURL, token, url.QueryEscape(tags)))
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR: ", err))
 				return
@@ -96,7 +107,11 @@ func init() { // 插件主体
 				return
 			}
 			ctx.SendChain(message.Text("少女祈祷中..."))
-			postURL := server + fmt.Sprintf(aipaintImg2ImgURL, token, url.QueryEscape(strings.TrimSpace(strings.ReplaceAll(args, " ", "%20"))))
+			tags := strings.TrimSpace(strings.ReplaceAll(args, " ", "%20"))
+			if IsChinese(tags) {
+				tags = tencentTl(tags)
+			}
+			postURL := server + fmt.Sprintf(aipaintImg2ImgURL, token, url.QueryEscape(tags))
 
 			f, err := os.Open(c.headimgsdir[0])
 			if err != nil {
@@ -164,4 +179,37 @@ func sendAiImg(ctx *zero.Ctx, data []byte) {
 	if id := ctx.Send(m).ID(); id == 0 {
 		ctx.SendChain(message.Text("ERROR: 可能被风控或下载图片用时过长，请耐心等待"))
 	}
+}
+
+func IsChinese(str string) bool {
+	for _, v := range str {
+		if unicode.Is(unicode.Han, v) {
+			return true
+		}
+	}
+	return false
+}
+
+func tencentTl(str string) string {
+	credential := common.NewCredential(
+		config.Cfg.SecretId,
+		config.Cfg.SecretKey,
+	)
+	cpf := profile.NewClientProfile()
+	cpf.HttpProfile.Endpoint = "tmt.tencentcloudapi.com"
+	client, _ := tmt.NewClient(credential, "ap-hongkong", cpf)
+	request := tmt.NewTextTranslateRequest()
+	request.SourceText = common.StringPtr(str)
+	request.Source = common.StringPtr("auto")
+	request.Target = common.StringPtr("en")
+	request.ProjectId = common.Int64Ptr(0)
+	response, err := client.TextTranslate(request)
+	if _, ok := err.(*errors.TencentCloudSDKError); ok {
+		fmt.Printf("An API error has returned: %s", err)
+		return ""
+	}
+	if err != nil {
+		panic(err)
+	}
+	return gjson.Parse(response.ToJsonString()).Get("Response.TargetText").String()
 }
