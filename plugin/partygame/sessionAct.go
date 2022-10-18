@@ -38,6 +38,7 @@ func checkFile(path string) {
 }
 
 func saveItem(dataPath string, info Session) {
+	var has bool
 	interact := loadSessions(dataPath)
 	rlmu.Lock()
 	defer rlmu.Unlock()
@@ -47,8 +48,12 @@ func saveItem(dataPath string, info Session) {
 		for i, v := range interact {
 			if v.GroupID == info.GroupID {
 				interact[i] = info
+				has = true
 				break
 			}
+		}
+		if !has {
+			interact = append(interact, info)
 		}
 	}
 	bytes, err := json.Marshal(&interact)
@@ -56,7 +61,7 @@ func saveItem(dataPath string, info Session) {
 		panic(err)
 	}
 	// 将数据data写入文件filePath中，并且修改文件权限为755
-	if err = ioutil.WriteFile(dataPath, bytes, 0644); err != nil {
+	if err = os.WriteFile(dataPath, bytes, 0644); err != nil {
 		panic(err)
 	}
 }
