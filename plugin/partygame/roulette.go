@@ -91,9 +91,8 @@ func init() { // 插件主体
 
 			// 创建会话
 			addSession(gid, uid, dataPath)
-			ctx.SendChain(message.Text("游戏开始, 目前有1位玩家, 最多还能再加入2名玩家, 发送\"加入轮盘\"加入游戏"))
+			ctx.SendChain(message.Text("游戏开始, 目前有1位玩家, 最多还能再加入5名玩家, 发送\"加入轮盘\"加入游戏"))
 		})
-
 	// 加入轮盘
 	engine.OnFullMatch("加入轮盘", zero.OnlyGroup, checkSession).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
