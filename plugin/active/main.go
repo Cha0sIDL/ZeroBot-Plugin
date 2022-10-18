@@ -74,7 +74,7 @@ func init() {
 				}
 			} else {
 				msg := ctx.ExtractPlainText()
-				r := nlp.NewAIReply(lo.Sample([]string{"青云客", "腾讯", "小爱"}))
+				r := nlp.NewAIReply(lo.Sample([]string{"青云客", "腾讯"}))
 				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
 			}
 		})
