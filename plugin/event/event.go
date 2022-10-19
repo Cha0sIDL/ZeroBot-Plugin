@@ -90,6 +90,7 @@ func init() {
 				logrus.Info("[event]收到来自[", username, "](", userid, ")的好友申请")
 				if data.isapplyon() || (!data.ismasteroff() && zero.SuperUserPermission(ctx)) {
 					ctx.SetFriendAddRequest(ctx.Event.Flag, true, "")
+					sendMessage(ctx)
 					ctx.SendPrivateForwardMessage(su, message.Message{message.CustomNode(username, userid,
 						"已自动同意在"+now+"收到来自"+
 							"\n用户:["+username+"]("+strconv.FormatInt(userid, 10)+")"+
@@ -129,6 +130,7 @@ func init() {
 			switch org {
 			case "申请":
 				ctx.SetFriendAddRequest(flag, ok, other)
+				sendMessage(ctx)
 				ctx.SendPrivateMessage(su, message.Text("已", cmd, org))
 			case "邀请":
 				ctx.SetGroupAddRequest(flag, "invite", ok, other)
@@ -157,4 +159,9 @@ func init() {
 			}
 			ctx.SendChain(message.Text("已设置自动同意" + from + "为" + option))
 		})
+}
+
+func sendMessage(ctx *zero.Ctx) {
+	time.Sleep(time.Second * 3)
+	ctx.SendChain(message.Text("bot免费，为防止bot滥用，拉机器人入群请联系 " + strconv.FormatInt(zero.BotConfig.SuperUsers[0], 10)))
 }
