@@ -409,6 +409,27 @@ func init() {
 				json.Get("data.image_path").String(),
 			))
 		})
+	// en.OnRegex(`^前置(.*)`).SetBlock(true).
+	//	Handle(func(ctx *zero.Ctx) {
+	//		name := ctx.State["regex_matched"].([]string)[1]
+	//		data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
+	//		reqbody, err := json.Marshal(data)
+	//		rsp, err := util.SendHttp(url+"require", reqbody)
+	//		if err != nil {
+	//			log.Errorln("jx3daily:", err)
+	//		}
+	//		json := gjson.ParseBytes(rsp)
+	//		ctx.SendChain(
+	//			message.Text(
+	//				"名称：", json.Get("data.name"), "\n",
+	//				"方法：", json.Get("data.means"), "\n",
+	//				"前置：", json.Get("data.require"), "\n",
+	//				"奖励：", json.Get("data.reward"), "\n",
+	//			),
+	//			message.Image(
+	//				json.Get("data.upload").String()),
+	//		)
+	//	})
 	en.OnSuffix("小药").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Image(fileUrl + "medicine.png"))
@@ -436,6 +457,29 @@ func init() {
 				)
 			}
 		})
+	// en.OnSuffix("奇穴").SetBlock(true).
+	//	Handle(func(ctx *zero.Ctx) {
+	//		name := ctx.State["args"].(string)
+	//		if len(name) == 0 {
+	//			ctx.SendChain(message.Text("请输入职业！！！！"))
+	//		} else {
+	//			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
+	//			reqbody, err := json.Marshal(data)
+	//			rsp, err := util.SendHttp(url+"qixue", reqbody)
+	//			if err != nil {
+	//				log.Errorln("jx3daily:", err)
+	//			}
+	//			json := gjson.ParseBytes(rsp)
+	//			ctx.SendChain(
+	//				message.Text("通用：\n"),
+	//				message.Image(
+	//					json.Get("data.all").String()),
+	//				message.Text("\n吃鸡：\n"),
+	//				message.Image(
+	//					json.Get("data.longmen").String()),
+	//			)
+	//		}
+	//	})
 	en.OnPrefix("宏").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
@@ -1517,7 +1561,7 @@ func drawLine(XName, YName string, x, data []string) *charts.Line {
 		charts.WithLegendOpts(opts.Legend{Show: true, Bottom: "1px"}),
 	)
 	line.SetXAxis(x).
-		AddSeries("价格", generateLineData(data),
+		AddSeries("price", generateLineData(data),
 			charts.WithLabelOpts(opts.Label{Show: true, Position: "top"})).
 		SetSeriesOptions(
 			charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{
