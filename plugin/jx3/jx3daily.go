@@ -1016,15 +1016,16 @@ func init() {
 }
 
 func server(ctx *zero.Ctx, server string) {
-	if val, ok := serverIp[server]; ok {
-		ctx.SendChain(message.Text("正在尝试Ping ", server, "  ٩(๑´0`๑)۶"))
-		process.SleepAbout1sTo2s()
-		err := tcpGather(val, 3)
-		if err != nil {
-			ctx.SendChain(message.Text(server, " 垃圾服务器又在维护中  w(ﾟДﾟ)w~"))
-			return
+	if len(serverStatus) != 0 {
+		if _, ok := serverIp[server]; ok {
+			ctx.SendChain(message.Text("正在尝试Ping ", server, "  ٩(๑´0`๑)۶"))
+			process.SleepAbout1sTo2s()
+			if !serverStatus[server] {
+				ctx.SendChain(message.Text(server, " 垃圾服务器又在维护中  w(ﾟДﾟ)w~"))
+				return
+			}
+			ctx.SendChain(message.Text(server, " 已经开服啦ヽ(✿ﾟ▽ﾟ)ノ~"))
 		}
-		ctx.SendChain(message.Text(server, " 已经开服啦ヽ(✿ﾟ▽ﾟ)ノ~"))
 	}
 }
 
