@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-resty/resty/v2"
+	"github.com/golang-module/carbon/v2"
+	"github.com/playwright-community/playwright-go"
 	"github.com/samber/lo"
 	"image"
 	"io"
@@ -21,11 +24,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode/utf8"
-
-	"github.com/go-resty/resty/v2"
-	"github.com/golang-module/carbon/v2"
-	"github.com/playwright-community/playwright-go"
 
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/tidwall/sjson"
@@ -61,9 +59,7 @@ import (
 )
 
 const (
-	url        = "https://www.jx3api.com/app/"
 	realizeUrl = "https://www.jx3api.com/realize/"
-	cloudUrl   = "https://www.jx3api.com/cloud/"
 )
 
 var tuiKey = map[string]string{
@@ -306,39 +302,19 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			decorator(server)(ctx)
 		})
+	en.OnFullMatch("更新公告").SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			pic := util.ScreenShot("https://jx3.xoyo.com/launcher/update/latest.html")
+			ctx.SendChain(message.ImageBytes(pic))
+		})
+	en.OnFullMatch("技改").SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			pic := util.ScreenShot("https://jx3.xoyo.com/launcher/update/latest_exp.html")
+			ctx.SendChain(message.ImageBytes(pic))
+		})
 	en.OnPrefixGroup([]string{"金价", "金价查询"}).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			jinjia(ctx, datapath)
-		})
-	en.OnRegex(`^(花价|花价查询).*?\s(.*).*?\s(.*).*?\s(.*)`).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			server := ctx.State["regex_matched"].([]string)[2]
-			flower := ctx.State["regex_matched"].([]string)[3]
-			homeMap := ctx.State["regex_matched"].([]string)[4]
-			if len(server) == 0 {
-				ctx.SendChain(message.Text(
-					"请输入区服",
-				))
-			} else {
-				data := map[string]string{"server": strings.Replace(server, " ", "", -1), "flower": flower, "map": homeMap}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"flower", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
-				}
-				json := gjson.ParseBytes(rsp)
-				text := ""
-				for _, value := range json.Get("data").Array() {
-					value.ForEach(func(key, v gjson.Result) bool {
-						switch key.String() {
-						case "name", "color", "price":
-							text = text + key.String() + ":" + v.String() + "\n"
-						}
-						return true
-					})
-				}
-				ctx.SendChain(message.Text(text))
-			}
 		})
 	en.OnPrefixGroup([]string{"沙盘"}).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
@@ -386,100 +362,10 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
-	en.OnRegex(`^(装饰属性|装饰)(.*)`).SetBlock(true).Limit(ctxext.LimitByUser).
-		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["regex_matched"].([]string)[2]
-			data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
-			reqbody, err := json.Marshal(data)
-			rsp, err := util.SendHttp(url+"furniture", reqbody)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			json := gjson.ParseBytes(rsp)
-			ctx.SendChain(message.Text(
-				"名称：", json.Get("data.name"), "\n",
-				"品质：", json.Get("data.quality"), "\n",
-				"产出地图：", json.Get("data.source"), "\n",
-				"等级限制：", json.Get("data.level_limit"), "\n",
-				"品质等级：", json.Get("data.quality_level"), "\n",
-				"观赏分数：", json.Get("data.view_score"), "\n",
-				"实用分数：", json.Get("data.practical_score"), "\n",
-				"tips：", json.Get("data.tip"), "\n",
-			), message.Image(
-				json.Get("data.image_path").String(),
-			))
-		})
-	// en.OnRegex(`^前置(.*)`).SetBlock(true).
-	//	Handle(func(ctx *zero.Ctx) {
-	//		name := ctx.State["regex_matched"].([]string)[1]
-	//		data := map[string]string{"name": strings.Replace(name, " ", "", -1)}
-	//		reqbody, err := json.Marshal(data)
-	//		rsp, err := util.SendHttp(url+"require", reqbody)
-	//		if err != nil {
-	//			log.Errorln("jx3daily:", err)
-	//		}
-	//		json := gjson.ParseBytes(rsp)
-	//		ctx.SendChain(
-	//			message.Text(
-	//				"名称：", json.Get("data.name"), "\n",
-	//				"方法：", json.Get("data.means"), "\n",
-	//				"前置：", json.Get("data.require"), "\n",
-	//				"奖励：", json.Get("data.reward"), "\n",
-	//			),
-	//			message.Image(
-	//				json.Get("data.upload").String()),
-	//		)
-	//	})
 	en.OnSuffix("小药").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			ctx.SendChain(message.Image(fileUrl + "medicine.png"))
 		})
-	en.OnSuffix("配装").SetBlock(true).Limit(ctxext.LimitByUser).
-		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["args"].(string)
-			if len(name) == 0 {
-				ctx.SendChain(message.Text("请输入职业！！！！"))
-			} else {
-				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"equip", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
-				}
-				json := gjson.ParseBytes(rsp)
-				ctx.SendChain(
-					message.Text("PVE：\n"),
-					message.Image(
-						json.Get("data.pve").String()),
-					message.Text("\nPVP：\n"),
-					message.Image(
-						json.Get("data.pvp").String()),
-				)
-			}
-		})
-	// en.OnSuffix("奇穴").SetBlock(true).
-	//	Handle(func(ctx *zero.Ctx) {
-	//		name := ctx.State["args"].(string)
-	//		if len(name) == 0 {
-	//			ctx.SendChain(message.Text("请输入职业！！！！"))
-	//		} else {
-	//			data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-	//			reqbody, err := json.Marshal(data)
-	//			rsp, err := util.SendHttp(url+"qixue", reqbody)
-	//			if err != nil {
-	//				log.Errorln("jx3daily:", err)
-	//			}
-	//			json := gjson.ParseBytes(rsp)
-	//			ctx.SendChain(
-	//				message.Text("通用：\n"),
-	//				message.Image(
-	//					json.Get("data.all").String()),
-	//				message.Text("\n吃鸡：\n"),
-	//				message.Image(
-	//					json.Get("data.longmen").String()),
-	//			)
-	//		}
-	//	})
 	en.OnPrefix("宏").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
@@ -504,22 +390,6 @@ func init() {
 				rsp += "数据来源于JXBOX，dps请自行测试"
 				ctx.SendChain(message.Text(rsp))
 				time.Sleep(time.Second * 4)
-			}
-		})
-	en.OnSuffix("阵眼").SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			name := ctx.State["args"].(string)
-			if utf8.RuneCountInString(name) > 5 {
-				log.Println("name len max")
-			} else {
-				data := map[string]string{"name": getMental(strings.Replace(name, " ", "", -1))}
-				reqbody, err := json.Marshal(data)
-				rsp, err := util.SendHttp(url+"matrix", reqbody)
-				if err != nil {
-					log.Errorln("jx3daily:", err)
-				}
-				//	json := gjson.ParseBytes(rsp)
-				log.Errorln(string(rsp))
 			}
 		})
 	// en.OnRegex(`^攻略(.*)`).SetBlock(true).
@@ -660,21 +530,6 @@ func init() {
 				}
 			}
 		})
-	en.OnRegex(`^(维护公告|更新公告)(.*)`).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			data := map[string]string{"limit": "3"}
-			reqbody, err := json.Marshal(data)
-			rsp, err := util.SendHttp(url+"announce", reqbody)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			text := ""
-			gjson.Get(helper.BytesToString(rsp), "data").ForEach(func(_, value gjson.Result) bool {
-				text = text + value.Get("title").String() + "\n" + value.Get("date").String() + "\n" + value.Get("url").String() + "\n"
-				return true
-			})
-			ctx.SendChain(message.Text(text))
-		})
 	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t Jokes
@@ -702,17 +557,6 @@ func init() {
 			} else {
 				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
-		})
-	en.OnFullMatch("更新内容").SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			data := map[string]string{"robot": zero.BotConfig.NickName[0]}
-			reqbody, err := json.Marshal(data)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			rsp, _ := util.SendHttp(cloudUrl+"content", reqbody)
-			json := gjson.ParseBytes(rsp)
-			ctx.Send(message.Image(json.Get("data.url").String()))
 		})
 	en.OnFullMatch("/roll").SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -1562,7 +1406,7 @@ func drawLine(XName, YName string, x, data []string) *charts.Line {
 		charts.WithLegendOpts(opts.Legend{Show: true, Bottom: "1px"}),
 	)
 	line.SetXAxis(x).
-		AddSeries("price", generateLineData(data),
+		AddSeries("价格", generateLineData(data),
 			charts.WithLabelOpts(opts.Label{Show: true, Position: "top"})).
 		SetSeriesOptions(
 			charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{

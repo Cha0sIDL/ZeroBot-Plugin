@@ -115,17 +115,19 @@ func init() {
 		})
 	engine.OnMessage(func(ctx *zero.Ctx) bool {
 		msg := ctx.Event.Message
-		if msg[0].Type != "reply" {
-			return false
-		}
-		for _, elem := range msg {
-			if elem.Type == "text" {
-				text := elem.Data["text"]
-				text = strings.ReplaceAll(text, " ", "")
-				text = strings.ReplaceAll(text, "\r", "")
-				text = strings.ReplaceAll(text, "\n", "")
-				if text == "撤回" {
-					return true
+		if len(msg) > 0 {
+			if msg[0].Type != "reply" {
+				return false
+			}
+			for _, elem := range msg {
+				if elem.Type == "text" {
+					text := elem.Data["text"]
+					text = strings.ReplaceAll(text, " ", "")
+					text = strings.ReplaceAll(text, "\r", "")
+					text = strings.ReplaceAll(text, "\n", "")
+					if text == "撤回" {
+						return true
+					}
 				}
 			}
 		}
