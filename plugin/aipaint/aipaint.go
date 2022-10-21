@@ -40,7 +40,7 @@ var (
 	aipaintTxt2ImgURL = "/got_image?token=%v&tags=%v"
 	aipaintImg2ImgURL = "/got_image2image?token=%v&tags=%v"
 	cfg               = newServerConfig("data/aipaint/config.json")
-	host              = []string{"http://91.217.139.190:5010", "http://91.216.169.75:5010", "http://185.80.202.180:5010"}
+	//	host              = []string{"http://91.217.139.190:5010", "http://91.216.169.75:5010", "http://185.80.202.180:5010"}
 )
 
 type result struct {
@@ -72,7 +72,7 @@ func init() { // 插件主体
 	datapath = file.BOTPATH + "/" + engine.DataFolder()
 	engine.OnPrefixGroup([]string{`ai绘图`, `生成色图`, `生成涩图`, `ai画图`}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			_, token, err := cfg.load()
+			server, token, err := cfg.load()
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR: ", err))
 				return
@@ -83,11 +83,7 @@ func init() { // 插件主体
 			if IsChinese(tags) {
 				tags = tencentTl(tags)
 			}
-			var hosts []string
-			for _, ser := range host {
-				hosts = append(hosts, ser+fmt.Sprintf(aipaintTxt2ImgURL, token, url.QueryEscape(tags)))
-			}
-			data, err := pollingReq(hosts...)
+			data, err := web.GetData(server + fmt.Sprintf(aipaintTxt2ImgURL, token, url.QueryEscape(tags)))
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR: ", err))
 				return
