@@ -1589,44 +1589,6 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 	}
 }
 
-func sendNotice(payload gjson.Result) {
-	var rsp []message.MessageSegment
-	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-		for _, g := range ctx.GetGroupList().Array() {
-			grp := g.Get("group_id").Int()
-			isEnable, bindArea := isEnable(grp)
-			switch payload.Get("action").Int() {
-			case 2001:
-				var status string
-				if bindArea == payload.Get("data.server").String() {
-					switch payload.Get("data.status").Int() {
-					case 1:
-						status = "开服啦！！！，快上游戏了\n"
-					case 0:
-						status = "停服了！！！，该干活干活了，该睡觉睡觉了\n"
-					}
-					rsp = []message.MessageSegment{
-						message.Text(payload.Get("data.server").String() + status),
-					}
-				} else {
-					rsp = []message.MessageSegment{}
-				}
-			case 2002:
-				rsp =
-					[]message.MessageSegment{
-						message.Text("有新的资讯请查收:\n"),
-						message.Text(payload.Get("data.type").String() + "\n" + payload.Get("data.title").String() + "\n" +
-							payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
-					}
-			}
-			if isEnable && len(rsp) != 0 {
-				ctx.SendGroupMessage(grp, rsp)
-			}
-		}
-		return true
-	})
-}
-
 func tuilan(tuiType string) string {
 	if id, ok := tuiKey[tuiType]; ok {
 		body := struct {

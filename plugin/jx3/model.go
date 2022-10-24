@@ -85,15 +85,15 @@ type Ip struct {
 	Ok bool   `db:"ok"`
 }
 
-func getMental(mentalName string) string {
-	var mental mental
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
-	db.Find(dbMental, &mental, arg)
-	rwMutex.RUnlock()
-	return mental.Name
-}
+//func getMental(mentalName string) string {
+//	var mental mental
+//	var rwMutex sync.RWMutex
+//	rwMutex.RLock()
+//	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
+//	db.Find(dbMental, &mental, arg)
+//	rwMutex.RUnlock()
+//	return mental.Name
+//}
 
 func createNewTeam(time int64, dungeon string,
 	comment string, leaderID int64, groupId int64) (int, error) {

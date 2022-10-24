@@ -2,7 +2,6 @@ package HorseRace
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/golang-module/carbon/v2"
@@ -21,10 +20,10 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 )
 
-type rwRace struct {
-	sync.Mutex
-	race map[int64]*globalGame
-}
+//type rwRace struct {
+//	sync.Mutex
+//	race map[int64]*globalGame
+//}
 
 var race = cmap.New[*globalGame]()
 

@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	errs "errors"
 	"fmt"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
@@ -223,22 +222,22 @@ func tencentTl(str string) string {
 	return gjson.Parse(response.ToJsonString()).Get("Response.TargetText").String()
 }
 
-func pollingReq(urls ...string) ([]byte, error) {
-	ch := make(chan []byte)
-	for _, ul := range urls {
-		go func(u string) {
-			data, err := web.GetData(u)
-			if err == nil {
-				ch <- data
-			}
-		}(ul)
-	}
-	for {
-		select {
-		case data := <-ch:
-			return data, nil
-		case <-time.After(time.Second * 20):
-			return nil, errs.New("timeout")
-		}
-	}
-}
+//func pollingReq(urls ...string) ([]byte, error) {
+//	ch := make(chan []byte)
+//	for _, ul := range urls {
+//		go func(u string) {
+//			data, err := web.GetData(u)
+//			if err == nil {
+//				ch <- data
+//			}
+//		}(ul)
+//	}
+//	for {
+//		select {
+//		case data := <-ch:
+//			return data, nil
+//		case <-time.After(time.Second * 20):
+//			return nil, errs.New("timeout")
+//		}
+//	}
+//}
