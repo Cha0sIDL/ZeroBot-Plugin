@@ -2,6 +2,8 @@ package customize
 
 import (
 	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/fumiama/unibase2n"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -48,13 +50,13 @@ func init() {
 			var origin string
 			for {
 				select {
-				case <-time.After(time.Second * 60):
+				case <-time.After(time.Second * 120):
 					ctx.SendChain(message.Text("时间太久啦！不发了！"))
 					return
 				case c := <-recv:
 					switch step {
 					case 0:
-						origin = "来自开发者的信息：\n" + c.Event.RawMessage
+						origin = "来自开发者的信息：\n" + c.Event.RawMessage + "\n--------------------\n" + unibase2n.Base64Gua.EncodeString(util.RandStr(rand.Intn(15)))
 						ctx.SendChain(message.Text("请输入\"确定\"或者\"取消\"来决定是否发送此公告"))
 						step++
 					case 1:
@@ -68,8 +70,8 @@ func init() {
 							var fail []int64
 							zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 								grpList := ctx.GetGroupList().Array()
-								time.Sleep(time.Second * 10)
 								for _, g := range grpList {
+									time.Sleep(time.Second + time.Second*time.Duration(rand.Intn(20)))
 									gid := g.Get("group_id").Int()
 									if id := ctx.SendGroupMessage(gid, origin); id == 0 {
 										fail = append(fail, gid)
