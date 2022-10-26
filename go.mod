@@ -3,6 +3,7 @@ module github.com/FloatTech/ZeroBot-Plugin
 go 1.19
 
 require (
+	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
 	github.com/FloatTech/AnimeAPI v1.5.2-0.20221023084913-bd1ff35e91ed
