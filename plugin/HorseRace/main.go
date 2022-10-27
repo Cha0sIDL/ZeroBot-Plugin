@@ -210,12 +210,14 @@ func init() {
 					log.Println(display)
 					if val.isDieAll() {
 						race.Remove("123456")
+						fmt.Println("die")
 						return
 					}
 					winner := val.Winner()
 					if len(winner) != 0 {
 						time.Sleep(time.Second * 2)
 						race.Remove("123456")
+						fmt.Println("winner")
 						return
 					}
 					time.Sleep(time.Second * 4)

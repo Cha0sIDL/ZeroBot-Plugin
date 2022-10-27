@@ -2,7 +2,7 @@ package HorseRace
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 	// 赛马超时时间，秒
 	settingOverTime = 120
 	// 事件概率 = event_rate / 1000
-	eventRate = 100
+	eventRate = 300
 	// 马儿名字最大长度
 	nameMaxLen = 8
 )
@@ -32,10 +32,10 @@ var events []event
 
 func initConfig(path string) {
 	events = []event{}
-	files, _ := ioutil.ReadDir(path)
+	files, _ := os.ReadDir(path)
 	for _, f := range files {
 		var e []event
-		content, err := ioutil.ReadFile(path + f.Name())
+		content, err := os.ReadFile(path + f.Name())
 		if err != nil {
 			panic(err)
 		}

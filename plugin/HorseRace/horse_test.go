@@ -5,5 +5,5 @@ import (
 )
 
 func TestHorse(t *testing.T) {
-
+	initConfig("./data/hr/")
 }
