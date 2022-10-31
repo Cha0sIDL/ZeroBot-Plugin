@@ -491,7 +491,7 @@ func init() {
 					}
 					_, err = page.Goto(articleUrl, playwright.PageGotoOptions{
 						WaitUntil: playwright.WaitUntilStateNetworkidle,
-						Timeout:   playwright.Float(10000),
+						Timeout:   playwright.Float(30000),
 					})
 					if err != nil {
 						return
