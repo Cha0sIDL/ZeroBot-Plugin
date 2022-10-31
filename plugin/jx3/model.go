@@ -12,15 +12,11 @@ import (
 
 // type JxDb gorm.DB
 
-// nsMental的结构体
+// Mental的结构体
 type mental struct {
-	ID          uint64 `db:"mentalID"`
-	Name        string `db:"mentalName"`
-	MentalIcon  string `db:"mentalIcon"`
-	Accept      string `db:"acceptName"`
-	MentalColor string `db:"mentalColor"`
-	Works       int    `db:"works"`
-	Relation    int    `db:"relation"`
+	ID     uint64 `db:"mentalID"`
+	Name   string `db:"mentalName"`
+	Accept string `db:"acceptName"`
 }
 
 type jxControl struct {

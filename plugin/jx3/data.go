@@ -15,7 +15,7 @@ const (
 	dbfile      = dbpath + "robotData.db"
 	iconfile    = dbpath + "mental_icon/"
 	fileUrl     = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
-	dbMental    = "ns_mental"
+	dbMental    = "mental"
 	dbControl   = "jxControl"
 	dbTeam      = "team"
 	dbLeader    = "leader"
@@ -59,30 +59,3 @@ func initialize() {
 	}
 	log.Infoln("[jx3]加载成功")
 }
-
-//// 加载数据库
-// func init() {
-//	go down()
-//}
-
-// func down() *JxDb {
-//	if file.IsNotExist(dbfile) {
-//		process.SleepAbout1sTo2s()
-//		_ = os.MkdirAll(dbpath, 0755)
-//		err := file.DownloadTo(fileUrl, dbfile, false)
-//		if err != nil {
-//			panic(err)
-//		}
-//	}
-//
-//	for key, value := range rangeDb {
-//		db.Create(key, value)
-//	}
-//	gdb, err := gorm.Open("sqlite3", dbfile)
-//	if err != nil {
-//		panic(err)
-//	}
-//	gdb.AutoMigrate(&Member{})
-//	logrus.Infoln("[jx3]加载成功")
-//	return (*JxDb)(gdb)
-//}
