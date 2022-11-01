@@ -29,7 +29,7 @@ func init() {
 		PublicDataFolder: "Tiangou",
 	})
 
-	en.OnFullMatch("舔狗日记", fcext.DoOnceOnSuccess(
+	en.OnFullMatchGroup([]string{"舔狗日记", "舔狗"}, fcext.DoOnceOnSuccess(
 		func(ctx *zero.Ctx) bool {
 			db.DBPath = en.DataFolder() + "tiangou.db"
 			_, err := en.GetLazyData("tiangou.db", true)

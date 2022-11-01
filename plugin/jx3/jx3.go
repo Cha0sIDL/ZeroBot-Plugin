@@ -58,10 +58,6 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
-const (
-	realizeUrl = "https://www.jx3api.com/realize/"
-)
-
 var tuiKey = map[string]string{
 	"大战":     "60f211c82d105c0014c5dd7d",
 	"武林通鉴秘境": "60f211c82d105c0014c5de01",
@@ -536,15 +532,6 @@ func init() {
 			db.Pick(dbTalk, &t)
 			ctx.SendChain(message.Text(t.Talk))
 		})
-	en.OnRegex(`^舔狗(.*)`).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			rsp, err := util.SendHttp(realizeUrl+"random", nil)
-			if err != nil {
-				log.Errorln("jx3daily:", err)
-			}
-			json := gjson.ParseBytes(rsp)
-			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(json.Get("data.text")))
-		})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := enable(ctx.Event.GroupID)
@@ -690,25 +677,6 @@ func init() {
 					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
 			}
 			ctx.SendChain(message.Text(out))
-		})
-	en.OnPrefixGroup([]string{"准备进本"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			teamId, err := strconv.Atoi(commandPart[0])
-			if err != nil {
-				return
-			}
-			if !isBelongGroup(teamId, ctx.Event.GroupID) {
-				ctx.SendChain(message.Text("参数输入有误。"))
-				return
-			}
-			var at message.Message
-			mSlice := getMemberInfo(teamId)
-			for _, m := range mSlice {
-				at = append(at, message.At(m.MemberQQ))
-			}
-			at = append(at, message.Text("\n准备进本啦！！"))
-			ctx.Send(at)
 		})
 	// 查看团队 teamid
 	en.OnPrefixGroup([]string{"查看团队", "查询团队", "查团"}, zero.OnlyGroup).SetBlock(true).
