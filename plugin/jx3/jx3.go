@@ -1057,13 +1057,12 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 				})
 			}
 		}
-		d := map[string]interface{}{
+		lineHtml := priceData2line(price, datapath)
+		html := util.Template2html("price.html", map[string]interface{}{
 			"image": gjson.Get(binutils.BytesToString(wujiaPic), "data.images.0.image"),
 			"name":  name,
 			"data":  price,
-		}
-		lineHtml := priceData2line(price, datapath)
-		html := util.Template2html("price.html", d)
+		})
 		finName, err := util.Html2pic(datapath, name+util.TodayFileName(), html+lineHtml)
 		controlCd[name] = cd{
 			last:     carbon.Now().Timestamp(),
