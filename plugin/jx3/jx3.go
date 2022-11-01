@@ -855,11 +855,11 @@ func daily(ctx *zero.Ctx, server string) {
 	}
 	for k := range tuiKey {
 		tuilanData := tuilan(k)
-		quest_name := gjson.Get(tuilanData, "data.quest_name").String()
-		if len(tuilanData) == 0 || k == "大战" || len(quest_name) == 0 || k == "阵营日常" { // 大战美人图获取jxbox
+		questName := gjson.Get(tuilanData, "data.quest_name").String()
+		if len(tuilanData) == 0 || k == "大战" || len(questName) == 0 || k == "阵营日常" { // 大战美人图获取jxbox
 			continue
 		}
-		msg += k + "：" + quest_name + "\n"
+		msg += k + "：" + questName + "\n"
 	}
 	meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
 	meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())

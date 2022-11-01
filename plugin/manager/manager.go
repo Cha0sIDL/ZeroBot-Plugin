@@ -609,6 +609,7 @@ func init() { // 插件主体
 		ctx.SendChain(message.Text("https://www.yuque.com/docs/share/34aee3c7-defc-4f29-b45a-1c7f8f4ab535?# 《ZeroBot使用手册》"))
 	})
 	engine.OnFullMatch("谁在窥屏", zero.OnlyGroup, zero.AdminPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		data, _ := web.GetData("https://api.ipify.org")
 		var msg string
 		msg += "检测到以下地址正在窥屏：\n"
 		name := util.RandStr(util.Rand(3, 10))
@@ -618,7 +619,7 @@ func init() { // 插件主体
 			"https://dss2.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/weather/icons/a1.png",
 			"https://www.baidu.com/img/flexible/logo/pc/result.png",
 			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/mancard/img/side/qrcode-hover@2x-f9b106a848.png"}
-		cq := fmt.Sprintf("[CQ:cardimage,icon=http://8.210.53.24:9090/?id=%s,file=%s]", name, lo.Sample(img))
+		cq := fmt.Sprintf("[CQ:cardimage,icon="+string(data)+":9090/?id=%s,file=%s]", name, lo.Sample(img))
 		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
 		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
@@ -645,7 +646,7 @@ func init() { // 插件主体
 		time.Sleep(time.Second * 20)
 		ctx.DeleteMessage(delId)
 	})
-	engine.On("notice/group_upload").SetBlock(false).
+	engine.On("notice/group_upload").SetBlock(false).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {
 			if ctx.Event.File.Size > 268435456 { // 256MB
 				return
