@@ -1293,25 +1293,21 @@ print("run[CQ:image,file="+j["img"]+"]")
 <details>
   <summary>剑网三相关</summary>
 
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin_jx3"`
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3`
 
   - [x] 日常任务|日常
-  - [x] 开服检查xxx(eg 开服检查绝代天骄)
-  - [x] 金价|金价查询 xxx(eg 金价绝代天骄)
-  - [x] 花价|花价查询 xxx xxx xxx(eg 花价 绝代天骄 绣球花 广陵邑)
+  - [x] 开服
+  - [x] 更新公告
+  - [x] 技改
+  - [x] 金价|金价查询 xxx (eg 金价 绝代天骄)
   - [x] 小药
-  - [x] xxx配装(eg 分山劲配装)
-  - [x] xxx奇穴(eg 分山劲奇穴)
   - [x] 宏xxx(eg 宏分山劲)
   - [x] 沙盘xxx(eg 沙盘绝代天骄)
-  - [x] 装饰属性|装饰xxx(eg 装饰混沌此生)
   - [x] 奇遇|奇遇查询 xxx xxx(eg 奇遇 唯我独尊 柳连柳奶)
   - [x] 攻略xxx(eg 攻略三山四海)
-  - [x] 维护公告|更新公告
   - [x] 骚话
   - [x] 舔狗
   - [x] 开启jx推送
-  - [x] 更新内容
   - [x] /roll
   - [x] 物价xxx
   - [x] 绑定区服xxx
