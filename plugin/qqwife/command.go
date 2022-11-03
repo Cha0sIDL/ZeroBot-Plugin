@@ -525,9 +525,9 @@ func init() {
 				return
 			}
 			if mood == 0 {
-				ctx.SendChain(message.Text("你花了", moneyToFavor, "ATRI币买了一件女装送给了ta,ta很不喜欢,你们的好感度降低至", lastfavor))
+				ctx.SendChain(message.Text("你花了", moneyToFavor, "通宝买了一件女装送给了ta,ta很不喜欢,你们的好感度降低至", lastfavor))
 			} else {
-				ctx.SendChain(message.Text("你花了", moneyToFavor, "ATRI币买了一件女装送给了ta,ta很喜欢,你们的好感度升至", lastfavor))
+				ctx.SendChain(message.Text("你花了", moneyToFavor, "通宝买了一件女装送给了ta,ta很喜欢,你们的好感度升至", lastfavor))
 			}
 		})
 	engine.OnFullMatchGroup([]string{"闹离婚", "办离婚"}, zero.OnlyGroup, getdb, checkdivorce).Limit(ctxext.LimitByUser).SetBlock(true).
