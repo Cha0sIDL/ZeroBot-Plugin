@@ -78,7 +78,7 @@ func init() {
 				}
 				return
 			case siUpdateTimeStr != today:
-				// 如果是夸天签到就请数据
+				// 如果是跨天签到就清数据
 				err := sdb.InsertOrUpdateSignInCountByUID(uid, 0)
 				if err != nil {
 					ctx.SendChain(message.Text("ERROR: ", err))
@@ -95,7 +95,7 @@ func init() {
 			level := sdb.GetScoreByUID(uid).Score + 1
 			if level > SCOREMAX {
 				level = SCOREMAX
-				ctx.SendChain(message.At(uid), message.Text("你的登记已经达到上限"))
+				ctx.SendChain(message.At(uid), message.Text("你的等级已经达到上限"))
 			}
 			err = sdb.InsertOrUpdateScoreByUID(uid, level)
 			if err != nil {
