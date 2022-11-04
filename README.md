@@ -584,6 +584,9 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"`
 
   - [x] 选择[选择项1]还是[选项2]还是[更多选项]
+  - [x] 吃什么
+  - [x] 喝什么
+  - [x] 疯狂星期一|二|三|四|五|六|日|天
 
 </details>
 <details>
@@ -1356,16 +1359,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 
-<details>
-  <summary>随机食物</summary>
-
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"`
-
-- [x] 吃什么
-- [x] 喝什么
-
-
-</details>
 
 <details>
   <summary>搜表情包</summary>

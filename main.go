@@ -69,7 +69,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/alipayvoice" // 支付宝到账语音
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/b14"         // base16384加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baidu"       // 百度一下
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baiduaudit"    // 百度内容审核
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baiduaudit"  // 百度内容审核
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/base64gua"   // base64卦加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baseamasiro" // base天城文加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili"    // b站相关
@@ -138,7 +138,6 @@ import (
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// 其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/crazy"     // 吃什么
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
