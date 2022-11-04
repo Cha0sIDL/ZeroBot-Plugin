@@ -1101,12 +1101,22 @@ func updateTalk() error {
 
 func indicator(ctx *zero.Ctx, datapath string) {
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
-	if len(commandPart) != 2 {
+	var server string
+	var name string
+	if len(commandPart) == 1 {
+		server = bind(ctx.Event.GroupID)
+		name = commandPart[0]
+		if len(server) == 0 {
+			ctx.SendChain(message.Text("本群尚未绑定区服"))
+			return
+		}
+	} else if len(commandPart) == 2 {
+		server = commandPart[0]
+		name = commandPart[1]
+	} else {
 		ctx.SendChain(message.Text("参数输入有误！\n" + "战绩 绝代天骄 xxx"))
 		return
 	}
-	server := commandPart[0]
-	name := commandPart[1]
 	if normServer, ok := allServer[server]; ok {
 		zone := normServer[1]
 		server = normServer[0]
@@ -1252,12 +1262,22 @@ func getPersonHistory(body interface{}) ([]byte, error) {
 func attributes(ctx *zero.Ctx, datapath string) {
 	ts := ts()
 	commandPart := util.SplitSpace(ctx.State["args"].(string))
-	if len(commandPart) != 2 {
+	var server string
+	var name string
+	if len(commandPart) == 1 {
+		server = bind(ctx.Event.GroupID)
+		name = commandPart[0]
+		if len(server) == 0 {
+			ctx.SendChain(message.Text("本群尚未绑定区服"))
+			return
+		}
+	} else if len(commandPart) == 2 {
+		server = commandPart[0]
+		name = commandPart[1]
+	} else {
 		ctx.SendChain(message.Text("参数输入有误！\n" + "属性 绝代天骄 xxx"))
 		return
 	}
-	server := commandPart[0]
-	name := commandPart[1]
 	if normServer, ok := allServer[server]; ok {
 		var user User
 		zone := normServer[1]
