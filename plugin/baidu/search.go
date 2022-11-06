@@ -19,6 +19,7 @@ import (
 func init() {
 	en := control.Register("baidu", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "不会百度吗",
 		Help: "baidu\n" +
 			"- 百度下[xxx]\n" +
 			"- 维基|百科[xxx]\n" +

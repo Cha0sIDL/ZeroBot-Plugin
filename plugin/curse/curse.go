@@ -24,6 +24,7 @@ const (
 func init() {
 	engine := control.Register("curse", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "骂人反击",
 		Help:             "- 骂他@qq(求骂,自卫)",
 		PublicDataFolder: "Curse",
 	})

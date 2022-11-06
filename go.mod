@@ -6,7 +6,7 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.5.2-0.20221101144606-ec2f4e59d0ef
+	github.com/FloatTech/AnimeAPI v1.5.2-0.20221105044443-0c9004b2f051
 	github.com/FloatTech/floatbox v0.0.0-20221029160423-446812ec82d9
 	github.com/FloatTech/sqlite v0.5.0
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
@@ -47,9 +47,9 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.8
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.529
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.529
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.529
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.530
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.530
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.530
 	github.com/tidwall/gjson v1.14.3
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
