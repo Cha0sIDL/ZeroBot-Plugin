@@ -31,6 +31,7 @@ type RspData struct {
 func init() {
 	engine := control.Register("hitokoto", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "一言",
 		Help:             "- 每日一言(建议配合job插件净化群友心灵)\n",
 	})
 	engine.OnFullMatch("每日一言").SetBlock(true).Handle(handle)

@@ -31,7 +31,8 @@ func init() {
 	engine := control.Register("arknight", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		PublicDataFolder: "ArkNights",
-		Help: "明日方舟相关插件\n" + "- 查公招\n" +
+		Brief:            "明日方舟相关插件",
+		Help: "- 查公招\n" +
 			"- 方舟今日资源\n" + "- 方舟十连\n",
 	})
 	var err error

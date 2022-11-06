@@ -220,6 +220,7 @@ func init() {
 	en := control.Register("jx3", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
+		Brief:             "剑网相关插件",
 		Help: "- 日常任务|日常(eg 日常任务绝代天骄)\n" +
 			"- 开服\n" +
 			"- 更新公告\n" +

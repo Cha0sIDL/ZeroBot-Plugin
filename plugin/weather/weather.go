@@ -42,6 +42,7 @@ const (
 func init() {
 	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "查询天气",
 		Help:             "- xxx天气\n",
 		PublicDataFolder: "Weather",
 	})

@@ -27,8 +27,8 @@ const (
 func init() { // 插件主体
 	engine := control.Register("zaobao", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help: "易即今日公众号api的今日早报\n" +
-			"api早上8点更新，推荐定时在8点30后\n" +
+		Brief:            "易即今日公众号api的今日早报",
+		Help: "api早上8点更新，推荐定时在8点30后\n" +
 			"配合插件job中的记录在\"cron\"触发的指令使用\n" +
 			"- 记录在\"0 9 * * *\"触发的指令\n" +
 			"   - 今日早报",

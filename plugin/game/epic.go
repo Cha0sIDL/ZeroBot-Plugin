@@ -40,7 +40,8 @@ func init() {
 	}
 	engine := control.Register(epicServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
-		Help:              "查询epic喜加一/订阅的插件\n" + "- epic喜加1\n" + "- 喜加一订阅(默认每周五早上八点推送)\n",
+		Brief:             "查询epic喜加一/订阅的插件",
+		Help:              "- epic喜加1\n" + "- 喜加一订阅(默认每周五早上八点推送)\n",
 		PrivateDataFolder: "game",
 	})
 	go func() {

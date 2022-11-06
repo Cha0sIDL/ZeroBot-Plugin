@@ -30,8 +30,8 @@ var race = cmap.New[*globalGame]()
 func init() {
 	engine := control.Register("horseRace", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help: "群内赛马小游戏\n" +
-			"赛马创建\n" +
+		Brief:            "群内赛马小游戏",
+		Help: "赛马创建\n" +
 			"赛马加入xxx xxx为马儿的名字\n" +
 			"赛马开始\n" +
 			"赛马事件重载\n" +

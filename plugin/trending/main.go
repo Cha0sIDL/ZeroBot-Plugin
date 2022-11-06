@@ -20,6 +20,7 @@ import (
 func init() { // 插件主体
 	engine := control.Register("trending", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "各个平台热搜",
 		Help: "一个查热搜的插件\n" +
 			"- 微博热搜\n" +
 			"- 知乎热搜\n" +

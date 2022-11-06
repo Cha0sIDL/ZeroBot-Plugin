@@ -26,7 +26,8 @@ const (
 func init() {
 	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Help:             "查询steam游戏(使用英文名称查询更准确哦)" + "- steam xxx\n",
+		Brief:            "查询steam游戏(使用英文名称查询更准确哦)",
+		Help:             "- steam xxx\n",
 	})
 	engine.OnPrefix("steam").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {

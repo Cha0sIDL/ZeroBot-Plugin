@@ -39,6 +39,7 @@ func init() { // 插件主体
 	}
 	control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "剑网日常播报",
 		Help:             "- 剑网每周日常定时推送\n",
 	})
 }

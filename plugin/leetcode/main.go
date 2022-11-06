@@ -19,6 +19,7 @@ import (
 func init() {
 	en := control.Register("leetcode", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "力扣刷题",
 		Help:             "力扣每日一题 \n" + "- (leetcode|力扣)每日一题，每日算法",
 	})
 	en.OnFullMatchGroup([]string{"每日一题", "leetcode每日一题", "力扣每日一题", "每日算法"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(

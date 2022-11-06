@@ -17,6 +17,7 @@ const (
 func init() {
 	engine := control.Register(servicename, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
+		Brief:            "搜表情包",
 		Help:             "- xxx表情\n" + "可能会偶尔抽风",
 	})
 	engine.OnSuffixGroup([]string{"表情", "表情包"}).SetBlock(true).Limit(ctxext.LimitByUser).
