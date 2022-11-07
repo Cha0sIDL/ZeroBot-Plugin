@@ -54,7 +54,6 @@ func init() {
 }
 
 func unzip(zipFile, dest string) error {
-	log.Println(zipFile, dest)
 	reader, err := zip.OpenReader(zipFile)
 	if err != nil {
 		return err
