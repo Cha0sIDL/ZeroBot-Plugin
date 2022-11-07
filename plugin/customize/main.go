@@ -42,7 +42,7 @@ func init() {
 		})
 	engine.OnCommand("发送公告", zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			next := zero.NewFutureEvent("message", 1, false, zero.CheckUser(ctx.Event.UserID), ctx.CheckSession())
+			next := zero.NewFutureEvent("message", 1, true, zero.CheckUser(ctx.Event.UserID), ctx.CheckSession())
 			recv, stop := next.Repeat()
 			defer stop()
 			ctx.SendChain(message.Text("请输入公告内容"))
