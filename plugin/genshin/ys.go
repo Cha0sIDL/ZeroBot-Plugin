@@ -59,7 +59,7 @@ func init() {
 				ctx.SendChain(message.Text("切换到五星卡池~"))
 			} else {
 				process.SleepAbout1sTo2s()
-				ctx.SendChain(message.Text("切换到普通卡池~"))
+				ctx.SendChain(message.Text("切换到普通卡池~\n", "三星80% 四星17% 五星3%"))
 			}
 			err := c.SetData(gid, int64(store))
 			if err != nil {

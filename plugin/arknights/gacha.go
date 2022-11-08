@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/FloatTech/floatbox/img/writer"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -56,7 +57,7 @@ func imageToRGBA(src *image.Image) *image.RGBA {
 	return dst
 }
 
-func rollGacha() (charNames []string) {
+func rollGacha(store storage) (charNames []string) {
 	var rarity int
 	for i := 0; i < 10; i++ {
 		rarityRand := rand.Float64()
@@ -68,6 +69,9 @@ func rollGacha() (charNames []string) {
 			rarity = 3
 		} else {
 			rarity = 2
+		}
+		if store.is6starsmode() {
+			rarity = 5
 		}
 		indexRand := rand.Intn(len(Rarity2CharName[rarity]))
 		charNames = append(charNames, Rarity2CharName[rarity][indexRand])
@@ -151,7 +155,17 @@ func gacha(ctx *zero.Ctx) {
 			}
 		}
 	}
-	rollResult := rollGacha()
+	c, ok := ctx.State["manager"].(*ctrl.Control[*zero.Ctx])
+	if !ok {
+		ctx.SendChain(message.Text("找不到服务!"))
+		return
+	}
+	gid := ctx.Event.GroupID
+	if gid == 0 {
+		gid = -ctx.Event.UserID
+	}
+	store := (storage)(c.GetData(gid))
+	rollResult := rollGacha(store)
 	i, err := drawGachaImage(rollResult)
 	if err != nil {
 		return

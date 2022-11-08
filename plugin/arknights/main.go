@@ -3,6 +3,7 @@ package arknights
 import (
 	"archive/zip"
 	"github.com/FloatTech/floatbox/file"
+	"github.com/FloatTech/floatbox/process"
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -10,6 +11,7 @@ import (
 	"github.com/fogleman/gg"
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/message"
 	"io"
 	"os"
 	"path/filepath"
@@ -50,7 +52,32 @@ func init() {
 	}()
 	engine.OnRegex("^查公招$").SetBlock(true).Limit(ctxext.LimitByUser).Handle(recruit)
 	engine.OnKeyword("方舟资源").SetBlock(true).Limit(ctxext.LimitByUser).Handle(daily)
-	engine.OnFullMatch("方舟十连").SetBlock(true).Limit(ctxext.LimitByUser).Handle(gacha)
+	engine.OnFullMatchGroup([]string{"方舟十连", "方舟抽卡"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(gacha)
+	engine.OnFullMatch("切换方舟卡池").SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			c, ok := ctx.State["manager"].(*ctrl.Control[*zero.Ctx])
+			if !ok {
+				ctx.SendChain(message.Text("找不到服务!"))
+				return
+			}
+			gid := ctx.Event.GroupID
+			if gid == 0 {
+				gid = -ctx.Event.UserID
+			}
+			store := (storage)(c.GetData(gid))
+			if store.setmode(!store.is6starsmode()) {
+				process.SleepAbout1sTo2s()
+				ctx.SendChain(message.Text("切换到六星卡池~"))
+			} else {
+				process.SleepAbout1sTo2s()
+				ctx.SendChain(message.Text("切换到普通卡池~\n", "2%概率六星,10%概率5星,58%概率4星,30%概率3星"))
+			}
+			err := c.SetData(gid, int64(store))
+			if err != nil {
+				process.SleepAbout1sTo2s()
+				ctx.SendChain(message.Text("ERROR: ", err))
+			}
+		})
 }
 
 func unzip(zipFile, dest string) error {
