@@ -76,20 +76,11 @@ type User struct {
 	Data string `db:"data"` // 服务器的json数据
 }
 
-type Ip struct {
-	ID string `db:"id"`
-	Ok bool   `db:"ok"`
+type Daily struct {
+	Server    string `db:"id"`
+	DailyTask string `db:"dailyTask"`
+	Time      int64  `db:"time"`
 }
-
-//func getMental(mentalName string) string {
-//	var mental mental
-//	var rwMutex sync.RWMutex
-//	rwMutex.RLock()
-//	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
-//	db.Find(dbMental, &mental, arg)
-//	rwMutex.RUnlock()
-//	return mental.Name
-//}
 
 func createNewTeam(time int64, dungeon string,
 	comment string, leaderID int64, groupId int64) (int, error) {
@@ -357,4 +348,9 @@ func insert(tableName string, data interface{}, tryTime int) error {
 		}
 	}
 	return nil
+}
+
+func findDaily(server string) (daily Daily) {
+	db.Find(dbDaily, &daily, fmt.Sprintf("WHERE id = '%s'", server))
+	return
 }

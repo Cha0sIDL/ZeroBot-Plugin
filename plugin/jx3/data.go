@@ -24,7 +24,7 @@ const (
 	dbTalk      = "talk"
 	dbNews      = "news"
 	dbUser      = "user"
-	dbIp        = "ip"
+	dbDaily     = "daily" //每个区服的日常，每天七点刷新
 )
 
 var rangeDb = map[string]interface{}{
@@ -36,7 +36,7 @@ var rangeDb = map[string]interface{}{
 	dbAdventure: &Adventure{},
 	dbTalk:      &Jokes{},
 	dbNews:      &News{},
-	dbIp:        &Ip{},
+	dbDaily:     &Daily{},
 }
 
 var db = &sql.Sqlite{DBPath: dbfile}

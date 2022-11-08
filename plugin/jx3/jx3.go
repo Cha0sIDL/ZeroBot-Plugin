@@ -839,36 +839,46 @@ func server(ctx *zero.Ctx, server string) {
 }
 
 func daily(ctx *zero.Ctx, server string) {
-	var msg string
-	msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
-	riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
-	daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
-	if err != nil || gjson.Get(binutils.BytesToString(daily), "code").Int() != 0 {
-		ctx.SendChain(util.HttpError()...)
-		return
-	}
-	for _, d := range gjson.Get(binutils.BytesToString(daily), "data").Array() {
-		msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
-	}
-	for k := range tuiKey {
-		tuilanData := tuilan(k)
-		questName := gjson.Get(tuilanData, "data.quest_name").String()
-		if len(tuilanData) == 0 || k == "大战" || len(questName) == 0 || k == "阵营日常" { // 大战美人图获取jxbox
-			continue
+	daily4Db := findDaily(server)
+	if carbon.Now().Timestamp()-daily4Db.Time >= 86400 {
+		var msg string
+		msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
+		riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
+		daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
+		if err != nil || gjson.Get(binutils.BytesToString(daily), "code").Int() != 0 {
+			ctx.SendChain(util.HttpError()...)
+			return
 		}
-		msg += k + "：" + questName + "\n"
-	}
-	meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
-	meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
-	if err != nil || gjson.Get(binutils.BytesToString(meiData), "code").Int() != 0 {
-		msg += "美人图：今天没有美人图呢~\n"
+		for _, d := range gjson.Get(binutils.BytesToString(daily), "data").Array() {
+			msg += d.Get("taskType").String() + "：" + d.Get("activityName").String() + "\n"
+		}
+		for k := range tuiKey {
+			tuilanData := tuilan(k)
+			questName := gjson.Get(tuilanData, "data.quest_name").String()
+			if len(tuilanData) == 0 || k == "大战" || len(questName) == 0 || k == "阵营日常" { // 大战美人图获取jxbox
+				continue
+			}
+			msg += k + "：" + questName + "\n"
+		}
+		meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
+		meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
+		if err != nil || gjson.Get(binutils.BytesToString(meiData), "code").Int() != 0 {
+			msg += "美人图：今天没有美人图呢~\n"
+		} else {
+			msg += "美人图：" + gjson.Get(binutils.BytesToString(meiData), "data.name").String() + "\n"
+		}
+		msg += fmt.Sprintf("今日活动：%s\n", util.PrettyPrint(date[carbon.Now().Week()]))
+		msg += "--------------------------------\n"
+		msg += "数据来源JXBOX和推栏"
+		ctx.SendChain(message.Text(msg))
+		insert(dbDaily, &Daily{
+			Server:    server,
+			DailyTask: msg,
+			Time:      carbon.CreateFromTime(7, 0, 0).Timestamp(),
+		}, 1)
 	} else {
-		msg += "美人图：" + gjson.Get(binutils.BytesToString(meiData), "data.name").String() + "\n"
+		ctx.SendChain(message.Text(daily4Db.DailyTask))
 	}
-	msg += fmt.Sprintf("今日活动：%s\n", util.PrettyPrint(date[carbon.Now().Week()]))
-	msg += "--------------------------------\n"
-	msg += "数据来源JXBOX和推栏"
-	ctx.SendChain(message.Text(msg))
 }
 
 func jinjia(ctx *zero.Ctx, datapath string) {
