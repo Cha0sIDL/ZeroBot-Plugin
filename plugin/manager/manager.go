@@ -68,8 +68,9 @@ const (
 		"- 对信息回复:[设置 | 取消]精华\n" +
 		"- 取消精华 [信息ID]\n" +
 		"- /精华列表\n" +
-		"Tips: {at}可在发送时艾特被欢迎者 {nickname}是被欢迎者名字 {avatar}是被欢迎者头像 {uid}是被欢迎者QQ号 {gid}是当前群群号 {groupname} 是当前群群名\n"+
+		"Tips: {at}可在发送时艾特被欢迎者 {nickname}是被欢迎者名字 {avatar}是被欢迎者头像 {uid}是被欢迎者QQ号 {gid}是当前群群号 {groupname} 是当前群群名\n" +
 		"- 谁在窥屏(仅群管可用，bot会自动发送一张图片30秒后撤回)"
+)
 
 var (
 	db    = &sql.Sqlite{}
