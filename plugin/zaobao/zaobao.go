@@ -33,7 +33,7 @@ func init() { // 插件主体
 			"- 记录在\"0 9 * * *\"触发的指令\n" +
 			"   - 今日早报",
 	})
-	engine.OnFullMatch("今日早报", zero.OnlyGroup).SetBlock(false).
+	engine.OnFullMatch("今日早报", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			// err := getdata()
 			data, err := web.GetData(api)
