@@ -903,10 +903,29 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 		rsp += "万宝楼：" + average(jin.Get("today.official")) + "￥\n"
 		rsp += "贴吧：" + average(jin.Get("today.post")) + "￥\n"
 		rsp += "------------------------------------------\n"
-		rsp += "数据来源万宝楼\n"
 		json.Unmarshal([]byte(jin.Get("trend").String()), &lineStruct)
+		sort.Slice(lineStruct, func(i, j int) bool {
+			dateA := strings.Split(lineStruct[i].Date, "-")
+			dateB := strings.Split(lineStruct[j].Date, "-")
+			for k := 0; k < len(dateA); k++ {
+				switch strings.Compare(dateA[k], dateB[k]) {
+				case 1:
+					return false
+				case -1:
+					return true
+				default:
+					continue
+				}
+			}
+			return true
+		})
+		priceHtml := util.Template2html("goldprice.html", map[string]interface{}{
+			"server": val[0],
+			"data":   lo.Reverse(lineStruct),
+		})
 		html := jibPrice2line(lineStruct, datapath)
-		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), html)
+		fmt.Println(priceHtml + html)
+		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), priceHtml+html)
 		ctx.SendChain(message.Text(rsp), message.Image("file:///"+finName))
 	} else {
 		ctx.SendChain(message.Text("没有找到这个服呢，你是不是乱输的哦~"))
@@ -915,21 +934,6 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 }
 
 func jibPrice2line(lineStruct []JinPrice, datapath string) string {
-	sort.Slice(lineStruct, func(i, j int) bool {
-		dateA := strings.Split(lineStruct[i].Date, "-")
-		dateB := strings.Split(lineStruct[j].Date, "-")
-		for k := 0; k < len(dateA); k++ {
-			switch strings.Compare(dateA[k], dateB[k]) {
-			case 1:
-				return false
-			case -1:
-				return true
-			default:
-				continue
-			}
-		}
-		return true
-	})
 	var xdata, officialdata, postdata, p5173 []string
 	for _, data := range lineStruct {
 		xdata = append(xdata, data.Date)
@@ -939,7 +943,7 @@ func jibPrice2line(lineStruct []JinPrice, datapath string) string {
 	}
 	page := components.NewPage()
 	page.AddCharts(
-		drawJinLine("日期", "金价", xdata, map[string][]string{"official": officialdata,
+		drawJinLine("日期", "金价", xdata, map[string][]string{"万宝楼": officialdata,
 			"贴吧":   postdata,
 			"5173": p5173}),
 	)
