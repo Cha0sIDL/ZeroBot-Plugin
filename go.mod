@@ -11,7 +11,7 @@ require (
 	github.com/FloatTech/sqlite v0.5.1
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20221110070900-b2888434e9fc
-	github.com/FloatTech/zbputils v1.5.1-0.20221110071200-0a9ea4b7e9c4
+	github.com/FloatTech/zbputils v1.5.1-0.20221115024335-1bd5b91a870e
 	github.com/RomiChan/syncx v0.0.0-20220404072119-d7ea0ae15a4c
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -47,18 +47,19 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.8
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.536
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.536
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.536
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.537
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.537
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.537
 	github.com/tidwall/gjson v1.14.3
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.6.3
 	gitlab.com/gomidi/midi/v2 v2.0.25
-	golang.org/x/image v0.0.0-20220902085622-e7cb96979f69
+	golang.org/x/image v0.1.0
 )
 
 require (
+	github.com/FloatTech/rendercard v0.0.1 // indirect
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
@@ -138,11 +139,11 @@ require (
 	golang.org/x/exp/shiny v0.0.0-20221004215720-b9f4876ce741 // indirect
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220708220712-1185a9018129 // indirect
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41 // indirect
-	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/tools v0.1.11 // indirect
+	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
