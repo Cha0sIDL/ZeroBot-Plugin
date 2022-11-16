@@ -47,9 +47,9 @@ func init() {
 		PublicDataFolder: "Weather",
 	})
 	datapath := file.BOTPATH + "/" + engine.DataFolder()
-	engine.OnRegex("^[一-龥]{0,5}天气").SetBlock(true).Limit(ctxext.LimitByUser).
+	engine.OnSuffix("天气").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			city := strings.ReplaceAll(ctx.ExtractPlainText(), "天气", "")
+			city := strings.Replace(ctx.State["args"].(string), " ", "", -1)
 			geo := getGeo(city) // geo数据
 			lat := gjson.Get(geo, "location.0.lat").Float()
 			lon := gjson.Get(geo, "location.0.lon").Float()
