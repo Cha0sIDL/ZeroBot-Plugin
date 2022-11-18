@@ -90,7 +90,7 @@ func init() {
 				ctx.SendChain(message.Text("Err", err))
 				return
 			}
-			ctx.SendChain(message.Text("订阅成功~"))
+			ctx.SendChain(message.Text("Epic喜加一订阅成功~"))
 		})
 }
 
