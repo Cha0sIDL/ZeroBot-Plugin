@@ -3,11 +3,11 @@ package jx3
 import (
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"sort"
 	"strconv"
 	"sync"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // type JxDb gorm.DB
@@ -44,7 +44,7 @@ type Leader struct {
 }
 
 type Member struct {
-	Id             int    `db:"id"`
+	Id             string `db:"id"`
 	TeamId         int    `db:"team_id"`
 	MemberQQ       int64  `db:"member_qq"`
 	MemberNickName string `db:"member_nick_name"`
@@ -140,6 +140,9 @@ func getSignUp(qq int64) []int {
 
 func delTeam(teamId int, leaderId int64) int {
 	var c Team
+	var Mutex sync.Mutex
+	Mutex.Lock()
+	defer Mutex.Unlock()
 	db.Find(dbTeam, &c, "WHERE teamID = "+fmt.Sprintln(teamId))
 	if c.LeaderId != leaderId {
 		return -1 // 这个团不是你的
@@ -151,11 +154,7 @@ func delTeam(teamId int, leaderId int64) int {
 func addMember(data *Member) error {
 	var Mutex sync.Mutex
 	Mutex.Lock()
-	all, err := db.Count(dbMember)
-	if err != nil {
-		return err
-	}
-	data.Id = all
+	data.Id = uuid.New().String()
 	db.Insert(dbMember, data)
 	Mutex.Unlock()
 	return nil
@@ -186,12 +185,15 @@ func newLeader(QQ int64, nickName string, permission int, teamName ...string) in
 	if len(teamName) > 0 {
 		name = teamName[0]
 	}
+	var Mutex sync.Mutex
+	Mutex.Lock()
 	db.Insert(dbLeader, &Leader{
 		Id:       QQ,
 		NickName: nickName,
 		TeamName: name,
 		IsOk:     1, // 新团长默认没有权限
 	})
+	Mutex.Unlock()
 	return 0
 }
 
@@ -204,7 +206,10 @@ func acceptLeader(qq int64) string {
 		return ""
 	}
 	c.IsOk = 1
+	var Mutex sync.Mutex
+	Mutex.Lock()
 	err = db.Insert(dbLeader, &c)
+	Mutex.Unlock()
 	return c.TeamName
 }
 
