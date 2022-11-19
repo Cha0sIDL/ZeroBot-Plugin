@@ -523,6 +523,46 @@ func init() {
 				}
 			}
 		})
+	en.OnPrefix("交易行").SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			var server string
+			var itemName string
+			if len(commandPart) == 1 {
+				server = bind(ctx.Event.GroupID)
+				itemName = commandPart[0]
+				if len(server) == 0 {
+					ctx.SendChain(message.Text("本群尚未绑定区服"))
+					return
+				}
+			} else if len(commandPart) == 2 {
+				server = commandPart[0]
+				itemName = commandPart[1]
+			} else {
+				ctx.SendChain(message.Text("参数输入有误！\n" + "战绩 绝代天骄 xxx"))
+				return
+			}
+			if normServer, ok := allServer[server]; ok {
+				itemUrl := fmt.Sprintf("https://helper.jx3box.com/api/item/search?page=1&limit=15&client=std&keyword=%s", goUrl.QueryEscape(itemName))
+				data, err := web.RequestDataWith(web.NewDefaultClient(), itemUrl, "GET", "https://www.jx3box.com/", web.RandUA())
+				jsonItem := gjson.ParseBytes(data)
+				if err != nil || jsonItem.Get("code").Int() != 200 {
+					ctx.SendChain(util.HttpError()...)
+					return
+				}
+				ItemId := jsonItem.Get("data.0.id").String() //默认选第一个
+				ItemIcon := jsonItem.Get("data.0.IconID").Int()
+				tradingPrice, err := web.GetData(fmt.Sprintf("https://next2.jx3box.com/api/item-price/%s/hour-logs?server=%s", goUrl.QueryEscape(ItemId), normServer))
+				priceItem := gjson.ParseBytes(tradingPrice)
+				if err != nil || priceItem.Get("code").Int() != 0 {
+					ctx.SendChain(util.HttpError()...)
+					return
+				}
+
+			} else {
+				ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
+			}
+		})
 	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t Jokes
@@ -1710,4 +1750,8 @@ func tcpGather(address string, tryTime int) error {
 		}
 	}
 	return nil
+}
+func price2human(price int64) (readStr string) {
+
+	return
 }
