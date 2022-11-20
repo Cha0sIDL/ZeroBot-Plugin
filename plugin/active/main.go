@@ -2,12 +2,10 @@ package active
 
 import (
 	"errors"
-	"fmt"
+	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
+	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/samber/lo"
 	"strconv"
-	"strings"
-
-	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -15,7 +13,6 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 
 	"github.com/FloatTech/ZeroBot-Plugin/nlp"
-	"github.com/FloatTech/ZeroBot-Plugin/picture"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
@@ -54,24 +51,11 @@ func init() {
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			if zero.HasPicture(ctx) {
-				for _, elem := range ctx.Event.Message {
-					if elem.Type == "image" {
-						ocrTags := make([]string, 0)
-						ocrResult := ctx.OCRImage(elem.Data["file"]).Get("texts.#.text").Array()
-						if len(ocrResult) == 0 {
-							return
-						}
-						for _, text := range ocrResult {
-							ocrTags = append(ocrTags, text.Str)
-						}
-						text := fmt.Sprintf("%s", strings.Join(ocrTags, ""))
-						url := picture.GetPicture(text)
-						if len(url) == 0 {
-							return
-						}
-						ctx.SendChain(message.Image(url))
-					}
+				b, err := chinesebqb.Bdb.Pick()
+				if err != nil {
+					return
 				}
+				ctx.SendChain(message.Image(b.URL))
 			} else {
 				msg := ctx.ExtractPlainText()
 				r := nlp.NewAIReply(lo.Sample([]string{"青云客", "腾讯"}))

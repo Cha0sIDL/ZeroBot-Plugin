@@ -551,7 +551,7 @@ func init() {
 					return
 				}
 				ItemId := jsonItem.Get("data.0.id").String() //默认选第一个
-				ItemIcon := jsonItem.Get("data.0.IconID").Int()
+				//ItemIcon := jsonItem.Get("data.0.IconID").Int()
 				tradingPrice, err := web.GetData(fmt.Sprintf("https://next2.jx3box.com/api/item-price/%s/hour-logs?server=%s", goUrl.QueryEscape(ItemId), normServer))
 				priceItem := gjson.ParseBytes(tradingPrice)
 				if err != nil || priceItem.Get("code").Int() != 0 {

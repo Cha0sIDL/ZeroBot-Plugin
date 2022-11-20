@@ -99,12 +99,12 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"       // 注入指令
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"       // 煎蛋网无聊图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami"         // 兽语加密
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami"        // 兽语加密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"    // 小鸡词典
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"   // 日语听力学习材料
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"     // 绝绝子生成器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"      // lolicon 随机图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"   // magicprompt吟唱提示
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"  // magicprompt吟唱提示
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/midicreate"    // 简易midi音乐制作
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moegoe"        // 日韩 VITS 模型拟声
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moyu"          // 摸鱼
@@ -144,11 +144,11 @@ import (
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
 	// 其他
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"   // 古风小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"  // 一言
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"       // 剑网相关
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"   // 搜表情包
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"  // 明日方舟公招tag查询
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"    // 古风小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"   // 一言
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"        // 剑网相关
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
 
