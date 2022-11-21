@@ -1751,7 +1751,24 @@ func tcpGather(address string, tryTime int) error {
 	}
 	return nil
 }
-func price2human(price int64) (readStr string) {
 
+// 51.2345.67.89
+func price2hRead(price int64) (readStr string) {
+	strPrice := strconv.FormatInt(price, 10)
+	l := len(strPrice)
+	for idx, str := range strPrice {
+		i := l - idx
+		switch {
+		case i == 9:
+			readStr += "金砖"
+		case i == 5:
+			readStr += "金"
+		case i == 3:
+			readStr += "银"
+		default:
+			readStr += string(str)
+		}
+	}
+	readStr += "铜"
 	return
 }
