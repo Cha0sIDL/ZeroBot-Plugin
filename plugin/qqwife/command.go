@@ -723,10 +723,7 @@ func init() {
 				count[countS{
 					qq:   data.User,
 					name: data.Targetname,
-				}] += count[countS{
-					qq:   data.User,
-					name: data.Targetname,
-				}]
+				}] += 1
 			}
 			number := len(count)
 			/***********设置图片的大小和底色***********/
