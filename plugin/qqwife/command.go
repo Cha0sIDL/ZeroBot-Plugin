@@ -703,6 +703,10 @@ func init() {
 				message.At(uid),
 				message.Text("你透了：\n"),
 				message.Image("http://q4.qlogo.cn/g?b=qq&nk="+strconv.FormatInt(fiancee, 10)+"&s=640").Add("cache", 0),
+				message.Text(
+					"\n",
+					"[", ctx.CardOrNickName(fiancee), "]",
+				),
 			)
 		})
 	engine.OnFullMatchGroup([]string{"涩涩记录", "色色记录"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).
