@@ -808,7 +808,7 @@ func (sql *婚姻登记) findProInfo(gid, uid int64) (info []proInfo, err error)
 	if err != nil {
 		return
 	}
-	err = sql.db.FindFor(dbstr, &p, fmt.Sprintf("WHERE GroupID = %d AND (User = %d OR Target = %d)", gid, uid, uid), func() error {
+	err = sql.db.FindFor(dbstr, &p, fmt.Sprintf("WHERE GroupID = %d AND User = %d", gid, uid), func() error {
 		info = append(info, p)
 		return nil
 	})

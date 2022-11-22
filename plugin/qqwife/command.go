@@ -720,23 +720,13 @@ func init() {
 			}
 			var count = make(map[countS]int64)
 			for _, data := range info {
-				if data.User == uid {
-					count[countS{
-						qq:   data.User,
-						name: data.Targetname,
-					}] += count[countS{
-						qq:   data.User,
-						name: data.Targetname,
-					}] + 1
-				} else if data.Target == uid {
-					count[countS{
-						qq:   0,
-						name: "",
-					}] += count[countS{
-						qq:   0,
-						name: "",
-					}] + 1
-				}
+				count[countS{
+					qq:   data.User,
+					name: data.Targetname,
+				}] += count[countS{
+					qq:   data.User,
+					name: data.Targetname,
+				}]
 			}
 			number := len(count)
 			/***********设置图片的大小和底色***********/
