@@ -2,6 +2,7 @@ package qqwife
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -52,6 +53,16 @@ type cdsheet struct {
 	GroupID int64 // 群号
 	UserID  int64 // 用户
 	ModeID  int64 // 技能类型
+}
+
+// 透群友数据
+type proInfo struct {
+	MId        interface{} //消息id
+	GroupID    int64       // 群号
+	User       int64       // 用户身份证
+	Target     int64       // 对象身份证号
+	Username   string      // 户主名称
+	Targetname string      // 对象名称
 }
 
 func (sql *婚姻登记) 开门时间(gid int64) (ok bool, err error) {
@@ -758,4 +769,93 @@ func checkCondition(ctx *zero.Ctx) bool {
 		ctx.SendChain(message.Text("受方不是单身,不允许给这种人做媒!"))
 	}
 	return false
+}
+
+func (sql *婚姻登记) insertProInfo(gid, uid, target int64, username, targetname string, mid interface{}) error {
+	sql.Lock()
+	defer sql.Unlock()
+	dbstr := "group_pro"
+	err := sql.checkPro()
+	if err != nil {
+		return err
+	}
+	err = sql.db.Create(dbstr, &proInfo{})
+	if err != nil {
+		return err
+	}
+	uidinfo := proInfo{
+		MId:        mid,
+		GroupID:    gid,
+		User:       uid,
+		Username:   username,
+		Target:     target,
+		Targetname: targetname,
+	}
+	err = sql.db.Insert(dbstr, &uidinfo)
+	return err
+}
+
+func (sql *婚姻登记) findProInfo(gid, uid int64) (info []proInfo, err error) {
+	sql.Lock()
+	defer sql.Unlock()
+	err = sql.checkPro()
+	if err != nil {
+		return
+	}
+	var p proInfo
+	dbstr := "group_pro"
+	err = sql.db.Create(dbstr, &proInfo{})
+	if err != nil {
+		return
+	}
+	err = sql.db.FindFor(dbstr, &p, fmt.Sprintf("WHERE GroupID = %d AND (User = %d OR Target = %d)", gid, uid, uid), func() error {
+		info = append(info, p)
+		return nil
+	})
+	return
+}
+
+// 清理表
+func (sql *婚姻登记) checkPro() (err error) {
+	err = sql.db.Create("cdsheet", &cdsheet{})
+	if err != nil {
+		if err = sql.db.Drop("cdsheet"); err == nil {
+			err = sql.db.Create("cdsheet", &cdsheet{})
+		}
+		if err != nil {
+			return
+		}
+	}
+	limitID := "where ModeID is 99" //特殊类型
+	exist := sql.db.CanFind("cdsheet", limitID)
+	if !exist {
+		err = sql.db.Insert("cdsheet", &cdsheet{
+			Time:    time.Now().Unix(),
+			GroupID: 0,
+			UserID:  0,
+			ModeID:  99,
+		})
+		return
+	}
+	cdinfo := cdsheet{}
+	err = sql.db.Find("cdsheet", &cdinfo, limitID)
+	if err != nil {
+		return
+	}
+	if !isSameDay(cdinfo.Time, time.Now().Unix()) {
+		// 如果CD已过就检查是否清理表
+		err = sql.db.Del("cdsheet", limitID)
+		if err != nil {
+			return
+		}
+		err = sql.db.Drop("group_pro")
+		return
+	}
+	return
+}
+
+func isSameDay(t1, t2 int64) bool {
+	y1, m1, d1 := time.Unix(t1, 0).Date()
+	y2, m2, d2 := time.Unix(t2, 0).Date()
+	return y1 == y2 && m1 == m2 && d1 == d2
 }

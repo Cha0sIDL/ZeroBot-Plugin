@@ -68,7 +68,7 @@ func init() {
 			"- (娶|嫁)@对方QQ\n自由选择对象, 自由恋爱(好感度越高成功率越高,保底30%概率)\n" +
 			"- 当[对方Q号|@对方QQ]的小三\n我和你才是真爱, 为了你我愿意付出一切(好感度越高成功率越高,保底10%概率)\n" +
 			"- 闹离婚\n你谁啊, 给我滚(好感度越高成功率越低)\n" +
-			"- 买礼物给[对方Q号|@对方QQ]\n使用小熊饼干获取好感度\n" +
+			"- [买|送]礼物给[对方Q号|@对方QQ]\n使用通宝获取好感度\n" +
 			"- 做媒 @攻方QQ @受方QQ\n身为管理, 群友的xing福是要搭把手的(攻受双方好感度越高成功率越高,保底30%概率)\n" +
 			"--------------------------------\n好感度规则\n--------------------------------\n" +
 			"\"娶群友\"指令好感度随机增加1~5。\n\"A牛B的C\"会导致C恨A, 好感度-5;\nB为了报复A, 好感度+5(什么柜子play)\nA为BC做媒,成功B、C对A好感度+1反之-1\n做媒成功BC好感度+1" +
@@ -675,5 +675,110 @@ func init() {
 				return
 			}
 			ctx.SendChain(message.Text("重置成功"))
+		})
+	engine.OnFullMatch("透群友", zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.NewLimiterManager(time.Second*10, 1).LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			gid := ctx.Event.GroupID
+			uid := ctx.Event.UserID
+			// 无缓存获取群员列表
+			temp := ctx.GetThisGroupMemberListNoCache().Array()
+			sort.SliceStable(temp, func(i, j int) bool {
+				return temp[i].Get("last_sent_time").Int() < temp[j].Get("last_sent_time").Int()
+			})
+			temp = temp[math.Max(0, len(temp)-30):]
+			// 没有人（只剩自己）的时候
+			if len(temp) == 1 {
+				ctx.SendChain(message.Text("~群里只有你自己了，不可以涩涩！"))
+				return
+			}
+			// 随机抽娶
+			fiancee := temp[rand.Intn(len(temp))].Get("user_id").Int()
+			// 去民政局办证
+			err := 民政局.insertProInfo(gid, uid, fiancee, ctx.CardOrNickName(uid), ctx.CardOrNickName(fiancee), ctx.Event.MessageID)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			ctx.SendChain(
+				message.At(uid),
+				message.Text("你透了：\n"),
+				message.Image("http://q4.qlogo.cn/g?b=qq&nk="+strconv.FormatInt(fiancee, 10)+"&s=640").Add("cache", 0),
+			)
+		})
+	engine.OnFullMatchGroup([]string{"涩涩记录", "色色记录"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			gid := ctx.Event.GroupID
+			uid := ctx.Event.UserID
+			info, err := 民政局.findProInfo(gid, uid)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			type countS struct {
+				qq   int64
+				name string
+			}
+			var count = make(map[countS]int64)
+			for _, data := range info {
+				if data.User == uid {
+					count[countS{
+						qq:   data.User,
+						name: data.Targetname,
+					}] += count[countS{
+						qq:   data.User,
+						name: data.Targetname,
+					}] + 1
+				} else if data.Target == uid {
+					count[countS{
+						qq:   0,
+						name: "",
+					}] += count[countS{
+						qq:   0,
+						name: "",
+					}] + 1
+				}
+			}
+			number := len(count)
+			/***********设置图片的大小和底色***********/
+			fontSize := 50.0
+			if number < 10 {
+				number = 10
+			}
+			canvas := gg.NewContext(1500, int(250+fontSize*float64(number)))
+			canvas.SetRGB(1, 1, 1) // 白色
+			canvas.Clear()
+			/***********下载字体，可以注销掉***********/
+			_, err = file.GetLazyData(text.BoldFontFile, true)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+			}
+			/***********设置字体颜色为黑色***********/
+			canvas.SetRGB(0, 0, 0)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize*2); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			sl, h := canvas.MeasureString("群老婆列表")
+			/***********绘制标题***********/
+			canvas.DrawString("今天你透了", (1500-sl)/2, 160-h) // 放置在中间位置
+			canvas.DrawString("————————————————————", 0, 250-h)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			_, h = canvas.MeasureString("焯")
+			var i = 0
+			for m, v := range count {
+				canvas.DrawString(slicename(m.name, canvas), 0, float64(260+50*i)-h)
+				canvas.DrawString("("+strconv.FormatInt(m.qq, 10)+")", 350, float64(260+50*i)-h)
+				canvas.DrawString("←→", 700, float64(260+50*i)-h)
+				canvas.DrawString(strconv.FormatInt(v, 10)+"次", 1150, float64(260+50*i)-h)
+				i++
+			}
+			data, cl := writer.ToBytes(canvas.Image())
+			ctx.SendChain(message.At(uid), message.ImageBytes(data))
+			cl()
 		})
 }
