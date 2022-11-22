@@ -6,12 +6,12 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.5.2-0.20221112090201-4a200d6330d5
-	github.com/FloatTech/floatbox v0.0.0-20221110070748-e0d0b3af3e57
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221121151451-9c3b88bc325d
+	github.com/FloatTech/floatbox v0.0.0-20221121151328-cac4af114b44
 	github.com/FloatTech/sqlite v0.5.1
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20221110070900-b2888434e9fc
-	github.com/FloatTech/zbputils v1.5.1-0.20221115024335-1bd5b91a870e
+	github.com/FloatTech/zbputils v1.6.1-0.20221121151417-290a1a584dd0
 	github.com/RomiChan/syncx v0.0.0-20220404072119-d7ea0ae15a4c
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -22,10 +22,11 @@ require (
 	github.com/fumiama/ahsai v0.1.0
 	github.com/fumiama/cron v1.3.0
 	github.com/fumiama/go-base16384 v1.6.1
-	github.com/fumiama/go-registry v0.2.2
+	github.com/fumiama/go-registry v0.2.5-0.20221121111817-44b0846bdce6
 	github.com/fumiama/gotracemoe v0.0.3
 	github.com/fumiama/sqlite3 v1.14.6
 	github.com/fumiama/unibase2n v0.0.0-20221003115227-e7db987de949
+	github.com/glebarez/sqlite v1.5.0
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gogo/protobuf v1.3.2
@@ -43,23 +44,24 @@ require (
 	github.com/pkumza/numcn v1.0.0
 	github.com/playwright-community/playwright-go v0.2000.1
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
-	github.com/samber/lo v1.34.0
+	github.com/samber/lo v1.35.0
 	github.com/shirou/gopsutil/v3 v3.22.8
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.537
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.537
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.537
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.542
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.542
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.542
 	github.com/tidwall/gjson v1.14.3
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.6.3
 	gitlab.com/gomidi/midi/v2 v2.0.25
 	golang.org/x/image v0.1.0
+	gorm.io/gorm v1.24.2
 )
 
 require (
-	github.com/FloatTech/rendercard v0.0.1 // indirect
+	github.com/FloatTech/rendercard v0.0.2-0.20221116145901-79858ddd4cad // indirect
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
@@ -80,7 +82,6 @@ require (
 	github.com/fumiama/gofastTEA v0.0.10 // indirect
 	github.com/gabriel-vasile/mimetype v1.0.4 // indirect
 	github.com/glebarez/go-sqlite v1.19.1 // indirect
-	github.com/glebarez/sqlite v1.5.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
@@ -151,7 +152,6 @@ require (
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gorm.io/gorm v1.24.1 // indirect
 	modernc.org/libc v1.19.0 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.4.0 // indirect
