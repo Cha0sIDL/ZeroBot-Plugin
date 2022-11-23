@@ -880,20 +880,22 @@ func sortProInfo(rewData []proInfo, mode int) ([]countS, error) {
 	case 1: //自己的记录
 		for _, data := range rewData {
 			count[countS{
-				qq:   data.User,
+				qq:   data.Target,
 				name: data.Targetname,
 			}] += 1
 		}
 	case 2: //群排行榜
 		for _, data := range rewData {
 			count[countS{
-				qq: data.User,
+				qq:   data.User,
+				name: data.Username,
 			}] += 1
 		}
-	case 3:
+	case 3: //群排行榜
 		for _, data := range rewData {
 			count[countS{
-				qq: data.Target,
+				name: data.Targetname,
+				qq:   data.Target,
 			}] += 1
 		}
 	}
