@@ -3,6 +3,8 @@ package qqwife
 import (
 	"errors"
 	"fmt"
+	"github.com/samber/lo"
+	"sort"
 	"strconv"
 	"sync"
 	"time"
@@ -803,12 +805,18 @@ func (sql *婚姻登记) findProInfo(gid, uid int64) (info []proInfo, err error)
 		return
 	}
 	var p proInfo
+	var arg string
 	dbstr := "group_pro"
+	if uid == 0 {
+		arg = fmt.Sprintf("WHERE GroupID = %d", gid)
+	} else {
+		arg = fmt.Sprintf("WHERE GroupID = %d AND User = %d", gid, uid)
+	}
 	err = sql.db.Create(dbstr, &proInfo{})
 	if err != nil {
 		return
 	}
-	err = sql.db.FindFor(dbstr, &p, fmt.Sprintf("WHERE GroupID = %d AND User = %d", gid, uid), func() error {
+	err = sql.db.FindFor(dbstr, &p, arg, func() error {
 		info = append(info, p)
 		return nil
 	})
@@ -858,4 +866,43 @@ func isSameDay(t1, t2 int64) bool {
 	y1, m1, d1 := time.Unix(t1, 0).Date()
 	y2, m2, d2 := time.Unix(t2, 0).Date()
 	return y1 == y2 && m1 == m2 && d1 == d2
+}
+
+type countS struct {
+	qq    int64
+	name  string
+	times int64
+}
+
+func sortProInfo(rewData []proInfo, mode int) ([]countS, error) {
+	var count = make(map[countS]int64)
+	switch mode {
+	case 1: //自己的记录
+		for _, data := range rewData {
+			count[countS{
+				qq:   data.User,
+				name: data.Targetname,
+			}] += 1
+		}
+	case 2: //群排行榜
+		for _, data := range rewData {
+			count[countS{
+				qq: data.User,
+			}] += 1
+		}
+	case 3:
+		for _, data := range rewData {
+			count[countS{
+				qq: data.Target,
+			}] += 1
+		}
+	}
+	tmp := lo.MapToSlice(count, func(k countS, v int64) countS {
+		k.times = v
+		return k
+	})
+	sort.SliceStable(tmp, func(i, j int) bool {
+		return tmp[i].times > tmp[j].times
+	})
+	return tmp, nil
 }

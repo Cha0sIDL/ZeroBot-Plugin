@@ -676,7 +676,7 @@ func init() {
 			}
 			ctx.SendChain(message.Text("重置成功"))
 		})
-	engine.OnFullMatch("透群友", zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.NewLimiterManager(time.Second*10, 1).LimitByUser).
+	engine.OnFullMatch("透群友", zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.NewLimiterManager(time.Second*15, 1).LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			gid := ctx.Event.GroupID
 			uid := ctx.Event.UserID
@@ -718,16 +718,10 @@ func init() {
 				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
 				return
 			}
-			type countS struct {
-				qq   int64
-				name string
-			}
-			var count = make(map[countS]int64)
-			for _, data := range info {
-				count[countS{
-					qq:   data.User,
-					name: data.Targetname,
-				}] += 1
+			count, err := sortProInfo(info, 1)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
 			}
 			number := len(count)
 			/***********设置图片的大小和底色***********/
@@ -738,11 +732,6 @@ func init() {
 			canvas := gg.NewContext(1500, int(250+fontSize*float64(number)))
 			canvas.SetRGB(1, 1, 1) // 白色
 			canvas.Clear()
-			/***********下载字体，可以注销掉***********/
-			_, err = file.GetLazyData(text.BoldFontFile, control.Md5File, true)
-			if err != nil {
-				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
-			}
 			/***********设置字体颜色为黑色***********/
 			canvas.SetRGB(0, 0, 0)
 			/***********设置字体大小,并获取字体高度用来定位***********/
@@ -760,16 +749,112 @@ func init() {
 				return
 			}
 			_, h = canvas.MeasureString("焯")
-			var i = 0
-			for m, v := range count {
-				canvas.DrawString(slicename(m.name, canvas), 0, float64(260+50*i)-h)
-				canvas.DrawString("("+strconv.FormatInt(m.qq, 10)+")", 350, float64(260+50*i)-h)
+			for i, v := range count {
+				canvas.DrawString(slicename(v.name, canvas), 0, float64(260+50*i)-h)
+				canvas.DrawString("("+strconv.FormatInt(v.qq, 10)+")", 350, float64(260+50*i)-h)
 				canvas.DrawString("←→", 700, float64(260+50*i)-h)
-				canvas.DrawString(strconv.FormatInt(v, 10)+"次", 1150, float64(260+50*i)-h)
-				i++
+				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
 			}
 			data, cl := writer.ToBytes(canvas.Image())
 			ctx.SendChain(message.At(uid), message.ImageBytes(data))
+			cl()
+		})
+	engine.OnFullMatchGroup([]string{"涩涩排行榜", "色色排行榜"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByGroup).
+		Handle(func(ctx *zero.Ctx) {
+			gid := ctx.Event.GroupID
+			info, err := 民政局.findProInfo(gid, 0)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			count, err := sortProInfo(info, 2)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			number := len(count)
+			/***********设置图片的大小和底色***********/
+			fontSize := 50.0
+			if number < 10 {
+				number = 10
+			}
+			canvas := gg.NewContext(1500, int(250+fontSize*float64(number)))
+			canvas.SetRGB(1, 1, 1) // 白色
+			canvas.Clear()
+			/***********设置字体颜色为黑色***********/
+			canvas.SetRGB(0, 0, 0)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize*2); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			sl, h := canvas.MeasureString("群老婆列表")
+			/***********绘制标题***********/
+			canvas.DrawString("本群排行榜", (1500-sl)/2, 160-h) // 放置在中间位置
+			canvas.DrawString("————————————————————", 0, 250-h)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			_, h = canvas.MeasureString("焯")
+			for i, v := range count {
+				canvas.DrawString(slicename(v.name, canvas), 0, float64(260+50*i)-h)
+				canvas.DrawString("("+strconv.FormatInt(v.qq, 10)+")", 350, float64(260+50*i)-h)
+				canvas.DrawString("←→", 700, float64(260+50*i)-h)
+				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
+			}
+			data, cl := writer.ToBytes(canvas.Image())
+			ctx.SendChain(message.ImageBytes(data))
+			cl()
+		})
+	engine.OnFullMatchGroup([]string{"NTR排行榜", "ntr排行榜"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByGroup).
+		Handle(func(ctx *zero.Ctx) {
+			gid := ctx.Event.GroupID
+			info, err := 民政局.findProInfo(gid, 0)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			count, err := sortProInfo(info, 3)
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
+				return
+			}
+			number := len(count)
+			/***********设置图片的大小和底色***********/
+			fontSize := 50.0
+			if number < 10 {
+				number = 10
+			}
+			canvas := gg.NewContext(1500, int(250+fontSize*float64(number)))
+			canvas.SetRGB(1, 1, 1) // 白色
+			canvas.Clear()
+			/***********设置字体颜色为黑色***********/
+			canvas.SetRGB(0, 0, 0)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize*2); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			sl, h := canvas.MeasureString("群老婆列表")
+			/***********绘制标题***********/
+			canvas.DrawString("NTR排行榜", (1500-sl)/2, 160-h) // 放置在中间位置
+			canvas.DrawString("————————————————————", 0, 250-h)
+			/***********设置字体大小,并获取字体高度用来定位***********/
+			if err = canvas.LoadFontFace(text.BoldFontFile, fontSize); err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
+			_, h = canvas.MeasureString("焯")
+			for i, v := range count {
+				canvas.DrawString(slicename(v.name, canvas), 0, float64(260+50*i)-h)
+				canvas.DrawString("("+strconv.FormatInt(v.qq, 10)+")", 350, float64(260+50*i)-h)
+				canvas.DrawString("←→", 700, float64(260+50*i)-h)
+				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
+			}
+			data, cl := writer.ToBytes(canvas.Image())
+			ctx.SendChain(message.ImageBytes(data))
 			cl()
 		})
 }
