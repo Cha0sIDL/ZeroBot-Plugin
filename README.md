@@ -1,3 +1,4 @@
+
 <div align="center">
   <a href="https://crypko.ai/crypko/5k8HyUVTq5421/">
   <img src=".github/ice.jpg" alt="看板娘" width = "400">
@@ -1091,6 +1092,14 @@ NeteaseCloudMusicApi项目地址:https://binaryify.github.io/NeteaseCloudMusicAp
 
   - [x] 重置花名册
 
+  - [x] 透群友
+
+  - [x] [涩涩|色色]记录
+
+  - [x] [涩涩|色色]排行榜
+
+  - [x] [NTR|ntr]排行榜
+
 </details>
 <details>
   <summary>权重查询</summary>
@@ -1449,7 +1458,9 @@ NeteaseCloudMusicApi项目地址:https://binaryify.github.io/NeteaseCloudMusicAp
 
 `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/picture"`
 
-- [x] [xxx]表情  可能会偶尔抽风
+- [x] [xxx]表情 
+- [x] 随机表情包
+- [x] 系列表情包
 
 
 </details>
