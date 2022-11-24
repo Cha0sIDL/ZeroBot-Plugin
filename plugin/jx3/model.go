@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
+	"runtime/debug"
 	"sort"
 	"strconv"
 	"sync"
@@ -347,7 +348,7 @@ func insert(tableName string, data interface{}, tryTime int) error {
 		if err == nil {
 			return err
 		}
-		log.Errorln("jx3daily insert error", err)
+		log.Errorln("jx3daily insert error", err, string(debug.Stack()))
 		if i == tryTime {
 			return errors.New("tryTime over")
 		}
