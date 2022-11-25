@@ -16,10 +16,12 @@ import (
 	"path"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/smallnest/rpcx/client"
 
@@ -425,4 +427,14 @@ func HttpError() []message.MessageSegment {
 	var msg []message.MessageSegment
 	msg = append(msg, message.Text("垃圾服务器又抽风了，稍后再试试吧,,Ծ‸Ծ,,"))
 	return msg
+}
+
+func GetChinese(text string) string {
+	var s string
+	for _, char := range text {
+		if unicode.Is(unicode.Han, char) || (regexp.MustCompile("[\u3002\uff1b\uff0c\uff1a\u201c\u201d\uff08\uff09\u3001\uff1f\u300a\u300b]").MatchString(string(char))) {
+			s += string(char)
+		}
+	}
+	return s
 }

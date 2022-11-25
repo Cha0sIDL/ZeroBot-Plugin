@@ -7,10 +7,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/go-resty/resty/v2"
 	"github.com/golang-module/carbon/v2"
 	"github.com/playwright-community/playwright-go"
 	"github.com/samber/lo"
+	"github.com/tidwall/sjson"
 	"image"
 	"io"
 	"io/ioutil"
@@ -24,9 +26,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/tidwall/sjson"
 
 	"github.com/FloatTech/floatbox/process"
 
@@ -550,15 +549,56 @@ func init() {
 					ctx.SendChain(util.HttpError()...)
 					return
 				}
-				ItemId := jsonItem.Get("data.0.id").String() //默认选第一个
-				//ItemIcon := jsonItem.Get("data.0.IconID").Int()
-				tradingPrice, err := web.GetData(fmt.Sprintf("https://next2.jx3box.com/api/item-price/%s/hour-logs?server=%s", goUrl.QueryEscape(ItemId), normServer))
-				priceItem := gjson.ParseBytes(tradingPrice)
-				if err != nil || priceItem.Get("code").Int() != 0 {
-					ctx.SendChain(util.HttpError()...)
+				jsonItemArr := jsonItem.Get("data.data").Array()
+				if len(jsonItemArr) == 0 {
+					ctx.SendChain(message.Text("没有找到" + itemName + "你是不是乱输的哦~"))
 					return
 				}
-
+				var rsp = "找到以下道具,请输入序号选择要查询的物品：\n"
+				for idx, itemInfo := range jsonItemArr {
+					rsp += fmt.Sprintf("%d. %s %s\n", idx, itemInfo.Get("Name").String(), util.GetChinese(itemInfo.Get("Desc").String()))
+				}
+				ctx.SendChain(message.Text(rsp))
+				next := zero.NewFutureEvent("message", 999, false, ctx.CheckSession())
+				recv, cancel := next.Repeat()
+				defer cancel()
+				for {
+					select {
+					case <-time.After(time.Second * 120):
+						ctx.SendChain(message.Text("交易行查询指令过期"))
+						return
+					case c := <-recv:
+						msg := c.Event.Message.ExtractPlainText()
+						num, err := strconv.Atoi(msg)
+						if err != nil {
+							ctx.SendChain(message.Text("请输入数字!"))
+							continue
+						}
+						if num < 0 || num > len(jsonItemArr) {
+							ctx.SendChain(message.Text("序号非法!"))
+							continue
+						}
+						ItemId := jsonItem.Get(fmt.Sprintf("data.data.%d.id", num)).String()
+						//ItemIcon := jsonItem.Get(fmt.Sprintf("data.%d.IconID", num)).Int()
+						tradingPrice, err := web.GetData(fmt.Sprintf("https://next2.jx3box.com/api/item-price/%s/detail?server=%s", ItemId, goUrl.QueryEscape(normServer[0])))
+						priceItem := gjson.ParseBytes(tradingPrice)
+						priceSlice := priceItem.Get("data.prices").Array()
+						if err != nil || priceItem.Get("code").Int() != 0 {
+							ctx.SendChain(util.HttpError()...)
+							return
+						}
+						rsp = ""
+						sort.SliceStable(priceSlice, func(i, j int) bool {
+							return priceSlice[i].Get("unit_price").Int() < priceSlice[j].Get("unit_price").Int()
+						})
+						for _, s := range priceSlice {
+							rsp += fmt.Sprintf("单价：%s , 数量：%d\n", price2hRead(s.Get("unit_price").Int()), s.Get("n_count").Int())
+						}
+						rsp += "-------------数据来自JXBOX----------------\n"
+						ctx.SendChain(message.Text(rsp))
+						return
+					}
+				}
 			} else {
 				ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
 			}
@@ -964,7 +1004,6 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 			"data":   lo.Reverse(lineStruct),
 		})
 		html := jibPrice2line(lineStruct, datapath)
-		fmt.Println(priceHtml + html)
 		finName, err := util.Html2pic(datapath, server+util.TodayFileName(), priceHtml+html)
 		ctx.SendChain(message.Text(rsp), message.Image("file:///"+finName))
 	} else {
@@ -1758,6 +1797,7 @@ func price2hRead(price int64) (readStr string) {
 	l := len(strPrice)
 	for idx, str := range strPrice {
 		i := l - idx
+		readStr += string(str)
 		switch {
 		case i == 9:
 			readStr += "金砖"
@@ -1765,8 +1805,6 @@ func price2hRead(price int64) (readStr string) {
 			readStr += "金"
 		case i == 3:
 			readStr += "银"
-		default:
-			readStr += string(str)
 		}
 	}
 	readStr += "铜"
