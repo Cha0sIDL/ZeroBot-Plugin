@@ -5,15 +5,19 @@ import (
 	"fmt"
 	"github.com/FloatTech/floatbox/web"
 	"io"
+	"net"
 	"net/http"
 	"time"
 )
 
 func NewTimeOutDefaultClient() *http.Client {
 	return &http.Client{
-		Timeout: 20 * time.Second,
 		Transport: &http.Transport{
-			TLSHandshakeTimeout: 10 * time.Second,
+			DialContext: (&net.Dialer{
+				Timeout:   60 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext,
+			TLSHandshakeTimeout: 60 * time.Second,
 		},
 	}
 }
