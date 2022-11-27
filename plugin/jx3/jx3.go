@@ -1096,7 +1096,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
 		rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
 		if err != nil || gjson.Get(binutils.BytesToString(rspData), "state").Int() != 0 {
-			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+			ctx.SendChain(message.Text("出错了联系管理员看看吧", err, gjson.Get(binutils.BytesToString(rspData), "state").Int()))
 			return
 		}
 		if len(gjson.Get(binutils.BytesToString(rspData), "data").Array()) == 0 { // 如果输入无数据则请求
