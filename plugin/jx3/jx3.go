@@ -363,7 +363,7 @@ func init() {
 			name := ctx.State["args"].(string)
 			mental := getMentalData(strings.Replace(name, " ", "", -1))
 			mentalUrl := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
-			data, err := web.RequestDataWith(web.NewDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
+			data, err := web.RequestDataWith(NewTimeOutDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
 			DataList := gjson.Get(binutils.BytesToString(data), "data.list").Array()
 			if err != nil || len(DataList) == 0 {
 				ctx.SendChain(message.Text("出错了请检查参数或稍后试试吧~"))
@@ -1094,7 +1094,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 		ctx.SendChain(message.Image(hei.fileName))
 	} else {
 		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
-		rspData, err := web.RequestDataWith(web.NewDefaultClient(), goodUrl, "GET", "", web.RandUA())
+		rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), goodUrl, "GET", "", web.RandUA())
 		if err != nil || gjson.Get(binutils.BytesToString(rspData), "state").Int() != 0 {
 			ctx.SendChain(message.Text("出错了联系管理员看看吧", err, gjson.Get(binutils.BytesToString(rspData), "state").Int()))
 			return
@@ -1126,7 +1126,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 			return
 		}
 		wujiaPicUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/outward?regionId=1&imageLimit=1&outwardId=%d", goodid)
-		wujiaPic, err := util.RequestDataWith(wujiaPicUrl)
+		wujiaPic, err := RequestDataWith(wujiaPicUrl)
 		for _, rprice := range data.Data.Other {
 			if server, ok := xiaoheiIndx[rprice.Prices.Region]; ok {
 				price[server] = append(price[server], map[string]interface{}{
