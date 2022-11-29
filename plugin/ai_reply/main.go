@@ -3,6 +3,7 @@ package aireply
 
 import (
 	"fmt"
+	"github.com/samber/lo"
 	"net/url"
 	"strconv"
 	"time"
@@ -84,7 +85,7 @@ func init() { // 插件主体
 				}),
 			))).Add("cache", 0)
 			// 发送语音
-			if ID := ctx.SendChain(record); ID.ID() == 0 {
+			if ID := ctx.SendChain(lo.Sample([]message.MessageSegment{record, message.Text(reply)})); ID.ID() == 0 {
 				ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(reply))
 			}
 		})

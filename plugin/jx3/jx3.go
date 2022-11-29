@@ -328,7 +328,7 @@ func init() {
 						sandTokenExpire: carbon.Now().Timestamp() + 43200,
 					}
 				}
-				client := web.NewDefaultClient()
+				client := NewTimeOutDefaultClient()
 				request, err := http.NewRequest("GET", fmt.Sprintf("https://www.j3sp.com/api/sand/?serverName=%s&shadow=0&is_history=1", fullName[0]), nil)
 				if err == nil {
 					// 增加header选项
@@ -543,7 +543,7 @@ func init() {
 			}
 			if normServer, ok := allServer[server]; ok {
 				itemUrl := fmt.Sprintf("https://helper.jx3box.com/api/item/search?page=1&limit=15&client=std&keyword=%s", goUrl.QueryEscape(itemName))
-				data, err := web.RequestDataWith(web.NewDefaultClient(), itemUrl, "GET", "https://www.jx3box.com/", web.RandUA())
+				data, err := web.RequestDataWith(NewTimeOutDefaultClient(), itemUrl, "GET", "https://www.jx3box.com/", web.RandUA())
 				jsonItem := gjson.ParseBytes(data)
 				if err != nil || jsonItem.Get("code").Int() != 200 {
 					ctx.SendChain(util.HttpError()...)
@@ -832,7 +832,7 @@ func init() {
 			server := commandPart[0]
 			name := commandPart[1]
 			qiyuUrl := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
-			rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
+			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
 			if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 0 {
 				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 				return
@@ -859,7 +859,7 @@ func init() {
 			// name := commandPart[1]
 			// qiyuUrl := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&u=不限&t=&token=%s", server, name, config.Cfg.MMToken)
 			// rspData, err := util.SendHttp(qiyuUrl, []byte(""))
-			////rspData, err := web.RequestDataWith(web.NewDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
+			////rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
 			////log.Errorln(qiyuUrl, string(rspData), "err", err)
 			// if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 200 {
 			//	ctx.SendChain(message.Text("出错了联系管理员看看吧"))
@@ -924,7 +924,7 @@ func daily(ctx *zero.Ctx, server string) {
 		var msg string
 		msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
 		riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
-		daily, err := web.RequestDataWith(web.NewDefaultClient(), riUrl, "GET", "", web.RandUA())
+		daily, err := web.RequestDataWith(NewTimeOutDefaultClient(), riUrl, "GET", "", web.RandUA())
 		if err != nil || gjson.Get(binutils.BytesToString(daily), "code").Int() != 0 {
 			ctx.SendChain(util.HttpError()...)
 			return
@@ -941,7 +941,7 @@ func daily(ctx *zero.Ctx, server string) {
 			msg += k + "：" + questName + "\n"
 		}
 		meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
-		meiData, err := web.RequestDataWith(web.NewDefaultClient(), meiUrl, "GET", "", web.RandUA())
+		meiData, err := web.RequestDataWith(NewTimeOutDefaultClient(), meiUrl, "GET", "", web.RandUA())
 		if err != nil || gjson.Get(binutils.BytesToString(meiData), "code").Int() != 0 {
 			msg += "美人图：今天没有美人图呢~\n"
 		} else {
@@ -971,7 +971,7 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 	}
 	server := commandPart[0]
 	if val, ok := allServer[server]; ok {
-		data, err := web.RequestDataWith(web.NewDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
+		data, err := web.RequestDataWith(NewTimeOutDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
 		strData := binutils.BytesToString(data)
 		if err != nil || gjson.Get(strData, "code").Int() != 0 {
 			ctx.SendChain(util.HttpError()...)
