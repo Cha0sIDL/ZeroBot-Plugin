@@ -41,12 +41,13 @@ type area struct {
 		Wzzadd  any `json:"wzz_add"`
 	} `json:"today"`
 	Total struct {
-		NowConfirm int    `json:"nowConfirm"`
-		Confirm    int    `json:"confirm"`
-		Dead       int    `json:"dead"`
-		Heal       int    `json:"heal"`
-		Grade      string `json:"grade"`
-		Wzz        int    `json:"wzz"`
+		NowConfirm      int    `json:"nowConfirm"`
+		Confirm         int    `json:"confirm"`
+		Dead            int    `json:"dead"`
+		Heal            int    `json:"heal"`
+		Grade           string `json:"grade"`
+		Wzz             int    `json:"wzz"`
+		HighRiskAreaNum int    `json:"highRiskAreaNum"`
 	} `json:"total"`
 	Children []*area `json:"children"`
 }
@@ -78,13 +79,14 @@ func init() {
 			d := map[string]interface{}{
 				"NowConfirm": data.Total.NowConfirm, // 现有确诊
 				"Confirm":    data.Today.Confirm,    // 新增人数
-				"Heal":       data.Total.Heal,       // 累计确诊
-				"deadCount":  data.Total.Dead,       // 死亡人数
-				"Grade":      data.Total.Grade,      //
-				"name":       data.Name,
-				"time":       time,
-				"Wzz":        data.Total.Wzz,    // 无症状人数
-				"Wzzadd":     data.Today.Wzzadd} // 新增无症状
+				//"Heal":       data.Total.Heal,       // 累计确诊
+				//"deadCount":  data.Total.Dead,       // 死亡人数
+				"Grade":           data.Total.Grade, //
+				"name":            data.Name,
+				"time":            time,
+				"HighRiskAreaNum": data.Total.HighRiskAreaNum, //高风险地区
+				//	"Wzz":        data.Total.Wzz,    // 无症状人数
+				"Wzzadd": data.Today.Wzzadd} // 新增无症状
 			html := util.Template2html("yiqing.html", d)
 			Clip := util.PageScreenshotOptionsClip(
 				playwright.PageScreenshotOptionsClip{

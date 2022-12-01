@@ -16,58 +16,64 @@
         </div>
         <div class="card-body">
             <div class="row text-center">
-                <div class="col-4">
+                <div class="col-3">
                     <span class="badge bg-primary fs-4">{{ name }}</span>
                 </div>
-                <div class="col-5 offset-3">
+                <div class="col-6 offset-3">
                     <span class="badge bg-info fs-4">{{ time }}</span>
                 </div>
             </div>
 
             <div class="row text-center" style="margin-top: 20px;">
-                <div class="col-4">
+                <div class="col-3">
                     <h3>现存确诊</h3>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h3>新增病例</h3>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h3>新增无症状</h3>
                 </div>
+                <div class="col-3">
+                    <h3>高风险地区</h3>
+                </div>
             </div>
             <div class="row text-center">
-                <div class="col-4">
+                <div class="col-3">
                     <h3 class="text-info">{{ NowConfirm }}</h3>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h3 class="text-danger">{{ Confirm }}</h3>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <h3 class="text-warning">{{ Wzzadd }}</h3>
                 </div>
-            </div>
-            <div class="row text-center">
-                <div class="col-4">
-                    <h3>治愈病例</h3>
-                </div>
-                <div class="col-4">
-                    <h3>累计死亡</h3>
-                </div>
-                <div class="col-4">
-                    <h3>无症状人数</h3>
+                <div class="col-3">
+                    <h3 class="text-warning">{{ HighRiskAreaNum }}</h3>
                 </div>
             </div>
-            <div class="row text-center">
-                <div class="col-4">
-                    <h3 class="text-warning">{{ Heal }}</h3>
-                </div>
-                <div class="col-4">
-                    <h3 class="text-secondary">{{ deadCount }}</h3>
-                </div>
-                <div class="col-4">
-                    <h3 class="text-primary">{{ Wzz }}</h3>
-                </div>
-            </div>
+            <!-- <div class="row text-center">
+                 <div class="col-4">
+                     <h3>治愈病例</h3>
+                 </div>
+                 <div class="col-4">
+                     <h3>累计死亡</h3>
+                 </div>
+                 <div class="col-4">
+                     <h3>无症状人数</h3>
+                 </div>
+             </div>
+             <div class="row text-center">
+                 <div class="col-4">
+                     <h3 class="text-warning">{{ Heal }}</h3>
+                 </div>
+                 <div class="col-4">
+                     <h3 class="text-secondary">{{ deadCount }}</h3>
+                 </div>
+                 <div class="col-4">
+                     <h3 class="text-primary">{{ Wzz }}</h3>
+                 </div>
+             </div> -->
         </div>
         <div class="card-footer">
             <p class="text-center text-warning fs-4">{{ Grade }}</p>
