@@ -8,10 +8,11 @@ require (
 	github.com/DanPlayer/timefinder v1.1.110
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20221121151451-9c3b88bc325d
 	github.com/FloatTech/floatbox v0.0.0-20221121151328-cac4af114b44
+	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v0.5.1
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20221110070900-b2888434e9fc
-	github.com/FloatTech/zbputils v1.6.1-0.20221121151417-290a1a584dd0
+	github.com/FloatTech/zbputils v1.6.1-0.20221130032712-2991b70c349f
 	github.com/RomiChan/syncx v0.0.0-20220404072119-d7ea0ae15a4c
 	github.com/RomiChan/websocket v1.4.3-0.20220123145318-307a86b127bc
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -61,7 +62,6 @@ require (
 )
 
 require (
-	github.com/FloatTech/rendercard v0.0.2-0.20221116145901-79858ddd4cad // indirect
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/akutz/memconn v0.1.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect

@@ -114,9 +114,9 @@ func init() {
 			}
 			// 输出结果
 			if mood == 0 {
-				ctx.SendChain(message.Text("你花了", moneyToFavor, "ATRI币买了一件女装送给了ta,ta很不喜欢,你们的好感度降低至", lastfavor))
+				ctx.SendChain(message.Text("你花了", moneyToFavor, "通宝买了一件女装送给了ta,ta很不喜欢,你们的好感度降低至", lastfavor))
 			} else {
-				ctx.SendChain(message.Text("你花了", moneyToFavor, "ATRI币买了一件女装送给了ta,ta很喜欢,你们的好感度升至", lastfavor))
+				ctx.SendChain(message.Text("你花了", moneyToFavor, "通宝买了一件女装送给了ta,ta很喜欢,你们的好感度升至", lastfavor))
 			}
 		})
 	engine.OnFullMatch("好感度列表", zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).
@@ -193,7 +193,7 @@ func init() {
 }
 
 // nolint: asciicheck
-//nolint: asciicheck
+// nolint: asciicheck
 func (sql *婚姻登记) 查好感度(uid, target int64) (int, error) {
 	sql.Lock()
 	defer sql.Unlock()
@@ -247,7 +247,7 @@ func (sql *婚姻登记) getGroupFavorability(uid int64) (list favorList, err er
 }
 
 // nolint: asciicheck
-//nolint: asciicheck
+// nolint: asciicheck
 // 设置好感度 正增负减
 func (sql *婚姻登记) 更新好感度(uid, target int64, score int) (favor int, err error) {
 	sql.Lock()
