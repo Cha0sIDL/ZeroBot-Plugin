@@ -94,28 +94,28 @@ func (jdb *jx3db) createNewTeam(time int64, dungeon string,
 func (jdb *jx3db) getTeamInfo(teamId int) Team {
 	var c Team
 	db := (*gorm.DB)(jdb)
-	db.Where("teamID = ?", teamId).First(&c)
+	db.Where("team_id = ?", teamId).First(&c)
 	return c
 }
 
 func (jdb *jx3db) isInTeam(teamId int, qq int64) bool {
 	db := (*gorm.DB)(jdb)
-	var c Team
+	var c Member
 	err := db.Where("team_id = ? and member_qq = ?", teamId, qq).First(&c).Error
-	return errors.Is(err, gorm.ErrRecordNotFound)
+	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 func (jdb *jx3db) isBelongGroup(teamId int, groupId int64) bool {
 	db := (*gorm.DB)(jdb)
 	var c Team
-	err := db.Where("teamID = ? and groupId = ?", teamId, groupId).First(&c).Error
-	return errors.Is(err, gorm.ErrRecordNotFound)
+	err := db.Where("team_id = ? and groupId = ?", teamId, groupId).First(&c).Error
+	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 // 返回未过期的团
 func (jdb *jx3db) getEfficientTeamInfo(query interface{}, args ...interface{}) (cSlice []Team) {
 	db := (*gorm.DB)(jdb)
-	db.Where(query, args).Find(&cSlice)
+	db.Where(query, args...).Find(&cSlice)
 	return
 }
 
@@ -133,12 +133,11 @@ func (jdb *jx3db) getSignUp(qq int64) (team []int) {
 func (jdb *jx3db) delTeam(teamId int, leaderId int64) error {
 	var c Team
 	db := (*gorm.DB)(jdb)
-	db.Where("teamID = ?", teamId).First(&c)
+	db.Where("team_id = ?", teamId).First(&c)
 	if c.LeaderId != leaderId {
 		return errors.New("这个团队不是你的") // 这个团不是你的
 	}
-	db.Where("teamID = ?", teamId).Delete(&Team{})
-	return nil
+	return db.Where("team_id = ?", teamId).Delete(&Team{}).Error
 }
 
 func (jdb *jx3db) addMember(data *Member) error {
@@ -190,6 +189,7 @@ func (jdb *jx3db) bindArea(Gid int64, Area string) {
 	db := (*gorm.DB)(jdb)
 	if err := db.Model(&jxControl{}).First(&c, "gid = ?", Gid).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.GroupID = Gid
 			c.Area = Area
 			c.Disable = true // 默认开
 			err = db.Model(&jxControl{}).Create(&c).Error
@@ -208,8 +208,7 @@ func (jdb *jx3db) disable(Gid int64) {
 			return
 		}
 	} else {
-		c.Disable = false
-		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Update("disable", false).Error
 	}
 }
 
@@ -221,8 +220,7 @@ func enable(Gid int64) string {
 			return c.Area
 		}
 	} else {
-		c.Disable = true
-		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Update("disable", true).Error
 		return c.Area
 	}
 	return ""
@@ -236,8 +234,7 @@ func (jdb *jx3db) getAdventure(name string) Adventure {
 }
 
 func (jdb *jx3db) updateAdventure(data *Adventure) {
-	err := jdb.Insert(data)
-	fmt.Println(err)
+	jdb.Insert(data)
 }
 
 func (jdb *jx3db) findDaily(server string) (daily Daily) {
@@ -262,9 +259,9 @@ func (jdb *jx3db) Find(query, out interface{}, args ...interface{}) error {
 	return db.Where(query, args).Find(out).Error
 }
 
-func (jdb *jx3db) Count(query interface{}, args ...interface{}) (num int64, err error) {
+func (jdb *jx3db) Count(value interface{}) (num int64, err error) {
 	db := (*gorm.DB)(jdb)
-	err = db.Where(query, args).Count(&num).Error
+	err = db.Model(value).Count(&num).Error
 	return
 }
 

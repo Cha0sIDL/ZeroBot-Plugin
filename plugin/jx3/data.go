@@ -74,6 +74,9 @@ func (News) TableName() string {
 func (Daily) TableName() string {
 	return dbDaily
 }
+func (User) TableName() string {
+	return dbUser
+}
 
 func initialize() *jx3db {
 	if file.IsNotExist(dbfile) {

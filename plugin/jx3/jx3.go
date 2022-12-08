@@ -608,6 +608,10 @@ func init() {
 			jdb.Pick(&t)
 			ctx.SendChain(message.Text(t.Talk))
 		})
+	en.OnFullMatch("/roll").SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text(fmt.Sprintf("%s 投出了%d点。", ctx.Event.Sender.NickName, util.Rand(1, 100))), message.Reply(ctx.Event.MessageID))
+		})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := enable(ctx.Event.GroupID)
@@ -620,10 +624,6 @@ func init() {
 			} else {
 				ctx.Send(message.Text("开启成功，当前绑定区服为：" + area))
 			}
-		})
-	en.OnFullMatch("/roll").SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text(fmt.Sprintf("%s 投出了%d点。", ctx.Event.Sender.NickName, util.Rand(1, 100))), message.Reply(ctx.Event.MessageID))
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -717,7 +717,7 @@ func init() {
 			SignUp := lo.Uniq(jdb.getSignUp(ctx.Event.UserID))
 			var InfoTeam []Team
 			for _, d := range SignUp {
-				Team := jdb.getEfficientTeamInfo("teamID = ? AND startTime >? AND groupId =? ", d, carbon.Now().Timestamp(), ctx.Event.GroupID)
+				Team := jdb.getEfficientTeamInfo("team_id = ? AND startTime > ? AND groupId =? ", d, carbon.Now().Timestamp(), ctx.Event.GroupID)
 				if len(Team) > 0 {
 					InfoTeam = append(InfoTeam, Team[0])
 				}
@@ -1567,7 +1567,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 
 func news(ctx *zero.Ctx, grpList []GroupList) {
 	var msg []News
-	count, _ := jdb.Count(dbNews)
+	count, _ := jdb.Count(&News{})
 	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
 	li := htmlquery.Find(doc, "/html/body/div[5]/div/div/div[2]/div/div[3]/div[2]/div/div/ul/li")
 	for _, node := range li {
