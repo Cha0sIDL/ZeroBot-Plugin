@@ -3,231 +3,158 @@ package jx3
 import (
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
-	log "github.com/sirupsen/logrus"
-	"runtime/debug"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"sort"
-	"strconv"
-	"sync"
 )
-
-// type JxDb gorm.DB
 
 // Mental的结构体
 type mental struct {
-	ID     uint64 `db:"mentalID"`
-	Name   string `db:"mentalName"`
-	Accept string `db:"acceptName"`
+	ID     uint64 `gorm:"column:mentalID"`
+	Name   string `gorm:"column:mentalName"`
+	Accept string `gorm:"column:acceptName"`
 }
 
 type jxControl struct {
-	GroupID int64  `db:"gid"`     // GroupID 群号
-	Disable bool   `db:"disable"` // Disable 是否启用推送
-	Area    string `db:"area"`    // 绑定的区服
-	// BotId   int64  `db:"botId"`
+	GroupID int64  `gorm:"column:gid"`     // GroupID 群号
+	Disable bool   `gorm:"column:disable"` // Disable 是否启用推送
+	Area    string `gorm:"column:area"`    // 绑定的区服
 }
 
 // Team 的结构体
 type Team struct {
-	TeamId    int    `db:"teamID"`
-	LeaderId  int64  `db:"leaderId"`  // 团长id
-	Dungeon   string `db:"dungeon"`   // 副本名
-	StartTime int64  `db:"startTime"` // 团开始时间
-	Comment   string `db:"comment"`   // 备注信息
-	GroupId   int64  `db:"groupId"`   // 团所属群组
+	TeamId    uint   `gorm:"primary_key;AUTO_INCREMENT"`
+	LeaderId  int64  `gorm:"column:leaderId"`  // 团长id
+	Dungeon   string `gorm:"column:dungeon"`   // 副本名
+	StartTime int64  `gorm:"column:startTime"` // 团开始时间
+	Comment   string `gorm:"column:comment"`   // 备注信息
+	GroupId   int64  `gorm:"column:groupId"`   // 团所属群组
 }
 
 type Leader struct {
-	Id       int64  `db:"id"`
-	NickName string `db:"nick_name"`
-	TeamName string `db:"team_name"`
-	IsOk     int    `db:"is_ok"`
+	Id       uint   `gorm:"primary_key;AUTO_INCREMENT"`
+	NickName string `gorm:"column:nick_name"`
+	TeamName string `gorm:"column:team_name"`
+	IsOk     int    `gorm:"column:is_ok"`
 }
 
 type Member struct {
-	Id             string `db:"id"`
-	TeamId         int    `db:"team_id"`
-	MemberQQ       int64  `db:"member_qq"`
-	MemberNickName string `db:"member_nick_name"`
-	MentalId       uint64 `db:"mental_id"`
-	Double         int    `db:"double"`
-	SignUp         int64  `db:"sign_up"` // 进团时间
+	Id             uint   `gorm:"primary_key;AUTO_INCREMENT"`
+	TeamId         int    `gorm:"column:team_id"`
+	MemberQQ       int64  `gorm:"column:member_qq"`
+	MemberNickName string `gorm:"column:member_nick_name"`
+	MentalId       uint64 `gorm:"column:mental_id"`
+	Double         int    `gorm:"column:double"`
+	SignUp         int64  `gorm:"column:sign_up"` // 进团时间
 }
 
 type Adventure struct {
-	Name string `db:"name"`
-	Pic  []byte `db:"pic"`
-	Time int64  `db:"time"`
+	Name string `gorm:"column:name"`
+	Pic  []byte `gorm:"column:pic"`
+	Time int64  `gorm:"column:time"`
 }
 
 type Jokes struct {
-	ID   int64  `db:"id"`
-	Talk string `db:"talk"`
+	ID   int64  `gorm:"column:id"`
+	Talk string `gorm:"column:talk"`
 }
 
 type News struct {
-	ID    string `db:"id"` // href
-	Date  string `db:"date"`
-	Title string `db:"title"`
-	Kind  string `db:"kind"`
+	ID    string `gorm:"column:id"` // href
+	Date  string `gorm:"column:date"`
+	Title string `gorm:"column:title"`
+	Kind  string `gorm:"column:kind"`
 }
 
 type User struct {
-	ID   string `db:"id"`
-	Data string `db:"data"` // 服务器的json数据
+	ID   string `gorm:"column:id"`
+	Data string `gorm:"column:data"` // 服务器的json数据
 }
 
 type Daily struct {
-	Server    string `db:"id"`
-	DailyTask string `db:"dailyTask"`
-	Time      int64  `db:"time"`
+	Server    string `gorm:"column:id"`
+	DailyTask string `gorm:"column:dailyTask"`
+	Time      int64  `gorm:"column:time"`
 }
 
-func createNewTeam(time int64, dungeon string,
-	comment string, leaderID int64, groupId int64) (int, error) {
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	all, err := db.Count(dbTeam)
-	db.Insert(dbTeam, &Team{
-		TeamId:    all,
+func (jdb *jx3db) createNewTeam(time int64, dungeon string,
+	comment string, leaderID int64, groupId int64) (uint, error) {
+	db := (*gorm.DB)(jdb)
+	team := &Team{
 		LeaderId:  leaderID,
 		Dungeon:   dungeon,
 		StartTime: time,
 		Comment:   comment,
 		GroupId:   groupId,
-	})
-	Mutex.Unlock()
-	return all, err
+	}
+	err := db.Create(team).Error
+	return team.TeamId, err
 }
 
-func getTeamInfo(teamId int) Team {
+func (jdb *jx3db) getTeamInfo(teamId int) Team {
 	var c Team
-	db.Find(dbTeam, &c, "WHERE teamID = "+fmt.Sprintln(teamId))
+	db := (*gorm.DB)(jdb)
+	db.Where("teamID = ?", teamId).First(&c)
 	return c
 }
 
-func isInTeam(teamId int, qq int64) bool {
-	arg := fmt.Sprintf("WHERE team_id = '%d' ADN member_qq = '%d'", teamId, qq)
-	return db.CanFind(dbMember, arg)
+func (jdb *jx3db) isInTeam(teamId int, qq int64) bool {
+	db := (*gorm.DB)(jdb)
+	var c Team
+	err := db.Where("team_id = ? and member_qq = ?", teamId, qq).First(&c).Error
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }
 
-func isBelongGroup(teamId int, groupId int64) bool {
-	arg := fmt.Sprintf("WHERE teamID = '%d' AND groupId = '%d'", teamId, groupId)
-	return db.CanFind(dbTeam, arg)
+func (jdb *jx3db) isBelongGroup(teamId int, groupId int64) bool {
+	db := (*gorm.DB)(jdb)
+	var c Team
+	err := db.Where("teamID = ? and groupId = ?", teamId, groupId).First(&c).Error
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 // 返回未过期的团
-func getEfficientTeamInfo(arg string) []Team {
-	var c Team
-	var cSlice []Team
-	db.FindFor(dbTeam, &c, arg, func() error {
-		cSlice = append(cSlice, c)
-		return nil
-	})
-	return cSlice
+func (jdb *jx3db) getEfficientTeamInfo(query interface{}, args ...interface{}) (cSlice []Team) {
+	db := (*gorm.DB)(jdb)
+	db.Where(query, args).Find(&cSlice)
+	return
 }
 
 // 返回我报的团id
-func getSignUp(qq int64) []int {
-	var c Member
-	var team []int
-	arg := fmt.Sprintf("WHERE member_qq = '%d'", qq)
-	db.FindFor(dbMember, &c, arg, func() error {
-		team = append(team, c.TeamId)
-		return nil
-	})
-	return team
+func (jdb *jx3db) getSignUp(qq int64) (team []int) {
+	var c []Member
+	db := (*gorm.DB)(jdb)
+	db.Where("member_qq = ?", qq).Find(&c)
+	for _, data := range c {
+		team = append(team, data.TeamId)
+	}
+	return
 }
 
-func delTeam(teamId int, leaderId int64) int {
+func (jdb *jx3db) delTeam(teamId int, leaderId int64) error {
 	var c Team
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	defer Mutex.Unlock()
-	db.Find(dbTeam, &c, "WHERE teamID = "+fmt.Sprintln(teamId))
+	db := (*gorm.DB)(jdb)
+	db.Where("teamID = ?", teamId).First(&c)
 	if c.LeaderId != leaderId {
-		return -1 // 这个团不是你的
+		return errors.New("这个团队不是你的") // 这个团不是你的
 	}
-	db.Del(dbTeam, "WHERE teamID = "+fmt.Sprintln(teamId))
-	return 0
-}
-
-func addMember(data *Member) error {
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	data.Id = uuid.New().String()
-	db.Insert(dbMember, data)
-	Mutex.Unlock()
+	db.Where("teamID = ?", teamId).Delete(&Team{})
 	return nil
 }
 
-func deleteMember(teamId int, qq int64) error {
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	arg := fmt.Sprintf("WHERE team_id = '%d' AND member_qq = '%d'", teamId, qq)
-	db.Del(dbMember, arg)
-	Mutex.Unlock()
+func (jdb *jx3db) addMember(data *Member) error {
+	db := (*gorm.DB)(jdb)
+	db.Create(data)
 	return nil
 }
 
-func isOk(qq int64) bool {
-	var c Leader
-	db.Find(dbLeader, &c, "WHERE id = "+fmt.Sprintln(qq))
-	return c.IsOk == 1
+func (jdb *jx3db) deleteMember(teamId int, qq int64) error {
+	db := (*gorm.DB)(jdb)
+	return db.Where("team_id = ? and member_qq = ?", teamId, qq).Delete(&Member{}).Error
 }
 
-// 添加新团长
-func newLeader(QQ int64, nickName string, permission int, teamName ...string) int {
-	ok := db.CanFind(dbLeader, "where id="+fmt.Sprintln(QQ))
-	if ok {
-		return -1 // 数据库中存在记录
-	}
-	name := ""
-	if len(teamName) > 0 {
-		name = teamName[0]
-	}
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	db.Insert(dbLeader, &Leader{
-		Id:       QQ,
-		NickName: nickName,
-		TeamName: name,
-		IsOk:     1, // 新团长默认没有权限
-	})
-	Mutex.Unlock()
-	return 0
-}
-
-// 同意审批
-func acceptLeader(qq int64) string {
-	var c Leader
-	err := db.Find(dbLeader, &c, "WHERE id = "+fmt.Sprintln(qq))
-	if err != nil {
-		log.Errorln(err)
-		return ""
-	}
-	c.IsOk = 1
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	err = db.Insert(dbLeader, &c)
-	Mutex.Unlock()
-	return c.TeamName
-}
-
-func deleteLeader(qq int64) {
-	err := db.Del(dbLeader, "WHERE id = "+fmt.Sprintln(qq))
-	if err != nil {
-		log.Errorln(err)
-	}
-}
-
-func getMemberInfo(teamId int) (mSlice []Member) {
-	var c Member
-	arg := fmt.Sprintf("WHERE team_id = '%d'", teamId)
-	db.FindFor(dbMember, &c, arg, func() error {
-		mSlice = append(mSlice, c)
-		return nil
-	})
+func (jdb *jx3db) getMemberInfo(teamId int) (mSlice []Member) {
+	db := (*gorm.DB)(jdb)
+	db.Where("team_id = ?", teamId).Find(&mSlice)
 	sort.SliceStable(mSlice, func(i, j int) bool {
 		if mSlice[i].SignUp < mSlice[j].SignUp {
 			return true
@@ -237,126 +164,112 @@ func getMemberInfo(teamId int) (mSlice []Member) {
 	return
 }
 
-func getMentalData(mentalName string) mental {
+func (jdb *jx3db) getMentalData(mentalName string) mental {
+	db := (*gorm.DB)(jdb)
 	var m mental
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	arg := fmt.Sprintf("WHERE acceptName LIKE '%%%s%%' OR mentalName='%s'", mentalName, mentalName)
-	db.Find(dbMental, &m, arg)
-	rwMutex.RUnlock()
+	db.Where("acceptName LIKE ? OR mentalName = ?", fmt.Sprintf("%%%s%%", mentalName), mentalName).First(&m)
 	return m
 }
 
-func isEnable(Gid int64) (bool, string) {
+func (jdb *jx3db) isEnable(Gid int64) (bool, string) {
 	var control jxControl
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	arg := "where gid = " + strconv.FormatInt(Gid, 10)
-	db.Find(dbControl, &control, arg)
-	rwMutex.RUnlock()
+	db := (*gorm.DB)(jdb)
+	db.Where("gid = ?", Gid).First(&control)
 	return control.Disable, control.Area
 }
 
-func bind(Gid int64) string {
+func (jdb *jx3db) bind(Gid int64) string {
 	var control jxControl
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	arg := "where gid = " + strconv.FormatInt(Gid, 10)
-	db.Find(dbControl, &control, arg)
-	rwMutex.RUnlock()
+	db := (*gorm.DB)(jdb)
+	db.Where("gid = ?", Gid).First(&control)
 	return control.Area
 }
 
-func bindArea(Gid int64, Area string) {
+func (jdb *jx3db) bindArea(Gid int64, Area string) {
 	var c jxControl
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	err := db.Find(dbControl, &c, "WHERE gid = "+strconv.FormatInt(Gid, 10))
-	rwMutex.RUnlock()
-	if err != nil {
-		c.GroupID = Gid
-	}
-	c.Area = Area
-	c.Disable = true // 默认开
-	rwMutex.Lock()
-	err = db.Insert(dbControl, &c)
-	rwMutex.Unlock()
-	if err != nil {
-		log.Error("jx push disable database error")
+	db := (*gorm.DB)(jdb)
+	if err := db.Model(&jxControl{}).First(&c, "gid = ?", Gid).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.Area = Area
+			c.Disable = true // 默认开
+			err = db.Model(&jxControl{}).Create(&c).Error
+		}
+	} else {
+		c.Area = Area
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
 	}
 }
 
-func disable(Gid int64) {
+func (jdb *jx3db) disable(Gid int64) {
+	db := (*gorm.DB)(jdb)
 	var c jxControl
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	err := db.Find(dbControl, &c, "WHERE gid = "+strconv.FormatInt(Gid, 10))
-	rwMutex.RUnlock()
-	if err != nil {
-		c.GroupID = Gid
-	}
-	c.Disable = false
-	rwMutex.Lock()
-	err = db.Insert(dbControl, &c)
-	rwMutex.Unlock()
-	if err != nil {
-		log.Error("jx push disable database error")
+	if err := db.Model(&jxControl{}).First(&c, "gid = ?", Gid).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return
+		}
+	} else {
+		c.Disable = false
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
 	}
 }
 
 func enable(Gid int64) string {
+	db := (*gorm.DB)(jdb)
 	var c jxControl
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	err := db.Find(dbControl, &c, "WHERE gid = "+strconv.FormatInt(Gid, 10))
-	rwMutex.RUnlock()
-	if err != nil {
-		c.GroupID = Gid
+	if err := db.Model(&jxControl{}).First(&c, "gid = ?", Gid).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.Area
+		}
+	} else {
+		c.Disable = true
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
+		return c.Area
 	}
-	c.Disable = true
-	rwMutex.Lock()
-	err = db.Insert(dbControl, &c)
-	rwMutex.Unlock()
-	if err != nil {
-		log.Error("jx push enable database error")
-	}
-	return c.Area
+	return ""
 }
 
-func getAdventure(name string) Adventure {
+func (jdb *jx3db) getAdventure(name string) Adventure {
 	var data Adventure
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	db.Find(dbAdventure, &data, "WHERE name = "+fmt.Sprintf("'%s'", name))
-	rwMutex.RUnlock()
+	db := (*gorm.DB)(jdb)
+	db.Where("name = ?", name).First(&data)
 	return data
 }
 
-func updateAdventure(data *Adventure) {
-	var rwMutex sync.RWMutex
-	rwMutex.RLock()
-	db.Insert(dbAdventure, data)
-	rwMutex.RUnlock()
+func (jdb *jx3db) updateAdventure(data *Adventure) {
+	err := jdb.Insert(data)
+	fmt.Println(err)
 }
 
-func insert(tableName string, data interface{}, tryTime int) error {
-	var Mutex sync.Mutex
-	Mutex.Lock()
-	defer Mutex.Unlock()
-	for i := 1; i <= tryTime; i++ {
-		err := db.Insert(tableName, data)
-		if err == nil {
-			return err
-		}
-		log.Errorln("jx3daily insert error", err, string(debug.Stack()))
-		if i == tryTime {
-			return errors.New("tryTime over")
-		}
-	}
-	return nil
-}
-
-func findDaily(server string) (daily Daily) {
-	db.Find(dbDaily, &daily, fmt.Sprintf("WHERE id = '%s'", server))
+func (jdb *jx3db) findDaily(server string) (daily Daily) {
+	db := (*gorm.DB)(jdb)
+	db.Where("id = ?", server).First(&daily)
 	return
+}
+
+func (jdb *jx3db) Pick(out interface{}) (data interface{}) {
+	db := (*gorm.DB)(jdb)
+	db.Order("random()").Take(&out)
+	return out
+}
+
+func (jdb *jx3db) Insert(value interface{}) error {
+	db := (*gorm.DB)(jdb)
+	return db.Clauses(clause.OnConflict{UpdateAll: true}).Create(value).Error
+}
+
+func (jdb *jx3db) Find(query, out interface{}, args ...interface{}) error {
+	db := (*gorm.DB)(jdb)
+	return db.Where(query, args).Find(out).Error
+}
+
+func (jdb *jx3db) Count(query interface{}, args ...interface{}) (num int64, err error) {
+	db := (*gorm.DB)(jdb)
+	err = db.Where(query, args).Count(&num).Error
+	return
+}
+
+func (jdb *jx3db) CanFind(query, out interface{}, args ...interface{}) bool {
+	db := (*gorm.DB)(jdb)
+	err := db.Where(query, args).First(out).Error
+	return !errors.Is(err, gorm.ErrRecordNotFound)
 }

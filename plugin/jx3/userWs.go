@@ -54,12 +54,6 @@ RETRY:
 
 func (ws *userWsClient) listen() {
 	var rw sync.RWMutex
-	tableName := dbUser
-	err := db.Create(tableName, &User{})
-	if err != nil {
-		log.Warn("jx User Db Create error", err)
-		return
-	}
 	for {
 		t, payload, err := ws.conn.ReadMessage()
 		if err != nil { // reconnect
@@ -79,7 +73,7 @@ func (ws *userWsClient) listen() {
 				continue
 			}
 			rw.Lock()
-			db.Insert(tableName, &User{
+			jdb.Insert(&User{
 				ID:   roleName + "_" + server,
 				Data: binutils.BytesToString(payload),
 			})

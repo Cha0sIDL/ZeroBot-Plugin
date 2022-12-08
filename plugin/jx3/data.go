@@ -1,13 +1,13 @@
 package jx3
 
 import (
-	"os"
-	"time"
-
+	"fmt"
 	"github.com/FloatTech/floatbox/file"
 	"github.com/FloatTech/floatbox/process"
-	sql "github.com/FloatTech/sqlite"
+	"github.com/glebarez/sqlite"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+	"os"
 )
 
 const (
@@ -27,6 +27,12 @@ const (
 	dbDaily     = "daily" //每个区服的日常，每天七点刷新
 )
 
+// 剑网db全局结构体
+var jdb *jx3db
+
+// jx3db 剑网三数据库结构体
+type jx3db gorm.DB
+
 var rangeDb = map[string]interface{}{
 	dbMental:    &mental{},
 	dbControl:   &jxControl{},
@@ -37,11 +43,39 @@ var rangeDb = map[string]interface{}{
 	dbTalk:      &Jokes{},
 	dbNews:      &News{},
 	dbDaily:     &Daily{},
+	dbUser:      &User{},
 }
 
-var db = &sql.Sqlite{DBPath: dbfile}
+// TableName 表名
+func (mental) TableName() string {
+	return dbMental
+}
+func (jxControl) TableName() string {
+	return dbControl
+}
+func (Team) TableName() string {
+	return dbTeam
+}
+func (Leader) TableName() string {
+	return dbLeader
+}
+func (Member) TableName() string {
+	return dbMember
+}
+func (Adventure) TableName() string {
+	return dbAdventure
+}
+func (Jokes) TableName() string {
+	return dbTalk
+}
+func (News) TableName() string {
+	return dbNews
+}
+func (Daily) TableName() string {
+	return dbDaily
+}
 
-func initialize() {
+func initialize() *jx3db {
 	if file.IsNotExist(dbfile) {
 		process.SleepAbout1sTo2s()
 		_ = os.MkdirAll(dbpath, 0755)
@@ -50,12 +84,13 @@ func initialize() {
 			panic(err)
 		}
 	}
-	db.Open(time.Hour * 24)
-	for key, value := range rangeDb {
-		err := db.Create(key, value)
-		if err != nil {
-			panic(err)
-		}
+	jdb, err := gorm.Open(sqlite.Open(dbfile), &gorm.Config{})
+	if err != nil {
+		panic(fmt.Sprintf("jx3 db err,%s", err))
+	}
+	for _, value := range rangeDb {
+		jdb.AutoMigrate(value)
 	}
 	log.Infoln("[jx3]加载成功")
+	return (*jx3db)(jdb)
 }

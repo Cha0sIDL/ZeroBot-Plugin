@@ -8,11 +8,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/FloatTech/zbputils/img/text"
 	"github.com/go-resty/resty/v2"
 	"github.com/golang-module/carbon/v2"
 	"github.com/playwright-community/playwright-go"
 	"github.com/samber/lo"
 	"github.com/tidwall/sjson"
+	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
 	"io"
 	"io/ioutil"
@@ -38,13 +40,11 @@ import (
 	ctrl "github.com/FloatTech/zbpctrl"
 
 	"github.com/DanPlayer/timefinder"
+	"github.com/FloatTech/ZeroBot-Plugin/util"
 	binutils "github.com/FloatTech/floatbox/binary"
 	"github.com/FloatTech/floatbox/file"
-	"github.com/FloatTech/floatbox/math"
 	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/zbputils/control"
-	"github.com/FloatTech/zbputils/img/text"
-	"github.com/fogleman/gg"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
@@ -52,9 +52,8 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 
-	"github.com/FloatTech/ZeroBot-Plugin/util"
+	"github.com/fogleman/gg"
 )
 
 var tuiKey = map[string]string{
@@ -250,7 +249,7 @@ func init() {
 			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
-				isEnable, server := isEnable(grp)
+				isEnable, server := jdb.isEnable(grp)
 				if isEnable {
 					grpList = append(grpList, GroupList{
 						grp:    grp,
@@ -267,7 +266,7 @@ func init() {
 			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
-				isEnable, server := isEnable(grp)
+				isEnable, server := jdb.isEnable(grp)
 				if isEnable {
 					grpList = append(grpList, GroupList{
 						grp:    grp,
@@ -283,7 +282,7 @@ func init() {
 		c.Start()
 	}
 	go func() {
-		initialize()
+		jdb = initialize()
 	}()
 	datapath := file.BOTPATH + "/" + en.DataFolder()
 	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).
@@ -361,7 +360,7 @@ func init() {
 	en.OnPrefix("宏").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
-			mental := getMentalData(strings.Replace(name, " ", "", -1))
+			mental := jdb.getMentalData(strings.Replace(name, " ", "", -1))
 			mentalUrl := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
 			data, err := web.RequestDataWith(NewTimeOutDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
 			DataList := gjson.Get(binutils.BytesToString(data), "data.list").Array()
@@ -453,7 +452,7 @@ func init() {
 				return
 			} else {
 				name := commandPart[0]
-				dbData := getAdventure(name)
+				dbData := jdb.getAdventure(name)
 				if len(dbData.Pic) == 0 || carbon.Now().DiffAbsInSeconds(carbon.CreateFromTimestamp(dbData.Time)) > 3600*10 {
 					dwData, _ := web.GetData(fmt.Sprintf("https://node.jx3box.com/serendipities?name=%s", goUrl.QueryEscape(name)))
 					dwList := gjson.Get(binutils.BytesToString(dwData), "list").Array()
@@ -515,7 +514,7 @@ func init() {
 						Pic:  b,
 						Time: carbon.Now().Timestamp(),
 					}
-					updateAdventure(db)
+					jdb.updateAdventure(db)
 					ctx.SendChain(message.ImageBytes(b))
 				} else {
 					ctx.SendChain(message.ImageBytes(dbData.Pic))
@@ -528,7 +527,7 @@ func init() {
 			var server string
 			var itemName string
 			if len(commandPart) == 1 {
-				server = bind(ctx.Event.GroupID)
+				server = jdb.bind(ctx.Event.GroupID)
 				itemName = commandPart[0]
 				if len(server) == 0 {
 					ctx.SendChain(message.Text("本群尚未绑定区服"))
@@ -606,7 +605,7 @@ func init() {
 	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t Jokes
-			db.Pick(dbTalk, &t)
+			jdb.Pick(&t)
 			ctx.SendChain(message.Text(t.Talk))
 		})
 	en.OnFullMatch("开启jx推送", zero.OnlyGroup).SetBlock(true).
@@ -628,23 +627,21 @@ func init() {
 		})
 	en.OnFullMatch("关闭jx推送", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			disable(ctx.Event.GroupID)
+			jdb.disable(ctx.Event.GroupID)
 			ctx.Send(message.Text("关闭成功"))
 		})
 	en.OnPrefix("绑定区服", zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			area := strings.Replace(ctx.State["args"].(string), " ", "", -1)
 			if val, ok := allServer[area]; ok {
-				bindArea(ctx.Event.GroupID, val[0])
+				jdb.bindArea(ctx.Event.GroupID, val[0])
 				ctx.Send(message.Text("绑定成功"))
 			} else {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
 	// 开团 时间 副本名 备注
-	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, func(ctx *zero.Ctx) bool {
-		return isOk(ctx.Event.UserID)
-	}, zero.OnlyGroup).SetBlock(true).
+	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) != 3 {
@@ -655,7 +652,7 @@ func init() {
 			dungeon := commandPart[1]
 			comment := commandPart[2]
 			leaderId := ctx.Event.UserID
-			teamId, err := createNewTeam(startTime, dungeon, comment, leaderId, ctx.Event.GroupID)
+			teamId, err := jdb.createNewTeam(startTime, dungeon, comment, leaderId, ctx.Event.GroupID)
 			if err != nil {
 				ctx.SendChain(message.Text("Error :", err))
 				return
@@ -676,18 +673,18 @@ func init() {
 				return
 			}
 			teamId, _ := strconv.Atoi(commandPart[0])
-			mental := getMentalData(commandPart[1])
+			mental := jdb.getMentalData(commandPart[1])
 			nickName := commandPart[2]
 			if mental.ID == 0 {
 				ctx.SendChain(message.Text("心法输入有误"))
 				return
 			}
-			Team := getTeamInfo(teamId)
+			Team := jdb.getTeamInfo(teamId)
 			if carbon.Now().Timestamp() >= Team.StartTime || Team.GroupId != ctx.Event.GroupID {
 				ctx.SendChain(message.Text("当前团队已过期或团队不存在。"))
 				return
 			}
-			if isInTeam(teamId, ctx.Event.UserID) {
+			if jdb.isInTeam(teamId, ctx.Event.UserID) {
 				ctx.SendChain(message.Text("你已经在团队中了。"))
 				return
 			}
@@ -699,7 +696,7 @@ func init() {
 				Double:         double,
 				SignUp:         carbon.Now().Timestamp(),
 			}
-			addMember(&member)
+			jdb.addMember(&member)
 			ctx.SendChain(message.Text("报团成功"), message.Reply(ctx.Event.MessageID))
 			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
@@ -707,21 +704,20 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
-			if !isBelongGroup(teamId, ctx.Event.GroupID) {
+			if !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
 				ctx.SendChain(message.Text("参数输入有误。"))
 				return
 			}
-			deleteMember(teamId, ctx.Event.UserID)
+			jdb.deleteMember(teamId, ctx.Event.UserID)
 			ctx.SendChain(message.Text("撤销成功"), message.Reply(ctx.Event.MessageID))
 			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
 	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			SignUp := lo.Uniq(getSignUp(ctx.Event.UserID))
+			SignUp := lo.Uniq(jdb.getSignUp(ctx.Event.UserID))
 			var InfoTeam []Team
 			for _, d := range SignUp {
-				Team := getEfficientTeamInfo(
-					fmt.Sprintf("WHERE teamID = '%d' AND startTime > '%d' AND groupId = '%d'", d, carbon.Now().Timestamp(), ctx.Event.GroupID))
+				Team := jdb.getEfficientTeamInfo("teamID = ? AND startTime >? AND groupId =? ", d, carbon.Now().Timestamp(), ctx.Event.GroupID)
 				if len(Team) > 0 {
 					InfoTeam = append(InfoTeam, Team[0])
 				}
@@ -733,10 +729,10 @@ func init() {
 			}
 			ctx.SendChain(message.Text(out))
 		})
-	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
+	en.OnFullMatchGroup([]string{"我的开团"}, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			InfoSlice := getEfficientTeamInfo(
-				fmt.Sprintf("WHERE leaderId = '%d' AND startTime > '%d' AND groupId = '%d'", ctx.Event.UserID, carbon.Now().Timestamp(), ctx.Event.GroupID))
+			InfoSlice := jdb.getEfficientTeamInfo(
+				"leaderId = ? and startTime > ? and groupId = ?", ctx.Event.UserID, carbon.Now().Timestamp(), ctx.Event.GroupID)
 			out := ""
 			for _, data := range InfoSlice {
 				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
@@ -746,8 +742,8 @@ func init() {
 		})
 	en.OnFullMatchGroup([]string{"全团显示"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			InfoSlice := getEfficientTeamInfo(
-				fmt.Sprintf("WHERE startTime > '%d' AND groupId = '%d'", carbon.Now().Timestamp(), ctx.Event.GroupID))
+			InfoSlice := jdb.getEfficientTeamInfo(
+				"startTime > ? and groupId = ?", carbon.Now().Timestamp(), ctx.Event.GroupID)
 			out := ""
 			for _, data := range InfoSlice {
 				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
@@ -760,66 +756,29 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
-			if !isBelongGroup(teamId, ctx.Event.GroupID) {
+			if !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
 				ctx.SendChain(message.Text("参数输入有误。"))
 				return
 			}
 			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
-	// 申请团长 团牌
-	en.OnPrefixGroup([]string{"申请团长"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			permission := 0
-			var teamName string
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			teamName = ""
-			if len(commandPart) == 1 {
-				teamName = commandPart[0]
-			}
-			if ctx.Event.Sender.Role != "member" {
-				permission = 1
-			}
-			err := newLeader(ctx.Event.UserID, ctx.Event.Sender.NickName, permission, teamName)
-			if err == 0 {
-				ctx.SendChain(message.Text("申请团长成功。"))
-			}
-			if err == -1 {
-				ctx.SendChain(message.Text("贵人多忘事，你已经申请过了"))
-			}
-		})
 	// 取消开团 团队id
-	en.OnPrefixGroup([]string{"取消开团", "删除团队", "撤销团队", "撤销开团"}, zero.OnlyGroup).SetBlock(true).
+	en.OnPrefixGroup([]string{"取消开团", "删除团队", "撤销团队", "撤销开团"}, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) < 1 {
 				ctx.SendChain(message.Text("撤销开团参数有误"))
 			}
 			teamId, err := strconv.Atoi(commandPart[0])
-			if err != nil || !isBelongGroup(teamId, ctx.Event.GroupID) {
+			if err != nil || !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
 				ctx.SendChain(message.Text("团队id输入有误"))
 				return
 			}
-			status := delTeam(teamId, ctx.Event.UserID)
-			switch status {
-			case -1:
-				ctx.SendChain(message.Text("这个团不是你的。无法删除"))
-			case 0:
-				ctx.SendChain(message.Text("删除成功"))
+			err = jdb.delTeam(teamId, ctx.Event.UserID)
+			if err != nil {
+				ctx.SendChain(message.Text(err))
 			}
-		})
-	// 同意审批@qq
-	en.OnRegex(`^同意审批.*?(\d+)`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1])
-			teamName := acceptLeader(qq)
-			ctx.SendChain(message.At(qq), message.Text("已成为团长,团队名称为："),
-				message.Text(teamName))
-		})
-	en.OnRegex(`^删除团长.*?(\d+)`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			qq := math.Str2Int64(ctx.State["regex_matched"].([]string)[1])
-			deleteLeader(qq)
-			ctx.SendChain(message.At(qq), message.Text("删除成功"))
+			ctx.SendChain(message.Text("取消成功"))
 		})
 	en.OnPrefixGroup([]string{"奇遇", "奇遇查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
@@ -889,8 +848,7 @@ func init() {
 				ctx.SendChain(message.Text("更新失败", err))
 				return
 			}
-			num, _ := db.Count(dbTalk)
-			ctx.SendChain(message.Text(fmt.Sprintf("更新成功,本次共更新%d条骚话", num)))
+			ctx.SendChain(message.Text(fmt.Sprintf("更新成功")))
 		})
 	en.OnPrefixGroup([]string{"属性"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
@@ -919,7 +877,7 @@ func server(ctx *zero.Ctx, server string) {
 }
 
 func daily(ctx *zero.Ctx, server string) {
-	daily4Db := findDaily(server)
+	daily4Db := jdb.findDaily(server)
 	if carbon.Now().Timestamp()-daily4Db.Time >= 86400 {
 		var msg string
 		msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
@@ -951,11 +909,11 @@ func daily(ctx *zero.Ctx, server string) {
 		msg += "--------------------------------\n"
 		msg += "数据来源JXBOX和推栏"
 		ctx.SendChain(message.Text(msg))
-		insert(dbDaily, &Daily{
+		jdb.Insert(&Daily{
 			Server:    server,
 			DailyTask: msg,
 			Time:      carbon.CreateFromTime(7, 0, 0).Timestamp(),
-		}, 1)
+		})
 	} else {
 		ctx.SendChain(message.Text(daily4Db.DailyTask))
 	}
@@ -1176,11 +1134,7 @@ func updateTalk() error {
 			return err
 		}
 		for _, talkData := range gjson.Get(jsonData, "data.list").Array() {
-			// isFind := db.CanFind(dbTalk, fmt.Sprintf("where id=%d", talkData.Get("id").Int()))
-			// if isFind {
-			//	return nil
-			//}
-			db.Insert(dbTalk, &Jokes{
+			jdb.Insert(&Jokes{
 				ID:   talkData.Get("id").Int(),
 				Talk: talkData.Get("content").String(),
 			})
@@ -1198,7 +1152,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 	var server string
 	var name string
 	if len(commandPart) == 1 {
-		server = bind(ctx.Event.GroupID)
+		server = jdb.bind(ctx.Event.GroupID)
 		name = commandPart[0]
 		if len(server) == 0 {
 			ctx.SendChain(message.Text("本群尚未绑定区服"))
@@ -1215,7 +1169,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 		zone := normServer[1]
 		server = normServer[0]
 		var user User
-		err := db.Find(dbUser, &user, fmt.Sprintf("WHERE id = '%s'", name+"_"+chatServer[server]))
+		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
 		gameRoleId := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
 		if err != nil {
 			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
@@ -1359,7 +1313,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 	var server string
 	var name string
 	if len(commandPart) == 1 {
-		server = bind(ctx.Event.GroupID)
+		server = jdb.bind(ctx.Event.GroupID)
 		name = commandPart[0]
 		if len(server) == 0 {
 			ctx.SendChain(message.Text("本群尚未绑定区服"))
@@ -1376,7 +1330,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		var user User
 		zone := normServer[1]
 		server = normServer[0]
-		err := db.Find(dbUser, &user, fmt.Sprintf("WHERE id = '%s'", name+"_"+chatServer[server]))
+		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
 		if err != nil {
 			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
@@ -1513,7 +1467,7 @@ func generateLineData(data []string) []opts.LineData {
 
 func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 	return func(ctx *zero.Ctx) {
-		server := bind(ctx.Event.GroupID)
+		server := jdb.bind(ctx.Event.GroupID)
 		if len(server) != 0 {
 			f(ctx, server)
 			return
@@ -1613,7 +1567,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 
 func news(ctx *zero.Ctx, grpList []GroupList) {
 	var msg []News
-	count, _ := db.Count(dbNews)
+	count, _ := jdb.Count(dbNews)
 	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
 	li := htmlquery.Find(doc, "/html/body/div[5]/div/div/div[2]/div/div[3]/div[2]/div/div/ul/li")
 	for _, node := range li {
@@ -1625,7 +1579,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 		if !strings.Contains(href, "https://jx3.xoyo.com") {
 			href = "https://jx3.xoyo.com" + href
 		}
-		canFind := db.CanFind(dbNews, fmt.Sprintf("WHERE id = '%s'", href))
+		canFind := jdb.CanFind("id = ?", &News{}, href)
 		data := News{
 			ID:    href,
 			Date:  date,
@@ -1635,7 +1589,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 		if canFind {
 			continue
 		}
-		err := insert(dbNews, &data, 1)
+		err := jdb.Insert(&data)
 		if err != nil {
 			continue
 		}
@@ -1693,6 +1647,39 @@ func parseDate(msg string) int64 {
 	return carbon.Time2Carbon(extract[0]).Timestamp()
 }
 
+//func drawTeam(teamId int, datapath string, ctx *zero.Ctx) string {
+//	var templateTeamData = make(map[string][]map[string]interface{})
+//	team := jdb.getTeamInfo(teamId)
+//	mSlice := jdb.getMemberInfo(teamId)
+//	title := strconv.Itoa(int(team.TeamId)) + "-----" + team.Dungeon
+//	for idx, member := range mSlice {
+//		double := "单修"
+//		if member.Double == 1 {
+//			double = "双修"
+//		}
+//		templateTeamData["team"+strconv.Itoa(idx/5+1)] = append(templateTeamData["team"+strconv.Itoa(idx/5+1)],
+//			map[string]interface{}{
+//				"qq":     member.MemberQQ,
+//				"name":   member.MemberNickName,
+//				"double": double,
+//				"img":    iconfile + strconv.Itoa(int(member.MentalId)) + ".png",
+//			})
+//	}
+//	data := map[string]interface{}{
+//		"title":   title,            //标题
+//		"content": team.Comment,     //备注信息
+//		"data":    templateTeamData, //团队信息
+//		"group":   team.GroupId,
+//		"user":    team.LeaderId,
+//	}
+//	html := util.Template2html("team.html", data)
+//	finName, err := util.Html2pic(datapath, strconv.FormatInt(ctx.Event.GroupID, 10)+"_team", html)
+//	if err != nil {
+//		return ""
+//	}
+//	return finName
+//}
+
 func drawTeam(teamId int) image.Image {
 	Fonts, err := gg.LoadFontFace(text.FontFile, 50)
 	if err != nil {
@@ -1725,14 +1712,14 @@ func drawTeam(teamId int) image.Image {
 		dc.DrawString(strconv.Itoa(i)+"队", 40, float64(100+200*i))
 	}
 	// 标题
-	team := getTeamInfo(teamId)
-	title := strconv.Itoa(team.TeamId) + " " + team.Dungeon
+	team := jdb.getTeamInfo(teamId)
+	title := strconv.Itoa(int(team.TeamId)) + " " + team.Dungeon
 	_, th := dc.MeasureString("哈")
 	t := 1200/2 - (float64(len([]rune(title))) / 2)
 	dc.DrawStringAnchored(title, t, th, 0.5, 0.5)
 	dc.DrawStringAnchored(team.Comment, 1200/2-float64(len([]rune(team.Comment)))/2, 3*th, 0.5, 0.5)
 	// 团队
-	mSlice := getMemberInfo(teamId)
+	mSlice := jdb.getMemberInfo(teamId)
 	dc.LoadFontFace(text.FontFile, 30)
 	_, th = dc.MeasureString("哈")
 	start := 200
