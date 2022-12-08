@@ -6,7 +6,7 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20221203040820-0dda47e61cd8
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221207130712-a0e47d89862f
 	github.com/FloatTech/floatbox v0.0.0-20221203040505-d7352e564906
 	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v1.5.7
@@ -49,9 +49,9 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.551
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.551
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.551
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.554
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.554
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.554
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
@@ -86,7 +86,7 @@ require (
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
-	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
@@ -144,7 +144,7 @@ require (
 	golang.org/x/exp/shiny v0.0.0-20221126150942-6ab00d035af9 // indirect
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
+	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b // indirect
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect

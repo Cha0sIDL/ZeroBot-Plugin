@@ -2,10 +2,16 @@ package active
 
 import (
 	"errors"
+	"fmt"
+	"github.com/FloatTech/AnimeAPI/aireply"
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
+	"github.com/FloatTech/floatbox/file"
 	ctrl "github.com/FloatTech/zbpctrl"
+	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	"github.com/samber/lo"
 	"strconv"
+	"time"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -22,11 +28,13 @@ const (
 
 func init() {
 	en := control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
-		DisableOnDefault: false,
+		DisableOnDefault:  false,
+		PrivateDataFolder: "active",
 		Help: "自动插话\n" +
 			"- 设置活跃度 xx\n" +
 			"- 查询活跃度",
 	})
+	cachePath := en.DataFolder()
 	en.OnRegex(`设置活跃度(\d+)`, zero.AdminPermission, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			arg := ctx.State["regex_matched"].([]string)[1]
@@ -58,8 +66,19 @@ func init() {
 				ctx.SendChain(message.Image(b.URL))
 			} else {
 				msg := ctx.ExtractPlainText()
-				r := nlp.NewAIReply(lo.Sample([]string{"青云客", "腾讯"}))
-				ctx.SendChain(message.Text(r.TalkPlain(msg, zero.BotConfig.NickName[0])))
+				r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.QYKURL, aireply.QYKBotName), nlp.NewTencent(nlp.BotName)})
+				ctx.SendChain(message.Text(r.TalkPlain(ctx.Event.UserID, msg, zero.BotConfig.NickName[0])))
+			}
+		})
+	en.OnPrefix("复读").SetBlock(true).Handle(
+		func(ctx *zero.Ctx) {
+			text := ctx.State["args"]
+			VoiceFile := cachePath + strconv.FormatInt(ctx.Event.UserID, 10) + strconv.FormatInt(time.Now().Unix(), 10) + ".wav"
+			err := util.TTS(VoiceFile, fmt.Sprintf("%v", text), nls.DefaultSpeechSynthesisParam(), getCfg().TTS.Appkey, getCfg().TTS.Access, getCfg().TTS.Secret)
+			if err != nil {
+				ctx.SendChain(message.Text("Ali NLS 调用失败"))
+			} else {
+				ctx.SendChain(message.Record("file:///" + file.BOTPATH + "/" + VoiceFile))
 			}
 		})
 }
@@ -87,4 +106,8 @@ func getActive(ctx *zero.Ctx) (active int) {
 		return int(m.GetData(gid))
 	}
 	return 0
+}
+
+func getCfg() config.Config {
+	return config.Cfg
 }

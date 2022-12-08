@@ -13,29 +13,30 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
-type Tencent struct{}
+type Tencent struct {
+	n string
+	b []string
+}
 
 const (
 	BotName = "小龙女"
 )
+
+func NewTencent(name string, banwords ...string) *Tencent {
+	return &Tencent{n: name, b: banwords}
+}
 
 func (*Tencent) String() string {
 	return "腾讯"
 }
 
 // Talk 取得带 CQ 码的回复消息
-func (t *Tencent) Talk(msg, nickname string) string {
-	replystr := t.TalkPlain(msg, nickname)
-	replystr = strings.ReplaceAll(replystr, "{face:", "[CQ:face,id=")
-	replystr = strings.ReplaceAll(replystr, "{br}", "\n")
-	replystr = strings.ReplaceAll(replystr, "}", "]")
-	replystr = strings.ReplaceAll(replystr, BotName, nickname)
-
-	return replystr
+func (t *Tencent) Talk(_ int64, msg, nickname string) string {
+	return t.TalkPlain(0, msg, nickname)
 }
 
 // TalkPlain 取得回复消息
-func (t *Tencent) TalkPlain(msg, nickname string) string {
+func (t *Tencent) TalkPlain(_ int64, msg, nickname string) string {
 	credential := common.NewCredential(
 		config.Cfg.SecretId,
 		config.Cfg.SecretKey,
