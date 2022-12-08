@@ -1525,7 +1525,7 @@ func decorator(f func(ctx *zero.Ctx, server string)) func(ctx *zero.Ctx) {
 var serverStatus = make(map[string]bool)
 
 func checkServer(ctx *zero.Ctx, grpList []GroupList) {
-	data, err := web.GetData("https://spider.jx3box.com/jx3servers")
+	data, err := web.GetData("https://spider2.jx3box.com/api/spider/server/server_state")
 	if err != nil {
 		log.Errorln("jx3servers error", err)
 		return
@@ -1542,7 +1542,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 			serverStatus: true,
 			dbStatus:     true,
 		}
-		if !serverData.Get(fmt.Sprintf(`data.#(serverName="%s").connectState`, key)).Bool() {
+		if !serverData.Get(fmt.Sprintf(`#(zone_name="%s").connectState`, key)).Bool() {
 			statusList[key] = &status{serverStatus: false, dbStatus: serverStatus[key]}
 			serverStatus[key] = false
 			continue
