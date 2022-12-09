@@ -7,6 +7,7 @@ import (
 	"github.com/glebarez/sqlite"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"os"
 )
 
@@ -87,7 +88,9 @@ func initialize() *jx3db {
 			panic(err)
 		}
 	}
-	jdb, err := gorm.Open(sqlite.Open(dbfile), &gorm.Config{})
+	jdb, err := gorm.Open(sqlite.Open(dbfile), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Error),
+	})
 	if err != nil {
 		panic(fmt.Sprintf("jx3 db err,%s", err))
 	}
