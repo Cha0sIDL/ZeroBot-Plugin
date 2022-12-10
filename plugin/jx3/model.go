@@ -195,8 +195,7 @@ func (jdb *jx3db) bindArea(Gid int64, Area string) {
 			err = db.Model(&jxControl{}).Create(&c).Error
 		}
 	} else {
-		c.Area = Area
-		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Updates(&c).Error
+		err = db.Model(&jxControl{}).Where("gid = ?", Gid).Update("area", Area).Error
 	}
 }
 
