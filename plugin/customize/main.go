@@ -1,12 +1,10 @@
 package customize
 
 import (
-	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/fumiama/unibase2n"
 	"math/rand"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
@@ -114,30 +112,5 @@ func init() {
 			}
 			msg = append(msg, message.CustomNode(username, uid, rawmsg))
 			ctx.SendPrivateForwardMessage(su, msg)
-		})
-	engine.OnMessage(func(ctx *zero.Ctx) bool {
-		msg := ctx.Event.Message
-		if len(msg) > 0 {
-			if msg[0].Type != "reply" {
-				return false
-			}
-			for _, elem := range msg {
-				if elem.Type == "text" {
-					text := elem.Data["text"]
-					text = strings.ReplaceAll(text, " ", "")
-					text = strings.ReplaceAll(text, "\r", "")
-					text = strings.ReplaceAll(text, "\n", "")
-					if text == "撤回" {
-						return true
-					}
-				}
-			}
-		}
-		return false
-	}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
-		func(ctx *zero.Ctx) {
-			ctx.DeleteMessage(message.NewMessageIDFromString(ctx.Event.Message[0].Data["id"]))
-			ctx.DeleteMessage(message.NewMessageIDFromInteger(ctx.Event.MessageID.(int64)))
-			return
 		})
 }
