@@ -206,7 +206,7 @@ func init() {
 			var choicetext string
 			var ntrID = uid
 			var targetID = fiancee
-			var greenID int64 //被牛的
+			var greenID int64 // 被牛的
 			fianceeInfo, err := 民政局.查户口(gid, fiancee)
 			switch {
 			case err != nil:
@@ -372,8 +372,6 @@ func init() {
 		})
 }
 
-// nolint: asciicheck
-// nolint: asciicheck
 func (sql *婚姻登记) 判断CD(gid, uid int64, model string, cdtime float64) (ok bool, err error) {
 	sql.Lock()
 	defer sql.Unlock()
@@ -399,8 +397,6 @@ func (sql *婚姻登记) 判断CD(gid, uid int64, model string, cdtime float64) 
 	return false, nil
 }
 
-// nolint: asciicheck
-// nolint: asciicheck
 func (sql *婚姻登记) 记录CD(gid, uid int64, mode string) error {
 	sql.Lock()
 	defer sql.Unlock()
@@ -412,8 +408,6 @@ func (sql *婚姻登记) 记录CD(gid, uid int64, mode string) error {
 	})
 }
 
-// nolint: asciicheck
-// nolint: asciicheck
 func (sql *婚姻登记) 离婚休妻(gid, wife int64) error {
 	sql.Lock()
 	defer sql.Unlock()
@@ -422,8 +416,6 @@ func (sql *婚姻登记) 离婚休妻(gid, wife int64) error {
 	return sql.db.Del(gidstr, "where target = "+wifestr)
 }
 
-// nolint: asciicheck
-// nolint: asciicheck
 func (sql *婚姻登记) 离婚休夫(gid, husband int64) error {
 	sql.Lock()
 	defer sql.Unlock()

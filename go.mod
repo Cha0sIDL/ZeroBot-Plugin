@@ -6,13 +6,13 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20221207130712-a0e47d89862f
-	github.com/FloatTech/floatbox v0.0.0-20221203040505-d7352e564906
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221210053102-a9b76da3c119
+	github.com/FloatTech/floatbox v0.0.0-20221210051813-4bd44af40c60
 	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
-	github.com/FloatTech/zbpctrl v1.5.3-0.20221203040611-11f118e1d5ec
-	github.com/FloatTech/zbputils v1.6.1-0.20221203040741-3bc28d5e3cd1
+	github.com/FloatTech/zbpctrl v1.5.3-0.20221210051848-740ab7bd6ec3
+	github.com/FloatTech/zbputils v1.6.1-0.20221210052030-50f19ddfae6f
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -27,7 +27,7 @@ require (
 	github.com/fumiama/gotracemoe v0.0.3
 	github.com/fumiama/jieba v0.0.0-20221203025406-36c17a10b565
 	github.com/fumiama/unibase2n v0.0.0-20221020155353-02876e777430
-	github.com/glebarez/sqlite v1.5.0
+	github.com/glebarez/sqlite v1.6.0
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gogo/protobuf v1.3.2
@@ -49,13 +49,13 @@ require (
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.554
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.554
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.554
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.556
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.556
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.556
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
-	github.com/wdvxdr1123/ZeroBot v1.6.5
+	github.com/wdvxdr1123/ZeroBot v1.6.6
 	gitlab.com/gomidi/midi/v2 v2.0.25
 	golang.org/x/image v0.1.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -81,7 +81,7 @@ require (
 	github.com/fumiama/go-simple-protobuf v0.1.0 // indirect
 	github.com/fumiama/gofastTEA v0.0.10 // indirect
 	github.com/gabriel-vasile/mimetype v1.0.4 // indirect
-	github.com/glebarez/go-sqlite v1.19.1 // indirect
+	github.com/glebarez/go-sqlite v1.20.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect

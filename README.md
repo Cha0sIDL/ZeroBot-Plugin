@@ -242,7 +242,7 @@ zerobot [-h] [-n nickname] [-t token] [-u url] [-p prefix] [-d|w] [-c|s config.j
 
   - [ ] 同意好友请求
 
-  - [ ] 撤回[@xxx] [xxx]
+  - [x] 对信息回复: 撤回
 
   - [ ] 警告[@xxx]
 
@@ -1669,7 +1669,12 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   - [x] @Bot 任意文本(任意一句话回复)
 
-  - [x] 设置回复模式[青云客 | 小爱]
+  - [x] 设置回复模式[青云客 | 小爱 | ChatGPT]
+
+  - [x] 设置 ChatGPT SessionToken xxx
+  
+  - 注册和获取token可以参见这两篇文章：[注册](https://www.cnblogs.com/ranxi169/p/16954797.html) [获取token](https://juejin.cn/post/7174088036035067917)
+
 </details>
 
 ## 三种使用方法，推荐第一种
