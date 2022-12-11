@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/FloatTech/AnimeAPI/aireply"
 	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/ZeroBot-Plugin/nlp"
 	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
 	"github.com/FloatTech/floatbox/file"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -18,7 +19,6 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
-	"github.com/FloatTech/ZeroBot-Plugin/nlp"
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
@@ -66,7 +66,7 @@ func init() {
 				ctx.SendChain(message.Image(b.URL))
 			} else {
 				msg := ctx.ExtractPlainText()
-				r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.QYKURL, aireply.QYKBotName), nlp.NewTencent(nlp.BotName)})
+				r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.XiaoAiURL, aireply.XiaoAiBotName), nlp.NewTencent(nlp.BotName)})
 				ctx.SendChain(message.Text(r.TalkPlain(ctx.Event.UserID, msg, zero.BotConfig.NickName[0])))
 			}
 		})
