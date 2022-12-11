@@ -6,7 +6,7 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20221210053102-a9b76da3c119
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221211044824-a4c95321af15
 	github.com/FloatTech/floatbox v0.0.0-20221210051813-4bd44af40c60
 	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v1.5.7
@@ -42,7 +42,6 @@ require (
 	github.com/mroth/weightedrand v1.0.0
 	github.com/orcaman/concurrent-map/v2 v2.0.1
 	github.com/pkg/errors v0.9.1
-	github.com/pkumza/numcn v1.0.0
 	github.com/playwright-community/playwright-go v0.2000.1
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/samber/lo v1.36.0
@@ -120,6 +119,7 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/onsi/ginkgo/v2 v2.2.0 // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
+	github.com/pkumza/numcn v1.0.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rubyist/circuitbreaker v2.2.1+incompatible // indirect
