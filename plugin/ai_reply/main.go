@@ -159,7 +159,7 @@ func init() { // 插件主体
 		ctx.SendChain(message.Text("成功"))
 	})
 
-	ent.OnMessage(zero.OnlyToMe).SetBlock(true).Limit(ctxext.LimitByUser).
+	ent.OnMessage(zero.OnlyToMe).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
 			// 获取回复模式
