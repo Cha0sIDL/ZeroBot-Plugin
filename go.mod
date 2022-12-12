@@ -6,7 +6,7 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20221211044824-a4c95321af15
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221212075306-4d0d5d6a85f7
 	github.com/FloatTech/floatbox v0.0.0-20221210051813-4bd44af40c60
 	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v1.5.7
@@ -37,7 +37,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jozsefsallai/gophersauce v1.0.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/lucas-clemente/quic-go v0.31.0
+	github.com/lucas-clemente/quic-go v0.31.1
 	github.com/mileusna/useragent v1.2.1
 	github.com/mroth/weightedrand v1.0.0
 	github.com/orcaman/concurrent-map/v2 v2.0.1
@@ -47,10 +47,10 @@ require (
 	github.com/samber/lo v1.36.0
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
-	github.com/smallnest/rpcx v1.7.11
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.556
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.556
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.556
+	github.com/smallnest/rpcx v1.7.12
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.557
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.557
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.557
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
