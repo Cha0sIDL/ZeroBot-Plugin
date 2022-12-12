@@ -1496,7 +1496,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 			serverStatus: true,
 			dbStatus:     true,
 		}
-		if !serverData.Get(fmt.Sprintf(`#(zone_name="%s").connectState`, key)).Bool() {
+		if !serverData.Get(fmt.Sprintf(`#(server_name="%s").connectState`, key)).Bool() {
 			statusList[key] = &status{serverStatus: false, dbStatus: serverStatus[key]}
 			serverStatus[key] = false
 			continue
