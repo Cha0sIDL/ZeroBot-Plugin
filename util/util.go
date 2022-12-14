@@ -350,40 +350,6 @@ func RandStr(length int) string {
 	return string(result)
 }
 
-// SliceDeduplicate 任意类型切片去重
-// Deprecated: Use lo.Uniq instead.
-func SliceDeduplicate(data interface{}) {
-	dataVal := reflect.ValueOf(data)
-	if dataVal.Kind() != reflect.Ptr {
-		fmt.Println("input data.kind is not pointer")
-		return
-	}
-	tmpData := Deduplicate(dataVal.Elem().Interface())
-	tmpDataVal := reflect.ValueOf(tmpData)
-	dataVal.Elem().Set(tmpDataVal)
-}
-
-func Deduplicate(data interface{}) interface{} {
-	inArr := reflect.ValueOf(data)
-	if inArr.Kind() != reflect.Slice && inArr.Kind() != reflect.Array {
-		return data
-	}
-
-	existMap := make(map[interface{}]bool)
-	outArr := reflect.MakeSlice(inArr.Type(), 0, inArr.Len())
-
-	for i := 0; i < inArr.Len(); i++ {
-		iVal := inArr.Index(i)
-
-		if _, ok := existMap[iVal.Interface()]; !ok {
-			outArr = reflect.Append(outArr, inArr.Index(i))
-			existMap[iVal.Interface()] = true
-		}
-	}
-
-	return outArr.Interface()
-}
-
 func DiffTime(start int64, end int64) string {
 	diff := end - start
 	if diff > 60 {

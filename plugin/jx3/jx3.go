@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/FloatTech/zbputils/ctxext"
 	"github.com/FloatTech/zbputils/img/text"
@@ -18,7 +17,6 @@ import (
 	"image"
 	"io"
 	"io/ioutil"
-	"net"
 	"net/http"
 	goUrl "net/url"
 	"os"
@@ -209,12 +207,6 @@ type GroupList struct {
 }
 
 func init() {
-	//	go startWs()
-	if config.Cfg.JxChat != nil {
-		for _, chat := range *config.Cfg.JxChat {
-			go startChatWs(chat)
-		}
-	}
 	en := control.Register("jx3", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
@@ -247,13 +239,13 @@ func init() {
 	c.AddFunc("@every 30s", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 			var grpList []GroupList
+			controls := jdb.isEnable()
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
-				isEnable, server := jdb.isEnable(grp)
-				if isEnable {
+				if val, ok := controls[grp]; ok {
 					grpList = append(grpList, GroupList{
 						grp:    grp,
-						server: server,
+						server: val,
 					})
 				}
 			}
@@ -264,13 +256,13 @@ func init() {
 	c.AddFunc("@every 2m", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 			var grpList []GroupList
+			controls := jdb.isEnable()
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
-				isEnable, server := jdb.isEnable(grp)
-				if isEnable {
+				if val, ok := controls[grp]; ok {
 					grpList = append(grpList, GroupList{
 						grp:    grp,
-						server: server,
+						server: val,
 					})
 				}
 			}
@@ -281,9 +273,12 @@ func init() {
 	if err == nil && runtime.GOOS == "linux" {
 		c.Start()
 	}
-	go func() {
-		jdb = initialize()
-	}()
+	jdb = initialize()
+	if config.Cfg.JxChat != nil {
+		for _, chat := range *config.Cfg.JxChat {
+			go startChatWs(chat)
+		}
+	}
 	datapath := file.BOTPATH + "/" + en.DataFolder()
 	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
@@ -990,7 +985,7 @@ func jibPrice2line(lineStruct []JinPrice, datapath string) string {
 	}
 	defer f.Close()
 	page.Render(io.MultiWriter(f))
-	html, _ := ioutil.ReadFile(datapath + "line.html")
+	html, _ := os.ReadFile(datapath + "line.html")
 	return binutils.BytesToString(html)
 }
 
@@ -1524,47 +1519,6 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 	}
 }
 
-//func checkServer(ctx *zero.Ctx, grpList []GroupList) {
-//	lenServer := len(serverStatus)
-//	type status struct {
-//		serverStatus bool
-//		dbStatus     bool
-//	}
-//	var ipList = make(map[string]*status)
-//	for key, val := range serverIp {
-//		ipList[key] = &status{
-//			serverStatus: true,
-//			dbStatus:     true,
-//		}
-//		err := tcpGather(val, 3)
-//		if err != nil {
-//			ipList[key] = &status{serverStatus: false, dbStatus: serverStatus[key]}
-//			serverStatus[key] = false
-//			continue
-//		}
-//		ipList[key].dbStatus = serverStatus[key]
-//		serverStatus[key] = true
-//	}
-//	if lenServer != 0 {
-//		for _, grpListData := range grpList {
-//			server := grpListData.server
-//			if _, ok := serverIp[server]; ok {
-//				if s, ok := ipList[server]; ok {
-//					msg := server + " 开服啦ヽ(✿ﾟ▽ﾟ)ノ~"
-//					if s.dbStatus != s.serverStatus {
-//						if !s.serverStatus {
-//							msg = server + " 垃圾服务器维护啦  w(ﾟДﾟ)w~"
-//						}
-//						log.Errorln("debug server", grpList, ipList[server])
-//						ctx.SendGroupMessage(grpListData.grp, message.Text(msg))
-//						process.SleepAbout1sTo2s()
-//					}
-//				}
-//			}
-//		}
-//	}
-//}
-
 func news(ctx *zero.Ctx, grpList []GroupList) {
 	var msg []News
 	count, _ := jdb.Count(&News{})
@@ -1760,22 +1714,6 @@ func sign(data interface{}) string {
 	h.Write(CombineData)
 	sha := hex.EncodeToString(h.Sum(nil))
 	return sha
-}
-
-func tcpGather(address string, tryTime int) error {
-	for i := 1; i <= tryTime; i++ {
-		conn, err := net.DialTimeout("tcp", address, time.Second*5)
-		if err == nil {
-			conn.Close()
-			return err
-		}
-		log.Errorln("tcpGather error", err)
-		if i == tryTime {
-			log.Errorln("tcpGather tryTime over")
-			return errors.New("tryTime over")
-		}
-	}
-	return nil
 }
 
 // 51.2345.67.89

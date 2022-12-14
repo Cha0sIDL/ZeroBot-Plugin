@@ -3,6 +3,7 @@ package jx3
 import (
 	"errors"
 	"fmt"
+	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"sort"
@@ -170,11 +171,14 @@ func (jdb *jx3db) getMentalData(mentalName string) mental {
 	return m
 }
 
-func (jdb *jx3db) isEnable(Gid int64) (bool, string) {
-	var control jxControl
+func (jdb *jx3db) isEnable() (servers map[int64]string) {
+	var controls []jxControl
 	db := (*gorm.DB)(jdb)
-	db.Where("gid = ?", Gid).First(&control)
-	return control.Disable, control.Area
+	db.Where("disable = ?", true).Find(&controls)
+	servers = lo.Associate(controls, func(item jxControl) (int64, string) {
+		return item.GroupID, item.Area
+	})
+	return
 }
 
 func (jdb *jx3db) bind(Gid int64) string {
