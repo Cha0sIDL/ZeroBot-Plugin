@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"os"
+	"time"
 )
 
 const (
@@ -94,6 +95,12 @@ func initialize() *jx3db {
 	if err != nil {
 		panic(fmt.Sprintf("jx3 db err,%s", err))
 	}
+	sql, err := jdb.DB()
+	if err != nil {
+		panic(fmt.Sprintf("jx3 db err,%s", err))
+	}
+	sql.SetMaxOpenConns(1)
+	sql.SetConnMaxLifetime(time.Hour * 24)
 	for _, value := range rangeDb {
 		jdb.AutoMigrate(value)
 	}
