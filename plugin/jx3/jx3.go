@@ -554,10 +554,10 @@ func init() {
 				for idx, itemInfo := range jsonItemArr {
 					rsp += fmt.Sprintf("%d. %s %s\n", idx, itemInfo.Get("Name").String(), util.GetChinese(itemInfo.Get("Desc").String()))
 				}
-				ctx.SendChain(message.Text(rsp))
-				next := zero.NewFutureEvent("message", 2, false, ctx.CheckSession())
+				next := zero.NewFutureEvent("message", 2, false, zero.RegexRule(`^\d+$`), ctx.CheckSession())
 				recv, cancel := next.Repeat()
 				defer cancel()
+				ctx.SendChain(message.Text(rsp))
 				for {
 					select {
 					case <-time.After(time.Second * 120):
