@@ -555,7 +555,7 @@ func init() {
 					rsp += fmt.Sprintf("%d. %s %s\n", idx, itemInfo.Get("Name").String(), util.GetChinese(itemInfo.Get("Desc").String()))
 				}
 				ctx.SendChain(message.Text(rsp))
-				next := zero.NewFutureEvent("message", 999, false, ctx.CheckSession())
+				next := zero.NewFutureEvent("message", 2, false, ctx.CheckSession())
 				recv, cancel := next.Repeat()
 				defer cancel()
 				for {
