@@ -6,13 +6,13 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20221214084932-8c0223841d43
-	github.com/FloatTech/floatbox v0.0.0-20221210051813-4bd44af40c60
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20221226052349-99c1398c6713
+	github.com/FloatTech/floatbox v0.0.0-20221228150204-a2bededce74d
 	github.com/FloatTech/rendercard v0.0.2-0.20221128165614-a41216d2422e
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20221210051848-740ab7bd6ec3
-	github.com/FloatTech/zbputils v1.6.1-0.20221212090658-d0de5338e354
+	github.com/FloatTech/zbputils v1.6.1-0.20221226052231-8e1c946d55c2
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -47,10 +47,10 @@ require (
 	github.com/samber/lo v1.37.0
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
-	github.com/smallnest/rpcx v1.7.12
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.561
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.561
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.561
+	github.com/smallnest/rpcx v1.7.15
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.569
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.569
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.569
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
@@ -133,7 +133,6 @@ require (
 	github.com/tjfoc/gmsm v1.4.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fastrand v1.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

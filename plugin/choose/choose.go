@@ -21,24 +21,24 @@ func init() {
 	engine := control.Register("choose", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "choose",
-		Brief:            "选择困难症帮手",
+		Brief:             "选择困难症帮手",
 		Help: "choose\n" +
 			"- 选择可口可乐还是百事可乐\n" +
 			"- 选择肯德基还是麦当劳还是必胜客",
 	})
 	getData := fcext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		err := file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/what2eat/eating.json",
-			engine.DataFolder()+"eating.json", false)
+			engine.DataFolder()+"eating.json")
 		if err != nil {
 			return false
 		}
 		err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/what2eat/drinks.json",
-			engine.DataFolder()+"drinks.json", false)
+			engine.DataFolder()+"drinks.json")
 		if err != nil {
 			return false
 		}
 		err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/what2eat/crazy.json",
-			engine.DataFolder()+"crazy.json", false)
+			engine.DataFolder()+"crazy.json")
 		if err != nil {
 			return false
 		}

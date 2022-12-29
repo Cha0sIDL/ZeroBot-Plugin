@@ -42,7 +42,7 @@ func init() {
 	go func() {
 		if file.IsNotExist(arkNightDataPath+"arknight.zip") || file.IsNotExist(arkNightDataPath+"version") {
 			err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/arknight.zip",
-				arkNightDataPath+"arknight.zip", false)
+				arkNightDataPath+"arknight.zip")
 			if err != nil {
 				return
 			}

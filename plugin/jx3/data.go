@@ -84,7 +84,7 @@ func initialize() *jx3db {
 	if file.IsNotExist(dbfile) {
 		process.SleepAbout1sTo2s()
 		_ = os.MkdirAll(dbpath, 0755)
-		err := file.DownloadTo(fileUrl+"robotData.db", dbfile, false)
+		err := file.DownloadTo(fileUrl+"robotData.db", dbfile)
 		if err != nil {
 			panic(err)
 		}
