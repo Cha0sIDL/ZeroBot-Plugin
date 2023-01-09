@@ -238,7 +238,6 @@ func init() {
 	})
 	c.AddFunc("@every 30s", func() {
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-			log.Errorln("start news", jdb)
 			var grpList []GroupList
 			controls := jdb.isEnable()
 			for _, g := range ctx.GetGroupList().Array() {
@@ -251,7 +250,6 @@ func init() {
 				}
 			}
 			news(ctx, grpList)
-			log.Errorln("end news")
 			return true
 		})
 	})
