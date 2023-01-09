@@ -2,7 +2,6 @@ package util
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -12,67 +11,16 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
-	"os"
-	"path"
-	"path/filepath"
-	"reflect"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
 	"unicode"
 
-	"github.com/smallnest/rpcx/client"
-
 	"github.com/wdvxdr1123/ZeroBot/message"
 
 	"github.com/golang-module/carbon/v2"
-
-	log "github.com/sirupsen/logrus"
-
-	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
-
-type Args struct {
-	Method string
-	Url    string
-	Body   []byte
-}
-
-func SendHttp(httpUrl string, body []byte) ([]byte, error) {
-	d, _ := client.NewPeer2PeerDiscovery("tcp@"+config.Cfg.RpcHost, "")
-	option := client.DefaultOption
-	option.Heartbeat = true
-	option.HeartbeatInterval = time.Second
-	option.MaxWaitForHeartbeat = 2 * time.Second
-	option.IdleTimeout = 3 * time.Second
-	xclient := client.NewXClient("Http", client.Failtry, client.RandomSelect, d, option)
-	defer xclient.Close()
-	args := &Args{
-		Method: "GET",
-		Url:    httpUrl,
-		Body:   body,
-	}
-	var Reply []byte
-	err := xclient.Call(context.Background(), "Send", args, &Reply)
-	if err != nil {
-		log.Errorln("failed to call: %v", err)
-	}
-	return Reply, err
-	// req, err := http.NewRequest(method, httpUrl, bytes.NewReader(body))
-	// if err != nil {
-	//	panic("request error")
-	//}
-	// client := &http.Client{}
-	// req.Header.Set("User-Agent", "User-Agent, Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)")
-	// response, err := client.Do(req)
-	// log.Errorln(response.Body, response.StatusCode)
-	// if response.StatusCode != http.StatusOK {
-	//	panic("请求失败")
-	//}
-	// return io.ReadAll(response.Body)
-}
 
 func ProxyHttp(client *http.Client, url, method, referer, ua string, body io.Reader) (data []byte, err error) {
 	var request *http.Request
@@ -108,11 +56,6 @@ func Rand(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
-func Decimal(value float64, num int) float64 {
-	value, _ = strconv.ParseFloat(fmt.Sprintf("%."+strconv.Itoa(num)+"f", value), 64)
-	return value
-}
-
 func JsonToMap(jsonStr string) map[string]interface{} {
 	m := make(map[string]interface{})
 	err := json.Unmarshal([]byte(jsonStr), &m)
@@ -131,33 +74,6 @@ func MergeMap(mObj ...map[string]interface{}) map[string]interface{} {
 		}
 	}
 	return newObj
-}
-
-func GetCurrentAbPath() string {
-	dir := getCurrentAbPathByExecutable()
-	tmpDir, _ := filepath.EvalSymlinks(os.TempDir())
-	if strings.Contains(dir, tmpDir) {
-		return getCurrentAbPathByCaller()
-	}
-	return dir
-}
-
-func getCurrentAbPathByExecutable() string {
-	exePath, err := os.Executable()
-	if err != nil {
-		log.Fatal(err)
-	}
-	res, _ := filepath.EvalSymlinks(filepath.Dir(exePath))
-	return res
-}
-
-func getCurrentAbPathByCaller() string {
-	var abPath string
-	_, filename, _, ok := runtime.Caller(0)
-	if ok {
-		abPath = path.Dir(filename)
-	}
-	return abPath
 }
 
 func TodayFileName() string {
@@ -237,67 +153,11 @@ func SplitSpace(text string) []string {
 	return strings.Fields(strings.TrimSpace(text))
 }
 
-// Deprecated: Use lo.Shuffle instead.
-func Shuffle(slice interface{}) { // 切片乱序
-	rv := reflect.ValueOf(slice)
-	if rv.Type().Kind() != reflect.Slice {
-		return
-	}
-
-	length := rv.Len()
-	if length < 2 {
-		return
-	}
-
-	swap := reflect.Swapper(slice)
-	rand.Seed(time.Now().Unix())
-	for i := length - 1; i >= 0; i-- {
-		j := rand.Intn(length)
-		swap(i, j)
-	}
-	return
-}
-
-// Deprecated: Use lo.Sample instead.
-func RandSlice(slice interface{}) interface{} { // 随机取切片
-	rv := reflect.ValueOf(slice)
-	if rv.Type().Kind() != reflect.Slice {
-		return slice
-	}
-	length := rv.Len()
-	return rv.Index(rand.Intn(length)).Interface()
-}
-
 // Unicode2Zh Unicode转中文
 func Unicode2Zh(sText string) []byte {
 	textQuoted := strconv.QuoteToASCII(sText)
 	str, _ := strconv.Unquote(strings.Replace(strconv.Quote(textQuoted), `\\u`, `\u`, -1))
 	return []byte(str)
-}
-
-func Unicode2utf8(source string) string {
-	var res = []string{""}
-	sUnicode := strings.Split(source, "\\u")
-	var context = ""
-	for _, v := range sUnicode {
-		var additional = ""
-		if len(v) < 1 {
-			continue
-		}
-		if len(v) > 4 {
-			rs := []rune(v)
-			v = string(rs[:4])
-			additional = string(rs[4:])
-		}
-		temp, err := strconv.ParseInt(v, 16, 32)
-		if err != nil {
-			context += v
-		}
-		context += fmt.Sprintf("%c", temp)
-		context += additional
-	}
-	res = append(res, context)
-	return strings.Join(res, "")
 }
 
 func GetWeek() string {
@@ -322,15 +182,6 @@ func PrettyPrint(v interface{}) string {
 	}
 
 	return out.String()
-}
-
-// ConvertStrSlice2Map 将字符串 slice 转为 map[string]struct{}。
-func ConvertStrSlice2Map(sl []string) map[string]struct{} {
-	set := make(map[string]struct{}, len(sl))
-	for _, v := range sl {
-		set[v] = struct{}{}
-	}
-	return set
 }
 
 // BytesCombine 将[]byte合并
