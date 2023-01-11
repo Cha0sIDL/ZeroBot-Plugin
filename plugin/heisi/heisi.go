@@ -59,7 +59,9 @@ func init() { // 插件主体
 				pic = mcnPic[rand.Intn(len(mcnPic))]
 			}
 			return pic.String(), nil
-		}, web.GetData, time.Minute)
+		}, func(s string) ([]byte, error) {
+			return web.RequestDataWith(web.NewTLS12Client(), s, "GET", "http://hs.heisiwu.com/", web.RandUA())
+		}, time.Minute)
 	if err != nil {
 		panic(err)
 	}
@@ -109,7 +111,7 @@ func init() { // 插件主体
 				ctx.SendChain(message.Text("ERROR: ", err))
 				return
 			}
-			m := message.Message{ctxext.FakeSenderForwardNode(ctx, message.Image(pic))}
+			m := message.Message{ctxext.FakeSenderForwardNode(ctx, message.Image("file:///"+file.BOTPATH+"/"+pic))}
 			if id := ctx.Send(m).ID(); id == 0 {
 				ctx.SendChain(message.Text("ERROR: 可能被风控或下载图片用时过长，请耐心等待"))
 			}

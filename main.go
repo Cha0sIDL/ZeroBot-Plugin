@@ -38,8 +38,6 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/manager" // 群管
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus" // 词典匹配回复
-
 	_ "github.com/FloatTech/zbputils/job" // 定时指令触发器
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" // 聊天记录
@@ -62,11 +60,12 @@ import (
 	//                          vvvvvvvvvvvvvv                          //
 	//                               vvvv                               //
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ahsai"       // ahsai tts
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_false"    // 服务器监控
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/aipaint"     // ai绘图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/aiwife"      // 随机老婆
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/alipayvoice" // 支付宝到账语音
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ahsai"         // ahsai tts
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_false"      // 服务器监控
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/aipaint"       // ai绘图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/aiwife"        // 随机老婆
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/alipayvoice"   // 支付宝到账语音
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/autowithdraw"  // 触发者撤回时也自动撤回
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/b14"         // base16384加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baidu"       // 百度一下
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baiduaudit"  // 百度内容审核
@@ -144,7 +143,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ygo"           // 游戏王相关插件
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"         // 月幕galgame
 
-	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"            // 鬼东西
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus"     // 词典匹配回复
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"           // 鬼东西
 	// 其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"  // 明日方舟公招tag查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
