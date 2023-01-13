@@ -99,18 +99,18 @@ func init() {
 
 func getGeo(city string) string {
 	api := geoUrl + fmt.Sprintf("key=%s", config.Cfg.Weather) + "&location=" + url.QueryEscape(city)
-	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
+	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }
 
 func getWeather(apiType string, lat float64, lon float64) string {
 	api := weatherUrl + apiType + "?" + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
-	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
+	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }
 
 func getWarning(lat float64, lon float64) string {
 	api := weatherWarningUrl + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
-	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA())
+	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }

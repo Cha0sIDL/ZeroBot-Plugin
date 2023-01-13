@@ -45,7 +45,7 @@ func init() { // 插件主体
 func getWeiboTrending(ctx *zero.Ctx) {
 	rsp := "微博实时热榜:\n"
 	url := "http://api.weibo.cn/2/guest/search/hot/word"
-	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
+	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA(), nil)
 	if err != nil {
 		msg := message.Text("ERROR:", err)
 		ctx.SendChain(msg)
@@ -65,7 +65,7 @@ func getWeiboTrending(ctx *zero.Ctx) {
 func getZhihuTrending(ctx *zero.Ctx) {
 	rsp := "知乎实时热榜:\n"
 	url := "https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=30&desktop=true"
-	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
+	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA(), nil)
 	if err != nil {
 		msg := message.Text("ERROR:", err)
 		ctx.SendChain(msg)
@@ -102,7 +102,7 @@ func getGithubTrending(ctx *zero.Ctx) {
 func getTouTiaoTrending(ctx *zero.Ctx) {
 	rsp := "头条今日热搜:\n"
 	url := "https://is-lq.snssdk.com/api/suggest_words/?business_id=10016"
-	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
+	data, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA(), nil)
 	if err != nil {
 		msg := message.Text("ERROR:", err)
 		ctx.SendChain(msg)

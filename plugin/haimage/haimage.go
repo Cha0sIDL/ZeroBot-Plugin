@@ -17,7 +17,7 @@ func init() {
 		Brief:            "古风小姐姐",
 		Help:             "- 古风小姐姐图片\n",
 	}).OnKeywordGroup([]string{"古风"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
-		r, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA())
+		r, err := web.RequestDataWith(web.NewDefaultClient(), url, "GET", "", web.RandUA(), nil)
 		if err != nil {
 			ctx.SendChain(message.Text("出错了稍后再试吧"))
 			return

@@ -37,7 +37,7 @@ func init() {
 				return
 			}
 			gameName := commandPart[0]
-			data, err := web.RequestDataWith(web.NewDefaultClient(), fmt.Sprintf(searchUrl, url.QueryEscape(gameName)), "GET", "https://steamstats.cn/", web.RandUA())
+			data, err := web.RequestDataWith(web.NewDefaultClient(), fmt.Sprintf(searchUrl, url.QueryEscape(gameName)), "GET", "https://steamstats.cn/", web.RandUA(), nil)
 			if err != nil {
 				ctx.SendChain(message.Text("出错了", err))
 				return

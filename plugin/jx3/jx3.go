@@ -357,7 +357,7 @@ func init() {
 			name := ctx.State["args"].(string)
 			mental := jdb.getMentalData(strings.Replace(name, " ", "", -1))
 			mentalUrl := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
-			data, err := web.RequestDataWith(NewTimeOutDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA())
+			data, err := web.RequestDataWith(NewTimeOutDefaultClient(), mentalUrl, "GET", "application/x-www-form-urlencoded", web.RandUA(), nil)
 			DataList := gjson.Get(binutils.BytesToString(data), "data.list").Array()
 			if err != nil || len(DataList) == 0 {
 				ctx.SendChain(message.Text("出错了请检查参数或稍后试试吧~"))
@@ -537,7 +537,7 @@ func init() {
 			}
 			if normServer, ok := allServer[server]; ok {
 				itemUrl := fmt.Sprintf("https://helper.jx3box.com/api/item/search?page=1&limit=15&client=std&keyword=%s", goUrl.QueryEscape(itemName))
-				data, err := web.RequestDataWith(NewTimeOutDefaultClient(), itemUrl, "GET", "https://www.jx3box.com/", web.RandUA())
+				data, err := web.RequestDataWith(NewTimeOutDefaultClient(), itemUrl, "GET", "https://www.jx3box.com/", web.RandUA(), nil)
 				jsonItem := gjson.ParseBytes(data)
 				if err != nil || jsonItem.Get("code").Int() != 200 {
 					ctx.SendChain(util.HttpError()...)
@@ -786,7 +786,7 @@ func init() {
 			server := commandPart[0]
 			name := commandPart[1]
 			qiyuUrl := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
-			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
+			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuUrl, "GET", "", web.RandUA(), nil)
 			if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 0 {
 				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 				return
@@ -877,7 +877,7 @@ func daily(ctx *zero.Ctx, server string) {
 		var msg string
 		msg += "今天是：" + carbon.Now().ToDateString() + " " + util.GetWeek() + "\n"
 		riUrl := fmt.Sprintf("https://team.api.jx3box.com/xoyo/daily/task?date=%d", carbon.Now().Timestamp())
-		daily, err := web.RequestDataWith(NewTimeOutDefaultClient(), riUrl, "GET", "", web.RandUA())
+		daily, err := web.RequestDataWith(NewTimeOutDefaultClient(), riUrl, "GET", "", web.RandUA(), nil)
 		if err != nil || gjson.Get(binutils.BytesToString(daily), "code").Int() != 0 {
 			ctx.SendChain(util.HttpError()...)
 			return
@@ -894,7 +894,7 @@ func daily(ctx *zero.Ctx, server string) {
 			msg += k + "：" + questName + "\n"
 		}
 		meiUrl := fmt.Sprintf("https://spider.jx3box.com/meirentu?server=%s", goUrl.QueryEscape(server))
-		meiData, err := web.RequestDataWith(NewTimeOutDefaultClient(), meiUrl, "GET", "", web.RandUA())
+		meiData, err := web.RequestDataWith(NewTimeOutDefaultClient(), meiUrl, "GET", "", web.RandUA(), nil)
 		if err != nil || gjson.Get(binutils.BytesToString(meiData), "code").Int() != 0 {
 			msg += "美人图：今天没有美人图呢~\n"
 		} else {
@@ -924,7 +924,7 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 	}
 	server := commandPart[0]
 	if val, ok := allServer[server]; ok {
-		data, err := web.RequestDataWith(NewTimeOutDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA())
+		data, err := web.RequestDataWith(NewTimeOutDefaultClient(), "https://spider.jx3box.com/jx3price", "GET", "application/x-www-form-urlencoded", web.RandUA(), nil)
 		strData := binutils.BytesToString(data)
 		if err != nil || gjson.Get(strData, "code").Int() != 0 {
 			ctx.SendChain(util.HttpError()...)
@@ -1047,7 +1047,7 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 		ctx.SendChain(message.Image(hei.fileName))
 	} else {
 		goodUrl := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward?name=%s", goUrl.QueryEscape(name))
-		rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), goodUrl, "GET", "", web.RandUA())
+		rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), goodUrl, "GET", "", web.RandUA(), nil)
 		if err != nil || gjson.Get(binutils.BytesToString(rspData), "state").Int() != 0 {
 			ctx.SendChain(message.Text("出错了联系管理员看看吧", err, gjson.Get(binutils.BytesToString(rspData), "state").Int()))
 			return

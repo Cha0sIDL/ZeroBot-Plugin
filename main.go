@@ -173,8 +173,6 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/games"
-
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //
