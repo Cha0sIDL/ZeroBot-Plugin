@@ -6,13 +6,12 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20230111055153-4d8aebd3eab9
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20230115164716-85a83c2a047a
 	github.com/FloatTech/floatbox v0.0.0-20230111053652-a03d6334fadf
-	github.com/FloatTech/rendercard v0.0.8
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20230109124217-41203036b80a
-	github.com/FloatTech/zbputils v1.6.2-0.20230112162135-c326104c37e6
+	github.com/FloatTech/zbputils v1.6.2-0.20230113162508-c8966fa17745
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -47,9 +46,9 @@ require (
 	github.com/samber/lo v1.37.0
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.579
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.579
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.579
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.581
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.581
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.581
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
@@ -61,6 +60,7 @@ require (
 )
 
 require (
+	github.com/FloatTech/rendercard v0.0.8 // indirect
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
