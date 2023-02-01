@@ -845,12 +845,12 @@ func init() {
 			}
 			ctx.SendChain(message.Text(fmt.Sprintf("更新成功")))
 		})
-	en.OnPrefixGroup([]string{"属性"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
+	en.OnPrefixGroup([]string{"属性"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			attributes(ctx, datapath)
 		},
 	)
-	en.OnPrefixGroup([]string{"战绩"}).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
+	en.OnPrefixGroup([]string{"战绩"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			indicator(ctx, datapath)
 		},
@@ -1167,7 +1167,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
 		gameRoleId := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
 		if err != nil {
-			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
+			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
 		}
 		var data = make(map[string]interface{})
@@ -1327,7 +1327,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		server = normServer[0]
 		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
 		if err != nil {
-			ctx.SendChain(message.Text("没有查到这个角色呢,试着在世界频道说句话试试吧~"))
+			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
 		}
 		gameRoleId := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()

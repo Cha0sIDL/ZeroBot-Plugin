@@ -259,7 +259,7 @@ func (jdb *jx3db) Insert(value interface{}) error {
 
 func (jdb *jx3db) Find(query, out interface{}, args ...interface{}) error {
 	db := (*gorm.DB)(jdb)
-	return db.Where(query, args).Find(out).Error
+	return db.Where(query, args).First(out).Error
 }
 
 func (jdb *jx3db) Count(value interface{}) (num int64, err error) {
