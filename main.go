@@ -94,7 +94,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"   // 猜歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"        // 黑丝
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"           // 炉石
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"       // 注入指令
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"       // 煎蛋网无聊图
@@ -195,7 +195,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/curse" // 骂人
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" // 活跃度自动插话
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai"     // 人工智能回复
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机

@@ -571,16 +571,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>书评</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/book_review"`
-
-  - [x] 书评[xxx]
-
-  - [x] 随机书评
-
-</details>
-<details>
   <summary>打断复读</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/breakrepeat"`
@@ -618,14 +608,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>英文字符翻转</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"`
-
-  - [x] 翻转 I love you
-
-</details>
-<details>
   <summary>coser</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser" `
@@ -649,18 +631,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/danbooru"`
 
   - [x] 鉴赏图片[图片]
-
-</details>
-<details>
-  <summary>嘉然</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/diana"`
-
-  - [x] 小作文
-
-  - [x] 发大病
-
-  - [x] 教你一篇小作文[作文]
 
 </details>
 <details>
@@ -808,28 +778,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>炉石</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"`
-
-  - [x] 搜卡[xxxx]
-
-  - [x] [卡组代码xxx]
-
-  - 注：更多搜卡指令参数：https://hs.fbigame.com/misc/searchhelp
-
-</details>
-<details>
-  <summary>百人一首</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"`
-
-  - [x] 百人一首
-
-  - [x] 百人一首之n
-
-</details>
-<details>
   <summary>关键字搜图</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder"`
@@ -919,28 +867,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"`
 
   - [x] 吟唱提示[xxxx]
-
-</details>
-<details>
-  <summary>简易midi音乐制作</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/midicreate"`
-
-  - [x] midi制作 CCGGAAGR FFEEDDCR GGFFEEDR GGFFEEDR CCGGAAGR FFEEDDCR
-
-  - [x] 个人听音练习
-  
-  - [x] 团队听音练习
-  
-  - [x] *.mid (midi 转 txt)
-  
-  - [x] midi制作*.txt (txt 转 midi)
-  
-  - [x] 设置音色40 (0~127)
-
-  - [x] 注: 该插件需要安装timidity, linux安装脚本可参考 https://gitcode.net/anto_july/midi/-/raw/master/timidity.sh, windows安装脚本可参考 https://gitcode.net/anto_july/midi/-/raw/master/timidity.bat?inline=false, windows需要管理员模式运行
-  
-  - [x] 符号说明: C5是中央C,后面不写数字,默认接5,Cb6<1,b代表降调,#代表升调,6比5高八度,<1代表音长×2,<3代表音长×8,<-1代表音长×0.5,<-3代表音长×0.125,R是休止符
 
 </details>
 <details>
@@ -1039,16 +965,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/nbnhhsh"`
 
   - [x] ?? [缩写]
-
-</details>
-<details>
-  <summary>日语语法学习</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/nihongo"`
-
-  - [x] 日语语法 [xxx] (使用tag随机)
-  
-  - [x] 搜索日语语法 [xxx]
 
 </details>
 <details>
@@ -1456,29 +1372,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   - 注：卡店只支持单个稀有度查询
 	
 </details>
-<details>
-  <summary>词典匹配回复</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus"`
-
-  - [x] 切换[kimo|傲娇|可爱]词库
-  - [x] 设置词库触发概率0.x (0<x<9)
-
-  - 注：由于占用资源较大，默认注释。
-
-</details>
-<details>
-  <summary>鬼东西</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"`
-
-  - [x] 鬼东西列表
-
-  - [x] 查询鬼东西[序号][@xxx]
-
-  - 注：由于需要科学，默认注释。
-
-</details>
 
 <details>
   <summary>剑网三相关</summary>
@@ -1503,16 +1396,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 绑定区服xxx
   - [x] 团队相关 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
   - [x] TODO...
-
-</details>
-
-<details>
-  <summary>复读机</summary>
-
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"`
-
-- [x] 群内自动触发
-
 
 </details>
 
