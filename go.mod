@@ -17,6 +17,7 @@ require (
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/corona10/goimagehash v1.1.0
+	github.com/davidscholberg/go-durationfmt v0.0.0-20170122144659-64843a2083d3
 	github.com/flosch/pongo2/v5 v5.0.0
 	github.com/fogleman/gg v1.3.0
 	github.com/fumiama/ahsai v0.1.0
@@ -36,6 +37,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jozsefsallai/gophersauce v1.0.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/lithammer/fuzzysearch v1.1.5
 	github.com/lucas-clemente/quic-go v0.31.1
 	github.com/mileusna/useragent v1.2.1
 	github.com/mroth/weightedrand v1.0.0
@@ -46,9 +48,9 @@ require (
 	github.com/samber/lo v1.37.0
 	github.com/shirou/gopsutil/v3 v3.22.11
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.583
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.583
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.583
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.586
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.586
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.586
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
