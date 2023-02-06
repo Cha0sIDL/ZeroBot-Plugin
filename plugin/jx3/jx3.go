@@ -635,19 +635,22 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
-	// 开团 时间 副本名 备注
+	// 开团 副本名 备注
 	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			if len(commandPart) != 3 {
-				ctx.SendChain(message.Text("开团参数输入有误！"))
+			if len(commandPart) != 2 {
+				ctx.SendChain(message.Text("开团参数输入有误！开团 副本名 备注"))
 				return
 			}
-			startTime := parseDate(commandPart[0])
-			dungeon := commandPart[1]
-			comment := commandPart[2]
-			leaderId := ctx.Event.UserID
-			teamId, err := jdb.createNewTeam(startTime, dungeon, comment, leaderId, ctx.Event.GroupID)
+			dungeon := commandPart[0]
+			comment := commandPart[1]
+			teamId, err := jdb.createNewTeam(&Team{
+				LeaderId: ctx.Event.UserID,
+				Dungeon:  dungeon,
+				Comment:  comment,
+				GroupId:  ctx.Event.GroupID,
+			})
 			if err != nil {
 				ctx.SendChain(message.Text("Error :", err))
 				return
@@ -655,7 +658,7 @@ func init() {
 			ctx.SendChain(message.Text("开团成功，团队id为：", teamId))
 		})
 	// 报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
-	en.OnPrefixGroup([]string{"报名", "报团", "报名团队"}, zero.OnlyGroup).SetBlock(true).
+	en.OnPrefixGroup([]string{"报名", "报团", "报名团队", "代报名"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			double := 0
@@ -667,7 +670,11 @@ func init() {
 				ctx.SendChain(message.Text("报团参数有误。"))
 				return
 			}
-			teamId, _ := strconv.Atoi(commandPart[0])
+			teamId, err := strconv.Atoi(commandPart[0])
+			if err != nil {
+				ctx.SendChain(message.Text("团队编号输入有误"))
+				return
+			}
 			mental := jdb.getMentalData(commandPart[1])
 			nickName := commandPart[2]
 			if mental.ID == 0 {
@@ -675,23 +682,34 @@ func init() {
 				return
 			}
 			Team := jdb.getTeamInfo(teamId)
-			if carbon.Now().Timestamp() >= Team.StartTime || Team.GroupId != ctx.Event.GroupID {
-				ctx.SendChain(message.Text("当前团队已过期或团队不存在。"))
+			if Team.GroupId != ctx.Event.GroupID {
+				ctx.SendChain(message.Text("当前团队不存在。"))
 				return
 			}
-			if jdb.isInTeam(teamId, ctx.Event.UserID) {
-				ctx.SendChain(message.Text("你已经在团队中了。"))
-				return
+			if []rune(ctx.MessageString())[0] == '代' {
+				if jdb.isInTeam("team_id = ? and member_nick_name = ?", teamId, nickName) {
+					ctx.SendChain(message.Text(nickName, "已经在团队中了。"))
+					return
+				}
+			} else {
+				if jdb.isInTeam("team_id = ? and member_qq = ?", teamId, ctx.Event.UserID) {
+					ctx.SendChain(message.Text("你已经在团队中了。"))
+					return
+				}
 			}
 			var member = Member{
-				TeamId:         teamId,
+				TeamId:         uint(teamId),
 				MemberQQ:       ctx.Event.UserID,
 				MemberNickName: nickName,
 				MentalId:       mental.ID,
 				Double:         double,
 				SignUp:         carbon.Now().Timestamp(),
 			}
-			jdb.addMember(&member)
+			err = jdb.addMember(&member)
+			if err != nil {
+				ctx.SendChain(message.Text("数据库写入失败,Err:", err))
+				return
+			}
 			ctx.SendChain(message.Text("报团成功"), message.Reply(ctx.Event.MessageID))
 			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
@@ -699,50 +717,53 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
-			if !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
+			team := jdb.getTeamInfo(teamId)
+			if team.GroupId != ctx.Event.GroupID {
 				ctx.SendChain(message.Text("参数输入有误。"))
 				return
 			}
-			jdb.deleteMember(teamId, ctx.Event.UserID)
+			err := jdb.deleteMember(teamId, ctx.Event.UserID)
+			if err != nil {
+				ctx.SendChain(message.Text("Err:", err))
+				return
+			}
 			ctx.SendChain(message.Text("撤销成功"), message.Reply(ctx.Event.MessageID))
 			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
 	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
+			var sTeam []Team
+			jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
+			s := lo.Map(sTeam, func(item Team, _ int) uint {
+				return item.TeamId
+			})
 			SignUp := lo.Uniq(jdb.getSignUp(ctx.Event.UserID))
-			var InfoTeam []Team
-			for _, d := range SignUp {
-				Team := jdb.getEfficientTeamInfo("team_id = ? AND startTime > ? AND groupId =? ", d, carbon.Now().Timestamp(), ctx.Event.GroupID)
-				if len(Team) > 0 {
-					InfoTeam = append(InfoTeam, Team[0])
-				}
-			}
+
+			ctx.SendChain(message.Text("本群你报名过的团队id：\n", util.IntersectArray(s, SignUp)))
+		})
+	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			var sTeam []Team
+			jdb.Find("leaderId = ? and groupId = ?", &sTeam, ctx.Event.UserID, ctx.Event.GroupID)
 			out := ""
-			for _, data := range InfoTeam {
-				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
-					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			for _, data := range sTeam {
+				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，备注：%s\n",
+					data.TeamId, data.LeaderId, data.Dungeon, data.Comment)
 			}
 			ctx.SendChain(message.Text(out))
 		})
-	en.OnFullMatchGroup([]string{"我的开团"}, zero.AdminPermission).SetBlock(true).
+	en.OnFullMatchGroup([]string{"查看全部团队"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			InfoSlice := jdb.getEfficientTeamInfo(
-				"leaderId = ? and startTime > ? and groupId = ?", ctx.Event.UserID, carbon.Now().Timestamp(), ctx.Event.GroupID)
-			out := ""
-			for _, data := range InfoSlice {
-				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
-					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			var sTeam []Team
+			jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
+			if len(sTeam) == 0 {
+				ctx.SendChain(message.Text("本群没有有效团队哦"))
+				return
 			}
-			ctx.SendChain(message.Text(out))
-		})
-	en.OnFullMatchGroup([]string{"全团显示"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			InfoSlice := jdb.getEfficientTeamInfo(
-				"startTime > ? and groupId = ?", carbon.Now().Timestamp(), ctx.Event.GroupID)
 			out := ""
-			for _, data := range InfoSlice {
-				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，开始时间：%s，备注：%s\n",
-					data.TeamId, data.LeaderId, data.Dungeon, carbon.CreateFromTimestamp(data.StartTime).ToDateTimeString(), data.Comment)
+			for _, data := range sTeam {
+				out = out + fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，备注：%s\n",
+					data.TeamId, data.LeaderId, data.Dungeon, data.Comment)
 			}
 			ctx.SendChain(message.Text(out))
 		})
@@ -751,21 +772,23 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			teamId, _ := strconv.Atoi(commandPart[0])
-			if !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
-				ctx.SendChain(message.Text("参数输入有误。"))
+			team := jdb.getTeamInfo(teamId)
+			if team.GroupId != ctx.Event.GroupID {
+				ctx.SendChain(message.Text("团队id输入有误。"))
 				return
 			}
 			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamId)))))
 		})
 	// 取消开团 团队id
-	en.OnPrefixGroup([]string{"取消开团", "删除团队", "撤销团队", "撤销开团"}, zero.AdminPermission).SetBlock(true).
+	en.OnPrefixGroup([]string{"取消开团", "删除团队", "结束团队"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
 			if len(commandPart) < 1 {
-				ctx.SendChain(message.Text("撤销开团参数有误"))
+				ctx.SendChain(message.Text("参数有误"))
 			}
 			teamId, err := strconv.Atoi(commandPart[0])
-			if err != nil || !jdb.isBelongGroup(teamId, ctx.Event.GroupID) {
+			team := jdb.getTeamInfo(teamId)
+			if err != nil || team.GroupId != ctx.Event.GroupID || team.LeaderId != ctx.Event.UserID {
 				ctx.SendChain(message.Text("团队id输入有误"))
 				return
 			}

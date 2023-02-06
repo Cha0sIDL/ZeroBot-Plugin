@@ -39,7 +39,6 @@ var rangeDb = map[string]interface{}{
 	dbMental:    &mental{},
 	dbControl:   &jxControl{},
 	dbTeam:      &Team{},
-	dbLeader:    &Leader{},
 	dbMember:    &Member{},
 	dbAdventure: &Adventure{},
 	dbTalk:      &Jokes{},
@@ -57,9 +56,6 @@ func (jxControl) TableName() string {
 }
 func (Team) TableName() string {
 	return dbTeam
-}
-func (Leader) TableName() string {
-	return dbLeader
 }
 func (Member) TableName() string {
 	return dbMember

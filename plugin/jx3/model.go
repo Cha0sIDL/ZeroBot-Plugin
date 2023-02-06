@@ -24,24 +24,16 @@ type jxControl struct {
 
 // Team 的结构体
 type Team struct {
-	TeamId    uint   `gorm:"primary_key;AUTO_INCREMENT"`
-	LeaderId  int64  `gorm:"column:leaderId"`  // 团长id
-	Dungeon   string `gorm:"column:dungeon"`   // 副本名
-	StartTime int64  `gorm:"column:startTime"` // 团开始时间
-	Comment   string `gorm:"column:comment"`   // 备注信息
-	GroupId   int64  `gorm:"column:groupId"`   // 团所属群组
-}
-
-type Leader struct {
-	Id       uint   `gorm:"primary_key;AUTO_INCREMENT"`
-	NickName string `gorm:"column:nick_name"`
-	TeamName string `gorm:"column:team_name"`
-	IsOk     int    `gorm:"column:is_ok"`
+	TeamId   uint   `gorm:"primary_key;AUTO_INCREMENT"`
+	LeaderId int64  `gorm:"column:leaderId"` // 团长id
+	Dungeon  string `gorm:"column:dungeon"`  // 副本名
+	Comment  string `gorm:"column:comment"`  // 备注信息
+	GroupId  int64  `gorm:"column:groupId"`  // 团所属群组
 }
 
 type Member struct {
 	Id             uint   `gorm:"primary_key;AUTO_INCREMENT"`
-	TeamId         int    `gorm:"column:team_id"`
+	TeamId         uint   `gorm:"column:team_id"`
 	MemberQQ       int64  `gorm:"column:member_qq"`
 	MemberNickName string `gorm:"column:member_nick_name"`
 	MentalId       uint64 `gorm:"column:mental_id"`
@@ -78,16 +70,8 @@ type Daily struct {
 	Time      int64  `gorm:"column:time"`
 }
 
-func (jdb *jx3db) createNewTeam(time int64, dungeon string,
-	comment string, leaderID int64, groupId int64) (uint, error) {
+func (jdb *jx3db) createNewTeam(team *Team) (uint, error) {
 	db := (*gorm.DB)(jdb)
-	team := &Team{
-		LeaderId:  leaderID,
-		Dungeon:   dungeon,
-		StartTime: time,
-		Comment:   comment,
-		GroupId:   groupId,
-	}
 	err := db.Create(team).Error
 	return team.TeamId, err
 }
@@ -99,29 +83,14 @@ func (jdb *jx3db) getTeamInfo(teamId int) Team {
 	return c
 }
 
-func (jdb *jx3db) isInTeam(teamId int, qq int64) bool {
+func (jdb *jx3db) isInTeam(query interface{}, args ...interface{}) bool {
 	db := (*gorm.DB)(jdb)
-	var c Member
-	err := db.Where("team_id = ? and member_qq = ?", teamId, qq).First(&c).Error
+	err := db.Where(query, args...).First(&Member{}).Error
 	return !errors.Is(err, gorm.ErrRecordNotFound)
-}
-
-func (jdb *jx3db) isBelongGroup(teamId int, groupId int64) bool {
-	db := (*gorm.DB)(jdb)
-	var c Team
-	err := db.Where("team_id = ? and groupId = ?", teamId, groupId).First(&c).Error
-	return !errors.Is(err, gorm.ErrRecordNotFound)
-}
-
-// 返回未过期的团
-func (jdb *jx3db) getEfficientTeamInfo(query interface{}, args ...interface{}) (cSlice []Team) {
-	db := (*gorm.DB)(jdb)
-	db.Where(query, args...).Find(&cSlice)
-	return
 }
 
 // 返回我报的团id
-func (jdb *jx3db) getSignUp(qq int64) (team []int) {
+func (jdb *jx3db) getSignUp(qq int64) (team []uint) {
 	var c []Member
 	db := (*gorm.DB)(jdb)
 	db.Where("member_qq = ?", qq).Find(&c)
@@ -259,7 +228,7 @@ func (jdb *jx3db) Insert(value interface{}) error {
 
 func (jdb *jx3db) Find(query, out interface{}, args ...interface{}) error {
 	db := (*gorm.DB)(jdb)
-	return db.Where(query, args).First(out).Error
+	return db.Where(query, args...).First(out).Error
 }
 
 func (jdb *jx3db) Count(value interface{}) (num int64, err error) {
@@ -270,6 +239,6 @@ func (jdb *jx3db) Count(value interface{}) (num int64, err error) {
 
 func (jdb *jx3db) CanFind(query, out interface{}, args ...interface{}) bool {
 	db := (*gorm.DB)(jdb)
-	err := db.Where(query, args).First(out).Error
+	err := db.Where(query, args...).First(out).Error
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
