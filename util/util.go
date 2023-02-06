@@ -230,3 +230,20 @@ func GetChinese(text string) string {
 	}
 	return s
 }
+
+// IntersectArray 求两个切片的交集
+func IntersectArray[T any](l, r []T) []T {
+	var inter []T
+	mp := make(map[any]bool)
+	for _, s := range l {
+		if _, ok := mp[s]; !ok {
+			mp[s] = true
+		}
+	}
+	for _, s := range r {
+		if _, ok := mp[s]; ok {
+			inter = append(inter, s)
+		}
+	}
+	return inter
+}
