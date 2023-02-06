@@ -95,15 +95,15 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"        // 黑丝
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"           // 炉石
 	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"      // 注入指令
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"      // 煎蛋网无聊图
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami"       // 兽语加密
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"   // 小鸡词典
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"  // 日语听力学习材料
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"    // 绝绝子生成器
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"     // lolicon 随机图片
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt" // magicprompt吟唱提示
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"       // 注入指令
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"       // 煎蛋网无聊图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami"        // 兽语加密
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"    // 小鸡词典
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"   // 日语听力学习材料
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"     // 绝绝子生成器
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"      // lolicon 随机图片
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"  // magicprompt吟唱提示
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/midicreate"    // 简易midi音乐制作
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moegoe"        // 日韩 VITS 模型拟声
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moyu"          // 摸鱼
