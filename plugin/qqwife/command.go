@@ -372,9 +372,12 @@ func init() {
 				canvas.DrawString("←→", 700, float64(260+50*i)-h)
 				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
 			}
-			data, cl := writer.ToBytes(canvas.Image())
+			data, err := imgfactory.ToBytes(canvas.Image())
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
 			ctx.SendChain(message.At(uid), message.ImageBytes(data))
-			cl()
 		})
 	engine.OnFullMatchGroup([]string{"涩涩排行榜", "色色排行榜"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {
@@ -417,9 +420,12 @@ func init() {
 				canvas.DrawString("←→", 700, float64(260+50*i)-h)
 				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
 			}
-			data, cl := writer.ToBytes(canvas.Image())
+			data, err := imgfactory.ToBytes(canvas.Image())
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
 			ctx.SendChain(message.ImageBytes(data))
-			cl()
 		})
 	engine.OnFullMatchGroup([]string{"NTR排行榜", "ntr排行榜"}, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {
@@ -462,9 +468,12 @@ func init() {
 				canvas.DrawString("←→", 700, float64(260+50*i)-h)
 				canvas.DrawString(strconv.FormatInt(v.times, 10)+"次", 1150, float64(260+50*i)-h)
 			}
-			data, cl := writer.ToBytes(canvas.Image())
+			data, err := imgfactory.ToBytes(canvas.Image())
+			if err != nil {
+				ctx.SendChain(message.Text("[qqwife]ERROR: ", err))
+				return
+			}
 			ctx.SendChain(message.ImageBytes(data))
-			cl()
 		})
 }
 
