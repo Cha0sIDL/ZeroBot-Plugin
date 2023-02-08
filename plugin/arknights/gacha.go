@@ -10,7 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/FloatTech/floatbox/img/writer"
+	"github.com/FloatTech/imgfactory"
+
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -140,7 +141,7 @@ func drawGachaImage(charNames []string) ([]byte, error) {
 		background.DrawImage(charImage, 27+index*123, 175)
 		background.DrawImage(*professionImage, 34+int(math.Round(float64(index)*122.5)), 490)
 	}
-	return writer.ToBase64(background.Image())
+	return imgfactory.ToBase64(background.Image())
 }
 
 func gacha(ctx *zero.Ctx) {

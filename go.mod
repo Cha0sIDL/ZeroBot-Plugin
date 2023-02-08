@@ -4,15 +4,15 @@ go 1.19
 
 require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
-	github.com/DanPlayer/timefinder v1.1.110
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20230130095520-be357484e5a7
-	github.com/FloatTech/floatbox v0.0.0-20230205065512-4039f6dd0a68
-	github.com/FloatTech/gg v1.1.0
-	github.com/FloatTech/rendercard v0.0.9-0.20230206125820-929cee91387c
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194
+	github.com/FloatTech/floatbox v0.0.0-20230207075003-0f70b30c320d
+	github.com/FloatTech/gg v1.1.1
+	github.com/FloatTech/imgfactory v0.2.1
+	github.com/FloatTech/rendercard v0.0.9
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20230130095145-714ad318cd52
-	github.com/FloatTech/zbputils v1.6.2-0.20230206130001-6b404926bf66
+	github.com/FloatTech/zbputils v1.6.2-0.20230207084008-8c14cb9fcacb
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -50,13 +50,13 @@ require (
 	github.com/samber/lo v1.37.0
 	github.com/shirou/gopsutil/v3 v3.23.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.589
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.589
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.589
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.590
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.590
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.590
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
-	github.com/wdvxdr1123/ZeroBot v1.6.8
+	github.com/wdvxdr1123/ZeroBot v1.6.9
 	gitlab.com/gomidi/midi/v2 v2.0.25
 	golang.org/x/image v0.3.0
 	golang.org/x/text v0.6.0
@@ -65,7 +65,6 @@ require (
 )
 
 require (
-	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
@@ -84,7 +83,6 @@ require (
 	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hajimehoshi/oto v0.7.1 // indirect
-	github.com/huichen/sego v0.0.0-20180617034105-3f3c8a8cfacc // indirect
 	github.com/jfreymuth/oggvorbis v1.0.1 // indirect
 	github.com/jfreymuth/vorbis v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
