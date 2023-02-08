@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	ServiceName       = "dailyNotify"
+	serviceName       = "dailyNotify"
 	notify      int64 = 30
 )
 
@@ -37,7 +37,7 @@ func init() { // 插件主体
 	if err == nil {
 		c.Start()
 	}
-	control.Register(ServiceName, &ctrl.Options[*zero.Ctx]{
+	control.Register(serviceName, &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "剑网日常播报",
 		Help:             "- 剑网每周日常定时推送\n",
@@ -45,7 +45,7 @@ func init() { // 插件主体
 }
 
 func sendMessage() {
-	m, ok := control.Lookup(ServiceName)
+	m, ok := control.Lookup(serviceName)
 	if !ok {
 		log.Errorln("dailyNotify Err")
 	}

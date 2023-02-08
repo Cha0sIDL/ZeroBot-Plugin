@@ -22,7 +22,7 @@ type userWsClient struct {
 
 func startChatWs(chat config.Chat) {
 	ws := &userWsClient{
-		url:        chat.Url,
+		url:        chat.URL,
 		serverName: chat.Name,
 	}
 	ws.header = make(http.Header)
@@ -73,7 +73,7 @@ func (ws *userWsClient) listen() {
 				continue
 			}
 			rw.Lock()
-			jdb.Insert(&User{
+			jdb.Insert(&User{ //nolint:errcheck
 				ID:   roleName + "_" + server,
 				Data: binutils.BytesToString(payload),
 			})

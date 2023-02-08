@@ -68,6 +68,7 @@ var lk sync.Mutex
 var fail = 0
 var reqNum = 0
 
+// TTS 阿里tts接口
 func TTS(fileName string, text string, param nls.SpeechSynthesisStartParam, appKEY string, aKid string, akKey string) error {
 	config, err := nls.NewConnectionConfigWithAKInfoDefault(nls.DEFAULT_URL, appKEY, aKid, akKey)
 	if err != nil {

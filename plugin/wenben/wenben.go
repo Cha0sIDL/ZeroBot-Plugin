@@ -41,7 +41,7 @@ func init() { // 主函数
 			"- 每日情话" +
 			"- 绕口令",
 	})
-	//en.OnSuffix("天气").SetBlock(true).
+	// en.OnSuffix("天气").SetBlock(true).
 	//	Handle(func(ctx *zero.Ctx) {
 	//		str := ctx.State["args"].(string)
 	//		es, err := web.GetData(fmt.Sprintf(tianqi, str)) // 将网站返回结果赋值

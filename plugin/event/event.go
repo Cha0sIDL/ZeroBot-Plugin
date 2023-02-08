@@ -60,7 +60,7 @@ func init() {
 						"\n请在下方复制flag并在前面加上:"+
 						"\n同意/拒绝邀请，来决定同意还是拒绝"+
 						"\nflag:"+es))
-				//ctx.SendPrivateForwardMessage(su,
+				// ctx.SendPrivateForwardMessage(su,
 				//	message.Message{message.CustomNode(username, userid,
 				//		"在"+now+"收到来自"+
 				//			"\n用户:["+username+"]("+strconv.FormatInt(userid, 10)+")的群聊邀请"+
@@ -107,7 +107,7 @@ func init() {
 						"\n请在下方复制flag并在前面加上:"+
 						"\n同意/拒绝申请，来决定同意还是拒绝"+
 						"\nflag:"+es))
-				//ctx.SendPrivateForwardMessage(su,
+				// ctx.SendPrivateForwardMessage(su,
 				//	message.Message{message.CustomNode(username, userid,
 				//		"在"+now+"收到来自"+
 				//			"\n用户:["+username+"]("+strconv.FormatInt(userid, 10)+")"+

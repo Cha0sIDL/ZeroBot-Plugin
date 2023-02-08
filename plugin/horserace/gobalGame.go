@@ -127,7 +127,7 @@ func (global *globalGame) eventStart() string {
 	}
 	allEvents := len(events)
 	for i := 0; i < len(global.players); i++ {
-		eventID := util.Rand(0, int(math.Ceil(float64(1000*allEvents/eventRate))-1))
+		eventID := util.Rand(0, int(math.Ceil(float64(1000*allEvents)/eventRate)-1))
 		if eventID < allEvents {
 			display0 := eventMain(*global, i, events[eventID], 1) + "\n"
 			if display0 != "\n" {

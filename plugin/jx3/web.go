@@ -3,13 +3,15 @@ package jx3
 import (
 	"errors"
 	"fmt"
-	"github.com/FloatTech/floatbox/web"
 	"io"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/FloatTech/floatbox/web"
 )
 
+// NewTimeOutDefaultClient 超时延长的客户端
 func NewTimeOutDefaultClient() *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
