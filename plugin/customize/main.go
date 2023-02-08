@@ -1,11 +1,13 @@
+// Package customize 自定义插件
 package customize
 
 import (
-	"github.com/fumiama/unibase2n"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/fumiama/unibase2n"
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 

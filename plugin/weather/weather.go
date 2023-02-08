@@ -1,3 +1,4 @@
+// Package weather 查询天气插件
 package weather
 
 import (
@@ -20,23 +21,11 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
-//// result geo数据
-// type geo struct {
-//	Location []location `json:"location"`
-//}
-//
-// type location struct {
-//	Name string `json:"name"`
-//	Id   string `json:"id"`
-//	Lat  string `json:"lat"`
-//	Lon  string `json:"lon"`
-//}
-
 const (
 	servicename       = "weather"
-	geoUrl            = "https://geoapi.qweather.com/v2/city/lookup?"
-	weatherUrl        = "https://devapi.qweather.com/v7/weather/"
-	weatherWarningUrl = "https://devapi.qweather.com/v7/warning/now?"
+	geoURL            = "https://geoapi.qweather.com/v2/city/lookup?"
+	weatherURL        = "https://devapi.qweather.com/v7/weather/"
+	weatherWarningURL = "https://devapi.qweather.com/v7/warning/now?"
 )
 
 func init() {
@@ -49,7 +38,7 @@ func init() {
 	datapath := file.BOTPATH + "/" + engine.DataFolder()
 	engine.OnSuffix("天气").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			city := strings.Replace(ctx.State["args"].(string), " ", "", -1)
+			city := strings.ReplaceAll(ctx.State["args"].(string), " ", "")
 			geo := getGeo(city) // geo数据
 			lat := gjson.Get(geo, "location.0.lat").Float()
 			lon := gjson.Get(geo, "location.0.lon").Float()
@@ -57,10 +46,10 @@ func init() {
 			todayWeather := getWeather("now", lat, lon) // 当天预报
 			dailyWeather := getWeather("7d", lat, lon)  // 七天预报
 			warning := getWarning(lat, lon)
-			JMap := util.MergeMap(util.JsonToMap(todayWeather), util.JsonToMap(dailyWeather), util.JsonToMap(warning))
+			JMap := util.MergeMap(util.JSONToMap(todayWeather), util.JSONToMap(dailyWeather), util.JSONToMap(warning))
 			JMap["city"] = cityName
 			html := util.Template2html("weather.html", JMap)
-			finName, err := util.Html2pic(datapath, util.TodayFileName(), html)
+			finName, err := util.HTML2pic(datapath, util.TodayFileName(), html)
 			if city == "" {
 				ctx.SendChain(message.Text("你还没有输入城市名字呢！"))
 				return
@@ -73,44 +62,20 @@ func init() {
 		})
 }
 
-// geo数据
-// type T struct {
-//	Code     string `json:"code"`
-//	Location []struct {
-//		Name      string `json:"name"`
-//		Id        string `json:"id"`
-//		Lat       string `json:"lat"`
-//		Lon       string `json:"lon"`
-//		Adm2      string `json:"adm2"`
-//		Adm1      string `json:"adm1"`
-//		Country   string `json:"country"`
-//		Tz        string `json:"tz"`
-//		UtcOffset string `json:"utcOffset"`
-//		IsDst     string `json:"isDst"`
-//		Type      string `json:"type"`
-//		Rank      string `json:"rank"`
-//		FxLink    string `json:"fxLink"`
-//	} `json:"location"`
-//	Refer struct {
-//		Sources []string `json:"sources"`
-//		License []string `json:"license"`
-//	} `json:"refer"`
-//}
-
 func getGeo(city string) string {
-	api := geoUrl + fmt.Sprintf("key=%s", config.Cfg.Weather) + "&location=" + url.QueryEscape(city)
+	api := geoURL + fmt.Sprintf("key=%s", config.Cfg.Weather) + "&location=" + url.QueryEscape(city)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }
 
 func getWeather(apiType string, lat float64, lon float64) string {
-	api := weatherUrl + apiType + "?" + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
+	api := weatherURL + apiType + "?" + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }
 
 func getWarning(lat float64, lon float64) string {
-	api := weatherWarningUrl + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
+	api := weatherWarningURL + fmt.Sprintf("location=%.2f,%.2f&key=%s", lon, lat, config.Cfg.Weather)
 	data, _ := web.RequestDataWith(web.NewDefaultClient(), api, "GET", "", web.RandUA(), nil)
 	return binutils.BytesToString(data)
 }

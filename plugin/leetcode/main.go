@@ -1,3 +1,4 @@
+// Package leetcode 力扣每日一题
 package leetcode
 
 import (
@@ -38,10 +39,10 @@ func getLeetcodeDaily(ctx *zero.Ctx) {
 	if err != nil {
 		return
 	}
-	titleJson := gjson.ParseBytes(res.Body())
-	EnglishTitle := titleJson.Get("data.todayRecord.0.question.questionTitleSlug").String()
-	QuestionUrl := "https://leetcode-cn.com/problems/" + EnglishTitle
-	res, err = client.R().SetHeader("origin", "https://leetcode-cn.com").SetHeader("user-agent", web.RandUA()).SetBody(map[string]interface{}{
+	titleJSON := gjson.ParseBytes(res.Body())
+	EnglishTitle := titleJSON.Get("data.todayRecord.0.question.questionTitleSlug").String()
+	QuestionURL := "https://leetcode-cn.com/problems/" + EnglishTitle
+	res, _ = client.R().SetHeader("origin", "https://leetcode-cn.com").SetHeader("user-agent", web.RandUA()).SetBody(map[string]interface{}{
 		"operationName": "questionData",
 		"query":         "query questionData($titleSlug: String!) {  question(titleSlug: $titleSlug) {    questionId    questionFrontendId    boundTopicId    title    titleSlug    content    translatedTitle    translatedContent    isPaidOnly    difficulty    likes    dislikes    isLiked    similarQuestions    contributors {      username      profileUrl      avatarUrl      __typename    }    langToValidPlayground    topicTags {      name      slug      translatedName      __typename    }    companyTagStats    codeSnippets {      lang      langSlug      code      __typename    }    stats    hints    solution {      id      canSeeDetail      __typename    }    status    sampleTestCase    metaData    judgerAvailable    judgeType    mysqlSchemas    enableRunCode    envInfo    book {      id      bookName      pressName      source      shortDescription      fullDescription      bookImgUrl      pressImgUrl      productUrl      __typename    }    isSubscribed    isDailyQuestion    dailyRecordStatus    editorType    ugcQuestionId    style    __typename  }}",
 		"variables": map[string]interface{}{
@@ -62,6 +63,6 @@ func getLeetcodeDaily(ctx *zero.Ctx) {
 [题目]：%s
 [难度]：%s
 [题目描述]：%s
-`, ChineseTitle, QuestionUrl, ID, Difficulty, rg.ReplaceAllString(StringContent, "$1"))
+`, ChineseTitle, QuestionURL, ID, Difficulty, rg.ReplaceAllString(StringContent, "$1"))
 	ctx.SendChain(message.Text(msg))
 }

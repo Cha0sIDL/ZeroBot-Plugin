@@ -1,3 +1,4 @@
+// Package trending 热搜插件
 package trending
 
 import (
@@ -39,7 +40,6 @@ func init() { // 插件主体
 			case "头条":
 				getTouTiaoTrending(ctx)
 			}
-			return
 		})
 }
 func getWeiboTrending(ctx *zero.Ctx) {
@@ -59,7 +59,6 @@ func getWeiboTrending(ctx *zero.Ctx) {
 		rsp = rsp + strconv.Itoa(idx+1) + ":" + hot.Get("word").String() + "\n"
 	}
 	ctx.SendChain(message.Text(rsp))
-	return
 }
 
 func getZhihuTrending(ctx *zero.Ctx) {
@@ -79,7 +78,6 @@ func getZhihuTrending(ctx *zero.Ctx) {
 		rsp = rsp + strconv.Itoa(idx+1) + ":" + string(util.Unicode2Zh(hot.Get("target.title").String())) + "\n"
 	}
 	ctx.SendChain(message.Text(rsp))
-	return
 }
 
 func getGithubTrending(ctx *zero.Ctx) {
@@ -119,5 +117,4 @@ func getTouTiaoTrending(ctx *zero.Ctx) {
 		rsp = rsp + strconv.Itoa(idx+1) + "：" + hot.Get("word").String() + "\n"
 	}
 	ctx.SendChain(message.Text(rsp))
-	return
 }

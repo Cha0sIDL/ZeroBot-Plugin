@@ -2,7 +2,6 @@ package partygame
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"sync"
@@ -71,7 +70,7 @@ func loadSessions(dataPath string) []Session {
 	rlmu.RLock()
 	defer rlmu.RUnlock()
 	ss := make([]Session, 0)
-	data, err := ioutil.ReadFile(dataPath)
+	data, err := os.ReadFile(dataPath)
 	if err != nil {
 		return ss
 	}
@@ -134,7 +133,7 @@ func (cls Session) close() {
 		panic(err)
 	}
 	// 将数据data写入文件filePath中，并且修改文件权限为755
-	if err = ioutil.WriteFile(dataPath, bytes, 0644); err != nil {
+	if err = os.WriteFile(dataPath, bytes, 0644); err != nil {
 		panic(err)
 	}
 }
@@ -188,8 +187,6 @@ func (cls Session) openFire() bool {
 
 // 打乱参与人顺序
 func (cls Session) rotateUser() {
-	// 随机打乱数组
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(cls.Users), func(i, j int) { cls.Users[i], cls.Users[j] = cls.Users[j], cls.Users[i] })
 	saveItem(dataPath, cls)
 }
@@ -198,8 +195,6 @@ func (cls Session) rotateUser() {
 func (cls Session) rotateRoulette() []int {
 	// 创建6个仓位的左轮弹夹
 	cartridges := []int{1, 0, 0, 0, 0, 0}
-	// 随机打乱数组
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(cartridges), func(i, j int) { cartridges[i], cartridges[j] = cartridges[j], cartridges[i] })
 	return cartridges
 }

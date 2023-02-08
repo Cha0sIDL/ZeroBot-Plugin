@@ -6,6 +6,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
+//nolint:errcheck
 func daily(ctx *zero.Ctx) {
 	url := "https://prts.wiki/"
 	pw, err := playwright.Run()

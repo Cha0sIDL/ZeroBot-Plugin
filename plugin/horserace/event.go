@@ -1,22 +1,25 @@
-package HorseRace
+package horserace
 
 import (
 	"fmt"
-	"github.com/samber/lo"
 	"strings"
+
+	"github.com/samber/lo"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 )
 
+//nolint:unparam
 func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 	//	eventName := ev.EventName
-	if race.players[mover].isDie() && eventDelayKey == 0 {
+	switch {
+	case race.players[mover].isDie() && eventDelayKey == 0:
 		return ""
-	} else if race.players[mover].isAway() && eventDelayKey == 0 {
+	case race.players[mover].isAway() && eventDelayKey == 0:
 		return ""
-	} else if race.players[mover].findBuff("vertigo") && eventDelayKey == 0 {
+	case race.players[mover].findBuff("vertigo") && eventDelayKey == 0:
 		return ""
 	}
 	describe := ev.Describe
@@ -49,13 +52,14 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 	case 6: // 随机一侧的马儿
 		max := len(targets)
 		min := 0
-		if mover >= max {
+		switch {
+		case mover >= max:
 			targets = []int{mover - 1}
 			targetName1 = race.players[targets[0]].horseName
-		} else if mover <= min {
+		case mover <= min:
 			targets = []int{mover + 1}
 			targetName1 = race.players[targets[0]].horseName
-		} else {
+		default:
 			targets = []int{mover - 1, mover + 1}
 			targets = []int{lo.Sample(targets)}
 			targetName1 = race.players[targets[0]].horseName
@@ -64,11 +68,12 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		max := len(targets)
 		min := 0
 		targetName1 = fmt.Sprintf("在%s两侧的马儿", race.players[mover].horseName)
-		if mover >= max {
+		switch {
+		case mover >= max:
 			targets = []int{mover - 1}
-		} else if mover <= min {
+		case mover <= min:
 			targets = []int{mover + 1}
-		} else {
+		default:
 			targets = []int{mover - 1, mover + 1}
 		}
 	default:
@@ -97,8 +102,8 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 	if len(targets) == 0 {
 		return ""
 	}
-	describe = strings.Replace(describe, "<0>", targetName0, -1)
-	describe = strings.Replace(describe, "<1>", targetName1, -1)
+	describe = strings.ReplaceAll(describe, "<0>", targetName0)
+	describe = strings.ReplaceAll(describe, "<1>", targetName1)
 	if ev.Live == 1 {
 		eventLive(race, targets)
 	}
@@ -198,7 +203,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 		race.addPlayer(&horse{
 			horseName:  addHorseEvent.Horsename,
 			playerName: addHorseEvent.Owner,
-			playerUid:  addHorseEvent.Uid,
+			playerUID:  addHorseEvent.UID,
 			location:   addHorseEvent.Location,
 			round:      race.round,
 		})
@@ -206,7 +211,7 @@ func eventMain(race globalGame, mover int, ev event, eventDelayKey int) string {
 	if ev.ReplaceHorse != nil {
 		replaceHorse := ev.AddHorse
 		if target == 0 || target == 1 || target == 4 || target == 6 {
-			race.players[targets[0]].replaceHorseEx(replaceHorse.Horsename, replaceHorse.Uid, replaceHorse.Owner)
+			race.players[targets[0]].replaceHorseEx(replaceHorse.Horsename, replaceHorse.UID, replaceHorse.Owner)
 		}
 	}
 	return describe

@@ -1,7 +1,12 @@
+// Package arknights 明日方舟相关插件
 package arknights
 
 import (
 	"archive/zip"
+	"io"
+	"os"
+	"path/filepath"
+
 	"github.com/FloatTech/floatbox/file"
 	"github.com/FloatTech/floatbox/process"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -12,16 +17,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"io"
-	"os"
-	"path/filepath"
 )
 
-var CharTable map[string]CharData
-var Rarity2CharName [][]string
+var charTable map[string]charData
+var rarity2CharName [][]string
 var arkNightDataPath string
 
-type CharData struct {
+type charData struct {
 	Name               string `json:"name"`
 	Profession         string `json:"profession"`
 	Rarity             int8   `json:"rarity"`
@@ -29,7 +31,7 @@ type CharData struct {
 }
 
 func init() {
-	Fonts, _ = gg.LoadFontFace(text.FontFile, 18)
+	fonts, _ = gg.LoadFontFace(text.FontFile, 18)
 	engine := control.Register("arknight", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		PublicDataFolder: "ArkNights",
@@ -46,7 +48,7 @@ func init() {
 			if err != nil {
 				return
 			}
-			unzip(arkNightDataPath+"arknight.zip", arkNightDataPath)
+			unzip(arkNightDataPath+"arknight.zip", arkNightDataPath) //nolint:errcheck
 			log.Println("加载ArkNight数据成功")
 		}
 	}()
@@ -113,11 +115,11 @@ func unzip(zipFile, dest string) error {
 			}
 			iErr := w.Close()
 			if iErr != nil {
-				log.Fatalf("[unzip]: close io %s", iErr.Error())
+				log.Panicf("[unzip]: close io %s", iErr.Error())
 			}
 			fErr := rc.Close()
 			if fErr != nil {
-				log.Fatalf("[unzip]: close io %s", fErr.Error())
+				log.Panicf("[unzip]: close io %s", fErr.Error())
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+// Package logo 随机头像
 package logo
 
 import (
@@ -14,7 +15,7 @@ import (
 
 const (
 	servicename = "logo"
-	logoUrl     = "https://avatars.dicebear.com/api/"
+	logoURL     = "https://avatars.dicebear.com/api/"
 )
 
 //https://avatars.dicebear.com/
@@ -26,7 +27,7 @@ func init() {
 	})
 	engine.OnFullMatch("头像").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			url := logoUrl + fmt.Sprintf("%s/%d.png", getRandArg(), rand.Intn(10000))
+			url := logoURL + fmt.Sprintf("%s/%d.png", getRandArg(), rand.Intn(10000))
 			ctx.SendChain(message.Image(url))
 		})
 }

@@ -1,4 +1,4 @@
-package HorseRace
+package horserace
 
 import (
 	"testing"

@@ -1,9 +1,9 @@
-package HorseRace
+package horserace
 
 type horse struct {
 	horseName       string // 马的名字
 	playerName      string // QQ名字
-	playerUid       int64  // QQ号
+	playerUID       int64  // QQ号
 	selfBuff        []buff
 	delayEvent      []event
 	round           int
@@ -69,7 +69,7 @@ type event struct { // 配置事件的数据结构
 
 type addHorse struct {
 	Horsename string `json:"horsename,omitempty"`
-	Uid       int64  `json:"uid,omitempty"`
+	UID       int64  `json:"uid,omitempty"`
 	Owner     string `json:"owner,omitempty"`
 	Location  int    `json:"location,omitempty"`
 }

@@ -1,3 +1,4 @@
+// Package game 查询steam、epic游戏插件
 package game
 
 import (
@@ -19,8 +20,8 @@ import (
 
 const (
 	servicename = "steam"
-	searchUrl   = "https://steamstats.cn/api/steam/search?q=%s&page=1&format=json&lang=zh-hans"
-	steamUrl    = "https://store.steampowered.com/app/%d/"
+	searchURL   = "https://steamstats.cn/api/steam/search?q=%s&page=1&format=json&lang=zh-hans"
+	steamURL    = "https://store.steampowered.com/app/%d/"
 )
 
 func init() {
@@ -37,7 +38,7 @@ func init() {
 				return
 			}
 			gameName := commandPart[0]
-			data, err := web.RequestDataWith(web.NewDefaultClient(), fmt.Sprintf(searchUrl, url.QueryEscape(gameName)), "GET", "https://steamstats.cn/", web.RandUA(), nil)
+			data, err := web.RequestDataWith(web.NewDefaultClient(), fmt.Sprintf(searchURL, url.QueryEscape(gameName)), "GET", "https://steamstats.cn/", web.RandUA(), nil)
 			if err != nil {
 				ctx.SendChain(message.Text("出错了", err))
 				return
@@ -59,8 +60,8 @@ func init() {
 		})
 }
 
-func getSteamGameDescription(gameId int64) (description string) {
-	doc, _ := htmlquery.LoadURL(fmt.Sprintf(steamUrl, gameId))
+func getSteamGameDescription(gameID int64) (description string) {
+	doc, _ := htmlquery.LoadURL(fmt.Sprintf(steamURL, gameID))
 	description = htmlquery.InnerText(htmlquery.FindOne(doc, "//*[@id=\"game_highlights\"]/div[1]/div/div[2]"))
 	return
 }

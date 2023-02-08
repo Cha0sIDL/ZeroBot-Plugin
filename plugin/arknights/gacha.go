@@ -3,18 +3,19 @@ package arknights
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/FloatTech/floatbox/img/writer"
-	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/fogleman/gg"
-	zero "github.com/wdvxdr1123/ZeroBot"
-	"github.com/wdvxdr1123/ZeroBot/message"
-	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 	"image"
 	"image/draw"
 	"math"
 	"math/rand"
 	"os"
 	"strings"
+
+	"github.com/FloatTech/floatbox/img/writer"
+	ctrl "github.com/FloatTech/zbpctrl"
+	"github.com/fogleman/gg"
+	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/message"
+	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 )
 
 func getProfessionImage(profession string) (*image.Image, error) {
@@ -61,38 +62,40 @@ func rollGacha(store storage) (charNames []string) {
 	var rarity int
 	for i := 0; i < 10; i++ {
 		rarityRand := rand.Float64()
-		if rarityRand < 0.02 {
+		switch {
+		case rarityRand < 0.02:
 			rarity = 5
-		} else if rarityRand < 0.10 {
+		case rarityRand < 0.10:
 			rarity = 4
-		} else if rarityRand < 0.58 {
+		case rarityRand < 0.58:
 			rarity = 3
-		} else {
+		default:
 			rarity = 2
 		}
 		if store.is6starsmode() {
 			rarity = 5
 		}
-		indexRand := rand.Intn(len(Rarity2CharName[rarity]))
-		charNames = append(charNames, Rarity2CharName[rarity][indexRand])
+		indexRand := rand.Intn(len(rarity2CharName[rarity]))
+		charNames = append(charNames, rarity2CharName[rarity][indexRand])
 	}
 	return
 }
 func gachaTextBuild(charNames []string) (gachaText string) {
 	var gachaResult = make([][]string, 6)
 	for _, charName := range charNames {
-		charData := CharTable[charName]
+		charData := charTable[charName]
 		gachaResult[charData.Rarity] = append(gachaResult[charData.Rarity], charData.Name)
 	}
 	for rarity := 5; rarity > 1; rarity-- {
 		if len(gachaResult[rarity]) > 0 {
-			if rarity == 5 {
+			switch {
+			case rarity == 5:
 				gachaText += "六星干员:"
-			} else if rarity == 4 {
+			case rarity == 4:
 				gachaText += "五星干员:"
-			} else if rarity == 3 {
+			case rarity == 3:
 				gachaText += "四星干员:"
-			} else if rarity == 2 {
+			case rarity == 2:
 				gachaText += "三星干员:"
 			}
 		}
@@ -105,7 +108,6 @@ func gachaTextBuild(charNames []string) (gachaText string) {
 		}
 	}
 	return strings.TrimRight(gachaText, "\n")
-
 }
 func drawGachaImage(charNames []string) ([]byte, error) {
 	backgroundImage, err := gg.LoadImage(arkNightDataPath + "static/gacha_background_img/2.png")
@@ -114,7 +116,7 @@ func drawGachaImage(charNames []string) ([]byte, error) {
 		return nil, err
 	}
 	for index, charName := range charNames {
-		charData := CharTable[charName]
+		charData := charTable[charName]
 		charImagePath := fmt.Sprintf(arkNightDataPath+"char_img/%s_1.png", charName)
 		charImage, err := gg.LoadImage(charImagePath)
 		if err != nil {
@@ -142,16 +144,16 @@ func drawGachaImage(charNames []string) ([]byte, error) {
 }
 
 func gacha(ctx *zero.Ctx) {
-	if CharTable == nil {
+	if charTable == nil {
 		readFile, err := os.ReadFile(arkNightDataPath + "character_table.json")
 		if err != nil {
 			ctx.SendChain(message.Text("ERR:", err))
 		}
-		Rarity2CharName = make([][]string, 6)
-		err = json.Unmarshal(readFile, &CharTable)
-		for charId, chardata := range CharTable {
+		rarity2CharName = make([][]string, 6)
+		json.Unmarshal(readFile, &charTable) //nolint:errcheck
+		for charID, chardata := range charTable {
 			if len(chardata.ItemObtainApproach) > 0 {
-				Rarity2CharName[chardata.Rarity] = append(Rarity2CharName[chardata.Rarity], charId)
+				rarity2CharName[chardata.Rarity] = append(rarity2CharName[chardata.Rarity], charID)
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+// Package repeater 复读机
 package repeater
 
 import (
@@ -38,10 +39,7 @@ func init() {
 	})
 	instance = &autoCopy{}
 	instance.groupMsg = newGroupMsg()
-	engine.OnMessage(
-		func(ctx *zero.Ctx) bool {
-			return zero.OnlyGroup(ctx)
-		}).SetBlock(false).
+	engine.OnMessage(zero.OnlyGroup).SetBlock(false).
 		Handle(func(ctx *zero.Ctx) {
 			instance.autoCopyAndJoinIn(ctx)
 		})

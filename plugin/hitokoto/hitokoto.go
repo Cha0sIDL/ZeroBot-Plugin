@@ -1,3 +1,4 @@
+// Package hitokoto 一言
 package hitokoto
 
 import (
@@ -13,15 +14,16 @@ import (
 
 const url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=h&c=i" // 动漫 漫画 游戏 文学 影视 诗词
 
+// RspData RspData内容
 type RspData struct {
-	Id         int    `json:"id"`
-	Uuid       string `json:"uuid"`
+	ID         int    `json:"id"`
+	UUID       string `json:"uuid"`
 	Hitokoto   string `json:"hitokoto"`
 	Type       string `json:"type"`
 	From       string `json:"from"`
 	FromWho    string `json:"from_who"`
 	Creator    string `json:"creator"`
-	CreatorUid int    `json:"creator_uid"`
+	CreatorUID int    `json:"creator_uid"`
 	Reviewer   int    `json:"reviewer"`
 	CommitFrom string `json:"commit_from"`
 	CreatedAt  string `json:"created_at"`
@@ -42,7 +44,11 @@ func handle(ctx *zero.Ctx) {
 	if err != nil {
 		ctx.SendChain(message.Text("Err:", err))
 	}
-	json.Unmarshal(data, &rsp)
+	err = json.Unmarshal(data, &rsp)
+	if err != nil {
+		ctx.SendChain(message.Text("Err:", err))
+		return
+	}
 	msg := ""
 	msg += rsp.Hitokoto + "\n出自：" + rsp.From + "\n"
 	if len(rsp.FromWho) != 0 {

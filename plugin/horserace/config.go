@@ -1,8 +1,10 @@
-package HorseRace
+package horserace
 
 import (
 	"encoding/json"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -39,7 +41,11 @@ func initConfig(path string) {
 		if err != nil {
 			panic(err)
 		}
-		json.Unmarshal(content, &e)
+		err = json.Unmarshal(content, &e)
+		if err != nil {
+			log.Errorln("Err:", err)
+			return
+		}
 		events = append(events, e...)
 	}
 }

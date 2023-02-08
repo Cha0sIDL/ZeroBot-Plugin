@@ -1,3 +1,4 @@
+// Package util 工具函数tts
 package util
 
 import (
@@ -11,12 +12,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type TtsUserParam struct {
-	F io.Writer
+type ttsUserParam struct {
+	f io.Writer
 }
 
 func onTaskFailed(text string, param interface{}) {
-	_, ok := param.(*TtsUserParam)
+	_, ok := param.(*ttsUserParam)
 	if !ok {
 		log.Fatal("text filed:", text)
 		return
@@ -24,15 +25,15 @@ func onTaskFailed(text string, param interface{}) {
 }
 
 func onSynthesisResult(data []byte, param interface{}) {
-	p, ok := param.(*TtsUserParam)
+	p, ok := param.(*ttsUserParam)
 	if !ok {
 		return
 	}
-	p.F.Write(data)
+	p.f.Write(data) //nolint:errcheck
 }
 
 func onCompleted(text string, param interface{}) {
-	_, ok := param.(*TtsUserParam)
+	_, ok := param.(*ttsUserParam)
 	if !ok {
 		log.Fatal("invalid logger")
 		return
@@ -40,7 +41,7 @@ func onCompleted(text string, param interface{}) {
 }
 
 func onClose(param interface{}) {
-	_, ok := param.(*TtsUserParam)
+	_, ok := param.(*ttsUserParam)
 	if !ok {
 		log.Fatal("invalid logger")
 		return
@@ -67,8 +68,8 @@ var lk sync.Mutex
 var fail = 0
 var reqNum = 0
 
-func TTS(FileName string, text string, param nls.SpeechSynthesisStartParam, AppKEY string, AKid string, AkKey string) error {
-	config, err := nls.NewConnectionConfigWithAKInfoDefault(nls.DEFAULT_URL, AppKEY, AKid, AkKey)
+func TTS(fileName string, text string, param nls.SpeechSynthesisStartParam, appKEY string, aKid string, akKey string) error {
+	config, err := nls.NewConnectionConfigWithAKInfoDefault(nls.DEFAULT_URL, appKEY, aKid, akKey)
 	if err != nil {
 		return err
 	}
@@ -76,9 +77,9 @@ func TTS(FileName string, text string, param nls.SpeechSynthesisStartParam, AppK
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		ttsUserParam := new(TtsUserParam)
-		fout, err := os.OpenFile(FileName, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755)
-		ttsUserParam.F = fout
+		ttsUserParam := new(ttsUserParam)
+		fout, err := os.OpenFile(fileName, os.O_RDWR|os.O_TRUNC|os.O_CREATE, 0755) //nolint
+		ttsUserParam.f = fout
 		tts, err := nls.NewSpeechSynthesis(config, nil, false,
 			onTaskFailed, onSynthesisResult, nil,
 			onCompleted, onClose, ttsUserParam)

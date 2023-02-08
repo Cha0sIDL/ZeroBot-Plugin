@@ -1,4 +1,4 @@
-package HorseRace
+package horserace
 
 import (
 	"math"
@@ -12,7 +12,7 @@ func (global *globalGame) changStatus(status int) {
 
 func (global *globalGame) isPlayerIn(uid int64) bool {
 	for _, item := range global.players {
-		if item.playerUid == uid {
+		if item.playerUID == uid {
 			return true
 		}
 	}
@@ -37,7 +37,7 @@ func (global *globalGame) queryOfPlayer() int {
 }
 
 func (global *globalGame) roundAdd() {
-	global.round += 1
+	global.round++
 	for i := 0; i < len(global.players); i++ {
 		global.players[i].locationAddMove = 0
 		global.players[i].round = global.round
@@ -69,7 +69,7 @@ func (global *globalGame) display() string {
 // #所有马儿是否死亡/离开
 func (global *globalGame) isDieAll() bool {
 	for i := 0; i < len(global.players); i++ {
-		if global.players[i].isDie() == false && global.players[i].isAway() == false {
+		if !global.players[i].isDie() && !global.players[i].isAway() {
 			return false
 		}
 	}
@@ -127,28 +127,13 @@ func (global *globalGame) eventStart() string {
 	}
 	allEvents := len(events)
 	for i := 0; i < len(global.players); i++ {
-		eventId := util.Rand(0, int(math.Ceil(float64(1000*allEvents/eventRate))-1))
-		if eventId < allEvents {
-			display0 := eventMain(*global, i, events[eventId], 1) + "\n"
+		eventID := util.Rand(0, int(math.Ceil(float64(1000*allEvents/eventRate))-1))
+		if eventID < allEvents {
+			display0 := eventMain(*global, i, events[eventID], 1) + "\n"
 			if display0 != "\n" {
 				eventDisplay += display0
 			}
 		}
 	}
 	return eventDisplay
-}
-
-// #事件唯一码查询
-func (global *globalGame) isRaceOnlyKeyIn(key string) bool {
-	for _, keys := range global.raceOnlyKeys {
-		if keys == key {
-			return true
-		}
-	}
-	return false
-}
-
-// #事件唯一码增加
-func (global *globalGame) addRaceOnlyKey(key string) {
-	global.raceOnlyKeys = append(global.raceOnlyKeys, key)
 }

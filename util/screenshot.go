@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// ScreenShot 截取浏览器
 func ScreenShot(url string, option ...playwright.PageScreenshotOptionsClip) []byte {
 	pw, err := playwright.Run()
 	var pic []byte

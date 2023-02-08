@@ -28,7 +28,7 @@ import (
 	//                          vvvvvvvvvvvvvv                          //
 	//                               vvvv                               //
 
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antiabuse" // 违禁词
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/antiabuse" // 违禁词
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat" // 基础词库
 
@@ -40,7 +40,7 @@ import (
 
 	_ "github.com/FloatTech/zbputils/job" // 定时指令触发器
 
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" // 聊天记录
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/chat_record" // 聊天记录
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
@@ -72,14 +72,17 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/base64gua"    // base64卦加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/baseamasiro"  // base天城文加解密
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/bilibili"     // b站相关
+
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/book_review"   // 哀伤雪刃吧推书记录
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cangtoushi"   // 藏头诗
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"       // 选择困难症帮手
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chouxianghua" // 说抽象话
+
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"        // 英文字符翻转
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser"    // 三次元小姐姐
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cpstory"  // cp短打
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/danbooru" // DeepDanbooru二次元图标签识别
+
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/diana"        // 嘉心糖发病
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/dress"        // 女装
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/drift_bottle" // 漂流瓶
@@ -93,8 +96,9 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/github"       // 搜索GitHub仓库
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"   // 猜歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"        // 黑丝
+
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"           // 炉石
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/inject"       // 注入指令
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"       // 煎蛋网无聊图
@@ -104,6 +108,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"     // 绝绝子生成器
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"      // lolicon 随机图片
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"  // magicprompt吟唱提示
+
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/midicreate"    // 简易midi音乐制作
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moegoe"        // 日韩 VITS 模型拟声
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/moyu"          // 摸鱼
@@ -112,7 +117,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nativesetu"    // 本地涩图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nativewife"    // 本地老婆
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nbnhhsh"       // 拼音首字母缩写释义工具
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nihongo"       // 日语语法学习
+
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/nihongo"       // 日语语法学习
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/novel"         // 铅笔小说网搜索
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nsfw"          // nsfw图片识别
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/omikuji"       // 浅草寺求签
@@ -170,7 +176,7 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/customize" // 一些自定义插件
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace" // 群内赛马小游戏
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/horserace" // 群内赛马小游戏
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
 
@@ -197,7 +203,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/active" // 活跃度自动插话
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ai_reply" // 人工智能回复
-	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机
+	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/breakrepeat" // 打断复读
 

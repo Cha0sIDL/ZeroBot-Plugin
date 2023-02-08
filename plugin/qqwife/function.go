@@ -3,11 +3,12 @@ package qqwife
 import (
 	"errors"
 	"fmt"
-	"github.com/samber/lo"
 	"math/rand"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/samber/lo"
 
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -24,7 +25,7 @@ type cdsheet struct {
 
 // 透群友数据
 type proInfo struct {
-	MId        interface{} //消息id
+	MId        interface{} // 消息id
 	GroupID    int64       // 群号
 	User       int64       // 用户身份证
 	Target     int64       // 对象身份证号
@@ -715,7 +716,7 @@ func (sql *婚姻登记) checkPro() (err error) {
 			return
 		}
 	}
-	limitID := "where ModeID is '透群友'" //特殊类型
+	limitID := "where ModeID is '透群友'" // 特殊类型
 	exist := sql.db.CanFind("cdsheet", limitID)
 	if !exist {
 		err = sql.db.Insert("cdsheet", &cdsheet{
@@ -755,29 +756,29 @@ type countS struct {
 	times int64
 }
 
-func sortProInfo(rewData []proInfo, mode int) ([]countS, error) {
+func sortProInfo(rewData []proInfo, mode int) []countS {
 	var count = make(map[countS]int64)
 	switch mode {
-	case 1: //自己的记录
+	case 1: // 自己的记录
 		for _, data := range rewData {
 			count[countS{
 				qq:   data.Target,
 				name: data.Targetname,
-			}] += 1
+			}]++
 		}
-	case 2: //群排行榜
+	case 2: // 群排行榜
 		for _, data := range rewData {
 			count[countS{
 				qq:   data.User,
 				name: data.Username,
-			}] += 1
+			}]++
 		}
-	case 3: //群排行榜
+	case 3: // 群排行榜
 		for _, data := range rewData {
 			count[countS{
 				name: data.Targetname,
 				qq:   data.Target,
-			}] += 1
+			}]++
 		}
 	}
 	tmp := lo.MapToSlice(count, func(k countS, v int64) countS {
@@ -787,5 +788,5 @@ func sortProInfo(rewData []proInfo, mode int) ([]countS, error) {
 	sort.SliceStable(tmp, func(i, j int) bool {
 		return tmp[i].times > tmp[j].times
 	})
-	return tmp, nil
+	return tmp
 }

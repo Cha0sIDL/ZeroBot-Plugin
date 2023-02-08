@@ -1,4 +1,4 @@
-package HorseRace
+package horserace
 
 import (
 	"github.com/FloatTech/ZeroBot-Plugin/util"
@@ -7,7 +7,7 @@ import (
 // #=====替换为其他马,指定数据（用于天灾马系列事件）
 func (h *horse) replaceHorseEx(horseName string, uid int64, playerName string) {
 	h.horseName = horseName
-	h.playerUid = uid
+	h.playerUID = uid
 	h.playerName = playerName
 	h.selfBuff = nil
 	h.delayEvent = nil
@@ -94,7 +94,7 @@ func (h *horse) isDie() bool {
 }
 
 func (h *horse) locationMoveEvent(move int) {
-	h.locationAddMove = h.locationAddMove + move
+	h.locationAddMove += move
 }
 
 func (h *horse) locationMoveToEvent(moveTo int) {
@@ -104,7 +104,7 @@ func (h *horse) locationMoveToEvent(moveTo int) {
 func (h *horse) locationMove() {
 	if h.location != settingTrackLength {
 		h.locationAdd = h.move() + h.locationAddMove
-		h.location = h.location + h.locationAdd
+		h.location += h.locationAdd
 		if h.location > settingTrackLength {
 			h.locationAdd -= h.location - settingTrackLength
 			h.location = settingTrackLength

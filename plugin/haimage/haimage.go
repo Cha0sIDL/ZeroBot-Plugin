@@ -1,3 +1,4 @@
+// Package haimage 古风图片
 package haimage
 
 import (

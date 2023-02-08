@@ -25,7 +25,7 @@ var tags = [...]string{"近卫干员", "狙击干员", "重装干员",
 	"群攻", "防护", "减速", "削弱",
 	"快速复活", "位移", "召唤", "支援机械"}
 
-var Fonts font.Face
+var fonts font.Face
 
 type recruitChar struct {
 	Name   string
@@ -33,11 +33,11 @@ type recruitChar struct {
 	Tags   []string
 }
 
-type RecruitChars []recruitChar
+type recruitChars []recruitChar
 
-func (r RecruitChars) Len() int           { return len(r) }
-func (r RecruitChars) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
-func (r RecruitChars) Less(i, j int) bool { return r[i].Rarity < r[j].Rarity }
+func (r recruitChars) Len() int           { return len(r) }
+func (r recruitChars) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
+func (r recruitChars) Less(i, j int) bool { return r[i].Rarity < r[j].Rarity }
 
 var recruitTags = [...]recruitChar{{"Lancet-2", 0, []string{"医疗干员", "远程位", "治疗", "支援机械"}},
 	{"Castle-3", 0, []string{"近卫干员", "近战位", "支援", "支援机械"}},
@@ -147,7 +147,7 @@ var recruitTags = [...]recruitChar{{"Lancet-2", 0, []string{"医疗干员", "远
 
 type tagResult struct {
 	Tags   []string
-	Result RecruitChars
+	Result recruitChars
 }
 
 func combine(tags []string, nums int) (tagCombine [][]string) {
@@ -210,7 +210,7 @@ func tagsAnalysis(tags []string) (tagResults []tagResult) {
 	for nums := 1; nums <= 3; nums++ {
 		for _, chooseTags := range combine(tags, nums) {
 			var tmp tagResult
-			var hasLowRarityChar bool = false
+			var hasLowRarityChar = false
 			for _, tags := range recruitTags {
 				if isSubTags(chooseTags, tags) {
 					if tags.Rarity == 2 {
@@ -276,13 +276,13 @@ func recruit(ctx *zero.Ctx) {
 	}
 }
 
-func drawStrImage(str string, W float64) image.Image {
+func drawStrImage(str string, width float64) image.Image {
 	w := 0.0
-	h := Fonts.Metrics().Height / 64
-	totalW := W
+	h := fonts.Metrics().Height / 64
+	totalW := width
 	totalH := h
 	for _, char := range str {
-		charWeight := float64(font.MeasureString(Fonts, string(char)) >> 6)
+		charWeight := float64(font.MeasureString(fonts, string(char)) >> 6)
 		if w+charWeight > totalW || string(char) == "\n" {
 			if string(char) == "\n" {
 				w = 0
@@ -294,16 +294,15 @@ func drawStrImage(str string, W float64) image.Image {
 			w += charWeight
 		}
 	}
-	var img *gg.Context
-	img = gg.NewContext(int(totalW), int(totalH))
+	img := gg.NewContext(int(totalW), int(totalH))
 	img.SetHexColor("FFFFFF")
 	img.Clear()
-	img.SetFontFace(Fonts)
+	img.SetFontFace(fonts)
 	img.SetHexColor("000000")
 	w = 0.0
 	totalH = h
 	for _, char := range str {
-		charWeight := float64(font.MeasureString(Fonts, string(char)) >> 6)
+		charWeight := float64(font.MeasureString(fonts, string(char)) >> 6)
 		if w+charWeight > totalW || string(char) == "\n" {
 			totalH += h
 			if string(char) != "\n" {

@@ -1,10 +1,13 @@
-package chat_record
+// Package chatrecord  聊天记录存储
+package chatrecord
 
 import (
 	"os"
 	"strconv"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 
@@ -31,9 +34,7 @@ func init() { // 插件主体
 			panic(err)
 		}
 	}()
-	engine.OnMessage(func(ctx *zero.Ctx) bool {
-		return zero.OnlyGroup(ctx)
-	}).SetBlock(false).Handle(
+	engine.OnMessage(zero.OnlyGroup).SetBlock(false).Handle(
 		func(ctx *zero.Ctx) {
 			go func() {
 				m.Lock()
@@ -43,13 +44,16 @@ func init() { // 插件主体
 				if err != nil {
 					return
 				}
-				db.Insert(gidStr, &record{
+				err = db.Insert(gidStr, &record{
 					MId:     ctx.Event.MessageID,
 					Message: ctx.Event.RawMessage,
-					GroupId: ctx.Event.GroupID,
+					GroupID: ctx.Event.GroupID,
 					Time:    ctx.Event.Time,
 					UserID:  ctx.Event.UserID,
 				})
+				if err != nil {
+					log.Errorln("Err", err)
+				}
 			}()
 		},
 	)

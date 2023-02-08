@@ -3,6 +3,11 @@ package choose
 
 import (
 	"fmt"
+	"math/rand"
+	"os"
+	"strconv"
+	"strings"
+
 	fcext "github.com/FloatTech/floatbox/ctxext"
 	"github.com/FloatTech/floatbox/file"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -11,10 +16,6 @@ import (
 	"github.com/tidwall/gjson"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
-	"math/rand"
-	"os"
-	"strconv"
-	"strings"
 )
 
 func init() {
@@ -39,10 +40,7 @@ func init() {
 		}
 		err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/what2eat/crazy.json",
 			engine.DataFolder()+"crazy.json")
-		if err != nil {
-			return false
-		}
-		return true
+		return err == nil
 	})
 	engine.OnPrefix("选择").SetBlock(true).Handle(handle)
 	engine.OnKeyword("吃什么", getData).SetBlock(true).Handle(

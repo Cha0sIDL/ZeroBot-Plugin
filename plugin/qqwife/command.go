@@ -336,11 +336,7 @@ func init() {
 				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
 				return
 			}
-			count, err := sortProInfo(info, 1)
-			if err != nil {
-				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
-				return
-			}
+			count := sortProInfo(info, 1)
 			number := len(count)
 			/***********设置图片的大小和底色***********/
 			fontSize := 50.0
@@ -385,11 +381,7 @@ func init() {
 				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
 				return
 			}
-			count, err := sortProInfo(info, 2)
-			if err != nil {
-				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
-				return
-			}
+			count := sortProInfo(info, 2)
 			number := len(count)
 			/***********设置图片的大小和底色***********/
 			fontSize := 50.0
@@ -434,11 +426,7 @@ func init() {
 				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
 				return
 			}
-			count, err := sortProInfo(info, 3)
-			if err != nil {
-				ctx.SendChain(message.Text("[qqwife]数据库发生问题力\n", err))
-				return
-			}
+			count := sortProInfo(info, 3)
 			number := len(count)
 			/***********设置图片的大小和底色***********/
 			fontSize := 50.0

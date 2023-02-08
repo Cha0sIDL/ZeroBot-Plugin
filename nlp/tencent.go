@@ -1,3 +1,4 @@
+// Package nlp 腾讯nlp插件
 package nlp
 
 import (
@@ -13,15 +14,18 @@ import (
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 )
 
+// Tencent 腾讯nlp结构体
 type Tencent struct {
 	n string
 	b []string
 }
 
 const (
+	// BotName 腾讯机器人的名字
 	BotName = "小龙女"
 )
 
+// NewTencent 返回腾讯结构体
 func NewTencent(name string, banwords ...string) *Tencent {
 	return &Tencent{n: name, b: banwords}
 }
@@ -38,7 +42,7 @@ func (t *Tencent) Talk(_ int64, msg, nickname string) string {
 // TalkPlain 取得回复消息
 func (t *Tencent) TalkPlain(_ int64, msg, nickname string) string {
 	credential := common.NewCredential(
-		config.Cfg.SecretId,
+		config.Cfg.SecretID,
 		config.Cfg.SecretKey,
 	)
 	cpf := profile.NewClientProfile()
@@ -57,7 +61,7 @@ func (t *Tencent) TalkPlain(_ int64, msg, nickname string) string {
 	if err != nil {
 		panic(err)
 	}
-	replystr := fmt.Sprintf("%s", gjson.Get(response.ToJsonString(), "Response.Reply"))
+	replystr := gjson.Get(response.ToJsonString(), "Response.Reply").String()
 	replystr = strings.ReplaceAll(replystr, BotName, nickname)
 	return replystr
 }

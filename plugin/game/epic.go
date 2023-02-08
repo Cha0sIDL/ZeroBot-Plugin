@@ -29,9 +29,10 @@ import (
 
 const (
 	epicServiceName = "epic"
-	epicUrl         = "https://www.epicgames.com/graphql"
+	epicURL         = "https://www.epicgames.com/graphql"
 )
 
+//nolint:errcheck
 func init() {
 	c := cron.New()
 	_, err := c.AddFunc("0 8 8 * 5", func() { weeklyEpic() })
@@ -52,7 +53,7 @@ func init() {
 			_ = os.MkdirAll(dbpath, 0755)
 		}
 		db.Open(time.Hour * 24)
-		err = db.Create(notifyDbName, &gameNotify{})
+		err = db.Create(notifyDBName, &gameNotify{})
 		if err != nil {
 			panic(err)
 		}
@@ -67,24 +68,25 @@ func init() {
 	engine.OnRegex(`^喜(加一|\+1)?订阅`).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
 		func(ctx *zero.Ctx) {
 			var data gameNotify
-			if zero.OnlyGroup(ctx) {
+			switch {
+			case zero.OnlyGroup(ctx):
 				data = gameNotify{
 					ID:       uuid.New().String(),
 					QQ:       ctx.Event.GroupID,
 					ChatType: "群聊",
 					GameType: "epic",
 				}
-			} else if zero.OnlyPrivate(ctx) {
+			case zero.OnlyPrivate(ctx):
 				data = gameNotify{
 					ID:       uuid.New().String(),
 					QQ:       ctx.Event.UserID,
 					ChatType: "私聊",
 					GameType: "epic",
 				}
-			} else {
+			default:
 				return
 			}
-			data.RobotId = ctx.Event.SelfID
+			data.RobotID = ctx.Event.SelfID
 			err = insertNotify(data)
 			if err != nil {
 				ctx.SendChain(message.Text("Err", err))
@@ -128,9 +130,9 @@ func getEpicFree() (msg []message.MessageSegment) {
 		}
 		gameDesp := game.Get("description").String()
 		endDate := game.Get("promotions.promotionalOffers.0.promotionalOffers.0.endDate").String()
-		gameUrl := fmt.Sprintf("https://www.epicgames.com/store/zh-CN/p/%s", strings.Replace(game.Get("productSlug").String(), "/home", "", -1))
+		gameURL := fmt.Sprintf("https://www.epicgames.com/store/zh-CN/p/%s", strings.ReplaceAll(game.Get("productSlug").String(), "/home", ""))
 		if len(game.Get("productSlug").String()) == 0 {
-			gameUrl = "https://www.epicgames.com/store/zh-CN"
+			gameURL = "https://www.epicgames.com/store/zh-CN"
 		}
 		if len(gameThumbnail) != 0 {
 			msg = append(msg, message.Image(gameThumbnail))
@@ -140,7 +142,7 @@ func getEpicFree() (msg []message.MessageSegment) {
 		if gameDev == gamePub {
 			release = fmt.Sprintf("游戏由 %s 发售，", gameDev)
 		}
-		msg = append(msg, message.Text(release), message.Text(fmt.Sprintf("将在 UTC 时间 %s 结束免费游玩，戳链接领取吧~\n%s\n", endDate, gameUrl)))
+		msg = append(msg, message.Text(release), message.Text(fmt.Sprintf("将在 UTC 时间 %s 结束免费游玩，戳链接领取吧~\n%s\n", endDate, gameURL)))
 	}
 	return
 }
@@ -162,7 +164,7 @@ func getEpicGame() (gameInfo string, err error) {
 				"withPromotions": true
 		}
 	}`
-	request, err := http.NewRequest("POST", epicUrl, bytes.NewBuffer([]byte(body)))
+	request, err := http.NewRequest("POST", epicURL, bytes.NewBuffer([]byte(body)))
 	if err == nil {
 		// 增加header选项
 		var response *http.Response
@@ -182,6 +184,7 @@ func getEpicGame() (gameInfo string, err error) {
 	return
 }
 
+//nolint
 func weeklyEpic() {
 	_, ok := control.Lookup(epicServiceName)
 	if !ok {
@@ -193,7 +196,7 @@ func weeklyEpic() {
 		var notify []gameNotify
 		var n gameNotify
 		db.FindFor(
-			notifyDbName, &n, fmt.Sprintf("WHERE robot_id = '%d' AND game_type = 'epic' ", id), func() error {
+			notifyDBName, &n, fmt.Sprintf("WHERE robot_id = '%d' AND game_type = 'epic' ", id), func() error {
 				notify = append(notify, n)
 				return nil
 			},

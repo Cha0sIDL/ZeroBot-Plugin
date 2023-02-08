@@ -1,12 +1,14 @@
+// Package chinesebqb 表情包
 package chinesebqb
 
 import (
 	"fmt"
-	"github.com/FloatTech/floatbox/binary"
-	"github.com/FloatTech/zbputils/img/text"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/FloatTech/floatbox/binary"
+	"github.com/FloatTech/zbputils/img/text"
 
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"

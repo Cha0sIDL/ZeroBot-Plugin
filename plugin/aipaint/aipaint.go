@@ -5,12 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
-	tmt "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt/v20180321"
-	"github.com/tidwall/gjson"
 	"net/url"
 	"os"
 	"regexp"
@@ -18,6 +12,14 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
+	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
+	tmt "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt/v20180321"
+	"github.com/tidwall/gjson"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
 
 	"github.com/FloatTech/floatbox/binary"
 	"github.com/FloatTech/floatbox/file"
@@ -92,7 +94,7 @@ func init() { // 插件主体
 			ctx.SendChain(message.Text("少女祈祷中..."))
 			args := ctx.State["args"].(string)
 			tags := strings.TrimSpace(strings.ReplaceAll(args, " ", "%20"))
-			if IsChinese(tags) {
+			if isChinese(tags) {
 				tags = tencentTl(tags)
 			}
 			data, err := web.GetData(cfg.BaseURL + fmt.Sprintf(aipaintTxt2ImgURL, cfg.Token, url.QueryEscape(tags)))
@@ -233,10 +235,9 @@ func sendAiImg(ctx *zero.Ctx, data []byte, interval int) {
 			ctx.DeleteMessage(i)
 		}(mid)
 	}
-
 }
 
-func IsChinese(str string) bool {
+func isChinese(str string) bool {
 	for _, v := range str {
 		if unicode.Is(unicode.Han, v) {
 			return true
@@ -247,7 +248,7 @@ func IsChinese(str string) bool {
 
 func tencentTl(str string) string {
 	credential := common.NewCredential(
-		config.Cfg.SecretId,
+		config.Cfg.SecretID,
 		config.Cfg.SecretKey,
 	)
 	cpf := profile.NewClientProfile()
@@ -269,7 +270,7 @@ func tencentTl(str string) string {
 	return gjson.Parse(response.ToJsonString()).Get("Response.TargetText").String()
 }
 
-//func pollingReq(urls ...string) ([]byte, error) {
+// func pollingReq(urls ...string) ([]byte, error) {
 //	ch := make(chan []byte)
 //	for _, ul := range urls {
 //		go func(u string) {

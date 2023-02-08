@@ -1,18 +1,21 @@
+// Package active 活跃度插话
 package active
 
 import (
 	"errors"
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/FloatTech/AnimeAPI/aireply"
-	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/nlp"
-	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
 	"github.com/FloatTech/floatbox/file"
 	ctrl "github.com/FloatTech/zbpctrl"
 	nls "github.com/aliyun/alibabacloud-nls-go-sdk"
 	"github.com/samber/lo"
-	"strconv"
-	"time"
+
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/ZeroBot-Plugin/nlp"
+	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
 
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"

@@ -3,8 +3,6 @@ package manager
 
 import (
 	"fmt"
-	"github.com/go-resty/resty/v2"
-	"github.com/samber/lo"
 	"io"
 	"math/rand"
 	"net/http"
@@ -13,6 +11,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/go-resty/resty/v2"
+	"github.com/samber/lo"
 
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 
@@ -708,9 +709,12 @@ func init() { // 插件主体
 			"https://www.baidu.com/img/flexible/logo/pc/result.png",
 			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/mancard/img/side/qrcode-hover@2x-f9b106a848.png"}
 		cq := fmt.Sprintf("[CQ:cardimage,icon="+string(data)+":9090/?id=%s,file=%s]", name, lo.Sample(img))
-		msgId := ctx.Send(message.UnescapeCQCodeText(cq))
+		msgID := ctx.Send(message.UnescapeCQCodeText(cq))
 		time.Sleep(time.Second * 30)
-		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name))
+		rsp, err := http.Get(fmt.Sprintf("http://127.0.0.1:9090/get_data?id=%s", name)) //nolint:bodyclose
+		if err != nil {
+			ctx.SendChain(message.Text("获取失败,请稍后重试,,Ծ‸Ծ,,"))
+		}
 		body, err := io.ReadAll(rsp.Body)
 		if err != nil {
 			ctx.SendChain(message.Text("获取失败,请稍后重试,,Ծ‸Ծ,,"))
@@ -723,16 +727,16 @@ func init() { // 插件主体
 			if err != nil {
 				continue
 			}
-			jsonIp := gjson.ParseBytes(ipData)
-			msg += jsonIp.Get("country").String() + jsonIp.Get("province").String() + jsonIp.Get("city").String()
+			jsonIP := gjson.ParseBytes(ipData)
+			msg += jsonIP.Get("country").String() + jsonIP.Get("province").String() + jsonIP.Get("city").String()
 			msg += "  "
 			msg += ua.Device + " " + ua.OSVersion
 			msg += "\n"
 		}
-		ctx.DeleteMessage(msgId)
-		delId := ctx.SendChain(message.Text(msg))
+		ctx.DeleteMessage(msgID)
+		delID := ctx.SendChain(message.Text(msg))
 		time.Sleep(time.Second * 20)
-		ctx.DeleteMessage(delId)
+		ctx.DeleteMessage(delID)
 	})
 	engine.On("notice/group_upload").SetBlock(false).Limit(ctxext.LimitByGroup).
 		Handle(func(ctx *zero.Ctx) {
@@ -745,8 +749,11 @@ func init() { // 插件主体
 				return
 			}
 			res, err := resty.New().R().SetHeaders(map[string]string{"x-api-key": config.Cfg.KasKey, "Content-Type": "application/octet-stream"}).SetBody(data).Post("https://opentip.kaspersky.com/api/v1/scan/file?filename=" + url.QueryEscape(ctx.Event.File.Name))
-			resJson := gjson.ParseBytes(res.Body())
-			fileStatus := resJson.Get("FileGeneralInfo.FileStatus").String()
+			if err != nil {
+				return
+			}
+			resJSON := gjson.ParseBytes(res.Body())
+			fileStatus := resJSON.Get("FileGeneralInfo.FileStatus").String()
 			switch fileStatus {
 			case "Malware":
 				fileStatus = "病毒"

@@ -1,10 +1,11 @@
+// Package config 服务的配置文件
 package config
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -17,19 +18,21 @@ import (
 
 const config = "config.json"
 
+// Config 具体配置
 type Config struct {
-	RpcHost   string   `json:"rpc_host"`  // http rpc的地址
+	RPCHost   string   `json:"rpc_host"`  // http rpc的地址
 	TTS       *TTS     `json:"tts"`       // 阿里tts的一些配置
-	WsUrl     string   `json:"ws_url"`    // jxapi ws的地址
+	WsURL     string   `json:"ws_url"`    // jxapi ws的地址
 	Weather   string   `json:"weather"`   // 天气查询token
 	Ignore    []string `json:"ignore"`    // 忽略的触发列表
-	SecretId  string   `json:"secretId"`  // 腾讯npl
+	SecretID  string   `json:"secretId"`  // 腾讯npl
 	SecretKey string   `json:"secretKey"` // 腾讯npl
 	JxChat    *[]Chat  `json:"jxChat"`
 	SignKey   string   `json:"signKey"`
 	KasKey    string   `json:"kasKey"` // 卡巴斯基软件检测的key
 }
 
+// TTS tts的结构体
 type TTS struct {
 	Appkey string   `json:"appkey"`
 	Access string   `json:"access"`
@@ -38,13 +41,15 @@ type TTS struct {
 	Start  string   `json:"start"`
 }
 
+// Chat jxChat结构体
 type Chat struct {
-	Url         string `json:"url,omitempty"`
+	URL         string `json:"url,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Token       string `json:"token,omitempty"`
 	DeviceToken string `json:"deviceToken,omitempty"`
 }
 
+// Cfg config的全局变量
 var Cfg Config
 
 func init() {
@@ -64,12 +69,15 @@ func init() {
 }
 
 func initConfig() {
-	tmp, err := ioutil.ReadFile(config)
+	tmp, err := os.ReadFile(config)
 	if err != nil {
 		panic("读取文件失败")
 	}
 	Cfg = Config{TTS: &TTS{Start: time.Now().Format("2006-01-02")}}
-	json.Unmarshal(tmp, &Cfg)
+	err = json.Unmarshal(tmp, &Cfg)
+	if err != nil {
+		return
+	}
 }
 
 func prettyPrint(v interface{}) string {

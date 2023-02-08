@@ -1,4 +1,4 @@
-package chat_record
+package chatrecord
 
 import (
 	sql "github.com/FloatTech/sqlite"
@@ -10,7 +10,7 @@ var db = &sql.Sqlite{}
 type record struct {
 	MId     interface{}
 	Message string
-	GroupId int64
+	GroupID int64
 	Time    int64
 	UserID  int64
 }
