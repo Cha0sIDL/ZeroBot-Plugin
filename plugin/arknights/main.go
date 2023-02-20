@@ -3,12 +3,14 @@ package arknights
 
 import (
 	"archive/zip"
+	"bytes"
 	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/FloatTech/floatbox/file"
 	"github.com/FloatTech/floatbox/process"
+	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
@@ -42,8 +44,9 @@ func init() {
 	var err error
 	arkNightDataPath = engine.DataFolder()
 	go func() {
-		if file.IsNotExist(arkNightDataPath+"arknight.zip") || file.IsNotExist(arkNightDataPath+"version") {
-			err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/arknight.zip",
+		if file.IsNotExist(arkNightDataPath+"arknight.zip") || file.IsNotExist(arkNightDataPath+"version") || checkVersion() {
+			os.Remove(arkNightDataPath + "arknight.zip")
+			err = file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/arknight/arknight.zip",
 				arkNightDataPath+"arknight.zip")
 			if err != nil {
 				return
@@ -124,4 +127,16 @@ func unzip(zipFile, dest string) error {
 		}
 	}
 	return nil
+}
+
+func checkVersion() bool {
+	gitVERSION, err := web.GetData("https://raw.githubusercontent.com/Cha0sIDL/data/master/arknight/version")
+	if err != nil {
+		return true
+	}
+	localVERSION, err := os.ReadFile(arkNightDataPath + "version")
+	if err != nil {
+		return true
+	}
+	return !bytes.Equal(gitVERSION, localVERSION)
 }
