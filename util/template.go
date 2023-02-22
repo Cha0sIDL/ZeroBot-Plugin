@@ -43,15 +43,13 @@ func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright
 	if err != nil {
 		return
 	}
-	page.SetDefaultNavigationTimeout(60 * 1000)
 	err = page.SetContent(html, playwright.PageSetContentOptions{
+		Timeout:   playwright.Float(60 * 1000),
 		WaitUntil: playwright.WaitUntilStateNetworkidle,
 	})
 	if err != nil {
 		return
 	}
-	page.WaitForTimeout(10)
-	page.QuerySelector("#main") //nolint:errcheck
 	finName = dataPath + fileName + ".jpeg"
 	PageScreenshotOptions := playwright.PageScreenshotOptions{
 		Path:     playwright.String(finName),
