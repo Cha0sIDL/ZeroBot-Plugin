@@ -43,6 +43,7 @@ func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright
 	if err != nil {
 		return
 	}
+	page.SetDefaultNavigationTimeout(60 * 1000)
 	err = page.SetContent(html, playwright.PageSetContentOptions{
 		WaitUntil: playwright.WaitUntilStateNetworkidle,
 	})
