@@ -1004,8 +1004,8 @@ func jinjia(ctx *zero.Ctx, datapath string) {
 			"server": val[0],
 			"data":   lo.Reverse(lineStruct),
 		})
-		html := jibPrice2line(lineStruct, datapath)
-		finName, err := util.HTML2pic(datapath, server+util.TodayFileName(), priceHTML+html)
+		//html := jibPrice2line(lineStruct, datapath)
+		finName, err := util.HTML2pic(datapath, server+util.TodayFileName(), priceHTML)
 		if err != nil {
 			ctx.SendChain(message.Text("Err:", err))
 			return
