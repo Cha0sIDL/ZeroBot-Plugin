@@ -1025,7 +1025,7 @@ func jibPrice2line(lineStruct []jinPrice, datapath string) string {
 		postdata = append(postdata, fmt.Sprintf("%.2f", data.Post))
 		p5173 = append(p5173, fmt.Sprintf("%.2f", data.P5173))
 	}
-	page := components.NewPage()
+	page := newPage()
 	page.AddCharts(
 		drawJinLine("日期", "金价", xdata, map[string][]string{"万宝楼": officialdata,
 			"贴吧":   postdata,
@@ -1470,7 +1470,7 @@ func priceData2line(price map[string][]map[string]interface{}, datapath string) 
 		x = append(x, util.Interface2String(d["date"]))
 		y = append(y, util.Interface2String(d["value"]))
 	}
-	page := components.NewPage()
+	page := newPage()
 	page.AddCharts(
 		drawLine("日期", "价格", x, y),
 	)
@@ -1797,4 +1797,14 @@ func price2hRead(price int64) (readStr string) {
 	}
 	readStr += "铜"
 	return
+}
+
+func newPage() *components.Page {
+	p := components.NewPage()
+	_, err := web.GetData("http://localhost:8083/assets")
+	if err != nil {
+		return p
+	}
+	p.AssetsHost = "http://localhost:8083/assets/"
+	return p
 }
