@@ -221,7 +221,7 @@ func init() {
 			"- 金价|金价查询 xxx (eg 金价 绝代天骄)\n" +
 			"- 宏xxx(eg 宏分山劲)\n" +
 			"- 沙盘xxx(eg 沙盘绝代天骄)\n" +
-			"- 奇遇|奇遇查询 xxx xxx(eg 奇遇 唯我独尊 柳连柳奶)\n" +
+			"- 奇遇|奇遇查询 xxx xxx(eg 奇遇 区服 id)\n" +
 			"- 攻略xxx(eg 攻略三山四海)\n" +
 			"- 骚话\n" +
 			"- 舔狗\n" +
@@ -463,18 +463,25 @@ func init() {
 				articleURL := fmt.Sprintf("https://www.jx3box.com/cj/#/view/%s", articleID)
 				pw, err := playwright.Run()
 				if err != nil {
-					playwright.Install() //nolint:errcheck
-					playwright.Run()     //nolint:errcheck
+					ctx.SendChain(message.Text("Err:", err))
+					return
 				}
-				defer pw.Stop() //nolint:errcheck
+				defer func(pw *playwright.Playwright) {
+					err := pw.Stop()
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+					}
+				}(pw)
 				browser, err := pw.Chromium.Launch()
 				if err != nil {
-					playwright.Install() //nolint:errcheck
+					ctx.SendChain(message.Text("Err:", err))
+					return
 				}
 				page, err := browser.NewPage(playwright.BrowserNewContextOptions{
 					IsMobile: playwright.Bool(true),
 				})
 				if err != nil {
+					ctx.SendChain(message.Text("Err:", err))
 					return
 				}
 				_, err = page.Goto(articleURL, playwright.PageGotoOptions{
@@ -819,50 +826,22 @@ func init() {
 		})
 	en.OnPrefixGroup([]string{"奇遇", "奇遇查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			var msg string
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			if len(commandPart) != 2 {
-				ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
-				return
-			}
-			server := commandPart[0]
-			name := commandPart[1]
-			qiyuURL := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
-			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
-			if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 0 {
-				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
-				return
-			}
-			jData := gjson.Get(binutils.BytesToString(rspData), "data.data")
-			if len(jData.String()) == 0 {
-				ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
-				return
-			}
-			for idx, data := range jData.Array() {
-				if idx == 0 {
-					msg += server + "\n"
-				}
-				msg = msg + name + "  " + data.Get("serendipity").String() + "  " + data.Get("date_str").String() + "\n"
-			}
-			ctx.SendChain(message.Text(msg))
 			// var msg string
 			// commandPart := util.SplitSpace(ctx.State["args"].(string))
 			// if len(commandPart) != 2 {
-			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 柳连柳奶"))
+			//	ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 唯我独尊 id"))
 			//	return
 			//}
 			// server := commandPart[0]
 			// name := commandPart[1]
-			// qiyuUrl := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&u=不限&t=&token=%s", server, name, config.Cfg.MMToken)
-			// rspData, err := util.SendHttp(qiyuUrl, []byte(""))
-			////rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuUrl, "GET", "", web.RandUA())
-			////log.Errorln(qiyuUrl, string(rspData), "err", err)
-			// if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 200 {
+			// qiyuURL := fmt.Sprintf("https://pull.j3cx.com/api/serendipity?server=%s&role=%s&pageIndex=1&pageSize=30", server, name)
+			// rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
+			// if err != nil || gjson.Get(binutils.BytesToString(rspData), "code").Int() != 0 {
 			//	ctx.SendChain(message.Text("出错了联系管理员看看吧"))
 			//	return
 			//}
-			// jData := gjson.Get(binutils.BytesToString(rspData), "result")
-			// if len(jData.Array()) == 0 {
+			// jData := gjson.Get(binutils.BytesToString(rspData), "data.data")
+			// if len(jData.String()) == 0 {
 			//	ctx.SendChain(message.Text("没有查到本账号的奇遇呢"))
 			//	return
 			//}
@@ -870,9 +849,48 @@ func init() {
 			//	if idx == 0 {
 			//		msg += server + "\n"
 			//	}
-			//	msg = msg + name + "  " + data.Get("serendipity").String() + "  " + carbon.CreateFromTimestamp(data.Get("time").Int()).ToDateTimeString() + "\n"
+			//	msg = msg + name + "  " + data.Get("serendipity").String() + "  " + data.Get("date_str").String() + "\n"
 			//}
-			// ctx.SendChain(message.Text(msg))
+			// ctx.SendChain(message.Text(msg)))
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) != 2 {
+				ctx.SendChain(message.Text("参数输入有误！\n" + "奇遇 区服 id"))
+				return
+			}
+			server := commandPart[0]
+			name := commandPart[1]
+			qiyuURL := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&csrf=%d", server, name, carbon.Now().TimestampMilli())
+			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
+			// rspData, err := util.ProxyHTTP(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
+			parsingJSON := gjson.ParseBytes(rspData)
+			if err != nil || parsingJSON.Get("code").Int() != 200 {
+				ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+				return
+			}
+			jData := parsingJSON.Get("result")
+			if len(jData.Array()) == 0 {
+				ctx.SendChain(message.Text("api只能查询最近一段时间的奇遇,没有查到本账号的奇遇呢"))
+				return
+			}
+			var htmlDATA []map[string]string
+			for _, data := range jData.Array() {
+				htmlDATA = append(htmlDATA, map[string]string{
+					"serendipity": data.Get("serendipity").String(),
+					"name":        data.Get("name").String(),
+					"time":        carbon.CreateFromTimestamp(data.Get("time").Int()).ToDateTimeString(),
+					"day":         fmt.Sprintf("%d天前", carbon.CreateFromTimestamp(data.Get("time").Int()).DiffInDays(carbon.Now())),
+				})
+			}
+			serendipityHTML := util.Template2html("serendipity_summary.html", map[string]interface{}{
+				"server": server,
+				"data":   htmlDATA,
+			})
+			finName, err := util.HTML2pic(datapath, name+util.TodayFileName(), serendipityHTML)
+			if err != nil {
+				ctx.SendChain(message.Text("Err:", err))
+				return
+			}
+			ctx.SendChain(message.Image("file:///" + finName))
 		})
 	en.OnPrefixGroup([]string{"物价"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {

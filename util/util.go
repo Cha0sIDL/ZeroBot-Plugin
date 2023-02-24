@@ -81,7 +81,7 @@ func MergeMap(mObj ...map[string]interface{}) map[string]interface{} {
 // TodayFileName 返回今天文件的名称
 func TodayFileName() string {
 	t := time.Now()
-	return fmt.Sprint(t.Format("2006-01-02"))
+	return fmt.Sprint(t.UnixMilli())
 }
 
 // Interface2String 任意类型转字符串
