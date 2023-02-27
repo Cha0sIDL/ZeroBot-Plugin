@@ -5,14 +5,14 @@ go 1.19
 require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194
-	github.com/FloatTech/floatbox v0.0.0-20230207075003-0f70b30c320d
+	github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74
 	github.com/FloatTech/gg v1.1.2
 	github.com/FloatTech/imgfactory v0.2.2-0.20230215052637-9f7b05520ca9
 	github.com/FloatTech/rendercard v0.0.10-0.20230215092509-ff0745852f23
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20230130095145-714ad318cd52
-	github.com/FloatTech/zbputils v1.6.2-0.20230215092613-4a7ebf458f16
+	github.com/FloatTech/zbputils v1.6.2-0.20230217063720-e64cc4bde7c6
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/aliyun/alibabacloud-nls-go-sdk v1.0.0
@@ -58,16 +58,18 @@ require (
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.6.9
 	gitlab.com/gomidi/midi/v2 v2.0.25
-	golang.org/x/image v0.3.0
-	golang.org/x/text v0.6.0
+	golang.org/x/image v0.5.0
+	golang.org/x/text v0.7.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/gorm v1.24.5
 )
 
 require (
+	github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230227014928-82e458c8e97f // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ericpauley/go-quantize v0.0.0-20200331213906-ae555eb2afa4 // indirect
 	github.com/faiface/beep v1.1.0 // indirect
 	github.com/fumiama/go-simple-protobuf v0.1.0 // indirect
@@ -81,7 +83,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hajimehoshi/oto v0.7.1 // indirect
 	github.com/jfreymuth/oggvorbis v1.0.1 // indirect
 	github.com/jfreymuth/vorbis v1.0.0 // indirect
@@ -93,7 +95,7 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
@@ -104,10 +106,10 @@ require (
 	github.com/quic-go/qtls-go1-18 v0.2.0 // indirect
 	github.com/quic-go/qtls-go1-19 v0.2.0 // indirect
 	github.com/quic-go/qtls-go1-20 v0.1.0 // indirect
-	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
@@ -117,14 +119,14 @@ require (
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/tools v0.2.0 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
-	modernc.org/libc v1.21.5 // indirect
+	modernc.org/libc v1.22.3 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
-	modernc.org/memory v1.4.0 // indirect
-	modernc.org/sqlite v1.20.0 // indirect
+	modernc.org/memory v1.5.0 // indirect
+	modernc.org/sqlite v1.21.0 // indirect
 )
 
 replace modernc.org/sqlite => github.com/fumiama/sqlite3 v1.20.0-with-win386

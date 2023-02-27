@@ -183,8 +183,6 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/horserace" // 群内赛马小游戏
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame" // 群内轮盘小游戏
-
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
 	//                      ^^^^^^^中优先级区^^^^^^^                      //
@@ -211,6 +209,10 @@ import (
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/repeater"      // 复读机
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/breakrepeat" // 打断复读
+
+	_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/cybercat" // 云养猫
+
+	_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/partygame" // 群内轮盘小游戏
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //
