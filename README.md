@@ -452,51 +452,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>百度内容审核</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/baiduaudit"`
-
-  - [x] 获取BDAkey
-
-  - [x] 配置BDAKey [API Key] [Secret Key]
-
-  - [x] 获取BDAkey
-
-  - [x] [开启|关闭]内容审核
-
-  - [x] [开启|关闭]撤回提示
-
-  - [x] [开启|关闭]详细提示
-
-  - [x] [开启|关闭]撤回禁言
-
-  - [x] [开启|关闭]禁言累加
-
-  - [x] [开启|关闭]文本检测
-
-  - [x] [开启|关闭]图像检测
-
-  - [x] 设置最大禁言时间[分钟，默认:60,最大43200]
-
-  - [x] 设置每次累加时间[分钟，默认:1]
-
-  - [x] 设置撤回禁言时间[分钟，默认:1]
-
-  - [x] 查看检测类型
-
-  - [x] 查看检测配置
-
-  - [x] 测试文本检测[文本内容]
-
-  - [x] 测试图像检测[图片]
-
-  - [x] 设置检测类型[类型编号]
-
-  - [x] 设置不检测类型[类型编号]
-
-    检测类型编号列表:[1:违禁违规|2:文本色情|3:敏感信息|4:恶意推广|5:低俗辱骂|6:恶意推广-联系方式|7:恶意推广-软文推广]
-</details>
-<details>
   <summary>base64卦加解密</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/base64gua"`
@@ -802,16 +757,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>煎蛋网无聊图</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"`
-
-  - [x] 来份[屌|弔|吊]图
-
-  - [x] 更新[屌|弔|吊]图
-
-  </details>
-<details>
   <summary>兽语加密(嗷呜~)</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami"`
@@ -819,56 +764,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 兽语加密xxx
 
   - [x] 兽语解密xxx
-
-</details>
-<details>
-  <summary>小鸡词典</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"`
-
-  - [x] [查梗|小鸡词典][梗]
-
-</details>
-<details>
-  <summary>日语听力学习材料</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"`
-
-  - [x] 随机日语听力
-  
-  - [x] 随机日语歌曲
-  
-  - [x] 日语听力 xxx
-  
-  - [x] 日语歌曲 xxx
-
-</details>
-<details>
-  <summary>绝绝子</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"`
-
-  - [x] 喝奶茶绝绝子 | 绝绝子吃饭
-
-</details>
-<details>
-  <summary>疯狂星期四</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/kfccrazythursday"`
-
-  - [x] 疯狂星期四
-
-</details>
-<details>
-  <summary>kokomi原神面板</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/kokomi"`
-
-  - [x] kokomi菜单
-
-  - [x] XX面板
-
-  - 注:本插件未并入主仓库,需自行安装(须源码方式运行才能添加插件),安装地址[kokomi-原神面板查询插件](https://github.com/lianhong2758/kokomi-plugin) 
 
 </details>
 <details>
@@ -887,14 +782,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 记录在"@every 1h"触发的指令
 来份萝莉
 ```
-
-</details>
-<details>
-  <summary>MagicPrompt-Stable-Diffusion吟唱提示</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"`
-
-  - [x] 吟唱提示[xxxx]
 
 </details>
 <details>
@@ -1082,22 +969,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>qq空间表白墙</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/qzone"`
-
-  - [x] 登录QQ空间 (Cookie过期很快, 要经常登录)
-  
-  - [x] 发说说[xxx]
-  
-  - [x] (匿名)发表白墙[xxx]
-  
-  - [x] [ 同意 | 拒绝 ]表白墙 1,2,3 (最后一个参数是表白墙的序号数组, 用英文逗号连接)
-  
-  - [x] 查看[ 等待 | 同意 | 拒绝 | 所有 ]表白墙 0 (最后一个参数是页码, 建议私聊审稿)
-
-</details>
-<details>
   <summary>Real-CUGAN清晰术</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/realcugan"`
@@ -1247,16 +1118,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>vtb语录</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/vtbmusic"`
-
-  - [x] vtb点歌
-
-  - [x] vtb随机点歌
-
-</details>
-<details>
   <summary>钱包</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wallet"`
@@ -1272,81 +1133,6 @@ print("run[CQ:image,file="+j["img"]+"]")
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wangyiyun"`
 
   - [x] 来份网易云热评
-
-  </details>
-<details>
-  <summary>星际战甲</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/warframeapi"`
-
-  - [x] wf时间同步
-  
-  - [x] [金星|地球|火卫二]平原状态
-  
-  - [x] .wm [物品名称]
-  
-  - [x] 仲裁
-  
-  - [x] 警报
-  
-  - [x] 每日特惠
-  </details>
-<details>
-  <summary>天气/拼音查询-名言</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wenben"`
-
-  - [x] xx天气
-
-  - [x] xx拼音
-
-  - [x] 每日情话/一言/鸡汤
-
-  - [x] 绕口令
-
-</details>
-<details>
-  <summary>百度文心AI</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wenxinAI"`
-
-  基于百度文心API的一些功能
-
-  key申请链接：https://wenxin.baidu.com/moduleApi/key
-  
-  - [x] 为[自己/本群/QQ号/群+群号]设置文心key [API Key] [Secret Key]
-  
-  - [x] 为[自己/本群/QQ号/群+群号]设置画图key [API Key] [Secret Key]
-  
-  例：“为10086设置画图key 123 456”；“为群10010设置画图key 789 101”
-  
-  文心key和画图key的API key 可以是相同的，只是文心key日限为200，画图日限为50，以此作区别。
-  
-  - [x] 文心作文 (x字的)[作文题目]
-  
-  - [x] 文心提案 (x字的)[文案标题]
-  
-  - [x] 文心摘要 (x字的)[文章内容]
-  
-  - [x] 文心小说 (x字的)[小说上文]
-  
-  - [x] 文心对联 [上联]
-  
-  - [x] 文心问答 [问题]
-	
-  - [x] 文心补全 [带“_”的填空题]
-  
-  - [x] 文心自定义 [prompt]
-
-  - [x] [bot名称]画几张[图片描述]的[图片类型][图片尺寸]
-
-  指令示例：
-
-  - 文心作文 我的椛椛机器人
-
-  - 文心作文 300字的我的椛椛机器人
-
-  - 椛椛帮我画几张金凤凰，背景绚烂，高饱和，古风，仙境，高清，4K，古风的油画方图
 
 </details>
 <details>
@@ -1386,29 +1172,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   - [x] 团队七阶猜单词
 
-</details>
-<details>
-  <summary>一些游戏王插件</summary>
-
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/ygo"`
-  
-  ##### 白鸽API卡查
-	    
-  ###### `"github.com/FloatTech/ZeroBot-Plugin/plugin/ygo/ygocdb.go"`
-  - [x] /ydp [xxx]
-  - [x] /yds [xxx]
-  - [x] /ydb [xxx]
-  - 注：[xxx]为搜索内容;p:返回一张图片;s:返回一张效果描述;b:高级搜索
-	
-  ##### 集换社卡价查询
-
-  ###### `"github.com/FloatTech/ZeroBot-Plugin/plugin/ygo/ygotrade.go"`
-  - [x] 查卡价 [卡名]
-  - [x] 查卡价 [卡名] -r [稀有度 稀有度 ...]
-  - [x] 查卡店  [卡名]
-  - [x] 查卡店  [卡名] -r [稀有度]
-  - 注：卡店只支持单个稀有度查询
-	
 </details>
 
 <details>
@@ -1454,6 +1217,8 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 - [x] 查公招
 - [x] 方舟资源
+- [x] 方舟十连
+- [x] 切换方舟卡池
 
 
 </details>
@@ -1467,18 +1232,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 - [x] [xxx]表情 
 - [x] 随机表情包
 - [x] 系列表情包
-
-
-</details>
-
-<details>
-  <summary>早报</summary>
-
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"`
-
-- [x] api早上8点更新，推荐定时在8点30后配合插件job中的记录在\"cron\"触发的指令使用\n
- 记录在\"0 9 * * *\"触发的指令\n
-- 今日早报
 
 
 </details>
@@ -1580,7 +1333,7 @@ print("run[CQ:image,file="+j["img"]+"]")
 <details>
   <summary>群内赛马小游戏</summary>
 
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/HorseRace"`
+`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/horserace"`
 
 - [x] 赛马创建
 - [x] 赛马加入xxx xxx为马儿的名字
@@ -1594,13 +1347,37 @@ print("run[CQ:image,file="+j["img"]+"]")
 <details>
   <summary>群内轮盘小游戏</summary>
 
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/partygame"`
+`import _ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/partygame"`
 
 - [x] 创建轮盘
 - [x] 加入轮盘
 - [x] 开始轮盘
 - [x] 开火
 - [x] 终止轮盘
+
+</details>
+
+<details>
+  <summary>云养猫</summary>
+
+`import _ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/cybercat"`
+
+- 一款既能能赚钱(?)又能看猫的养成类插件
+- [x] 吸猫(随机返回一只猫)
+- [x] 吸xxx猫(吸指定猫种的猫)
+- [x] 买猫
+- [x] 买xxx猫
+- [x] 买猫粮
+- [x] 买n袋猫粮
+- [x] 喂猫
+- [x] 喂猫n斤猫粮
+- [x] 猫猫打工
+- [x] 猫猫打工[1-9]小时
+- [x] 猫猫状态
+- [x] 猫猫改名叫xxx
+- [x] 喵喵pk@对方QQ
+- [x] 猫猫排行榜
+
 
 </details>
 
