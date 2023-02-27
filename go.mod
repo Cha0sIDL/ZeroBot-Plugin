@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194
+	github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230227014928-82e458c8e97f
 	github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74
 	github.com/FloatTech/gg v1.1.2
 	github.com/FloatTech/imgfactory v0.2.2-0.20230215052637-9f7b05520ca9
@@ -21,7 +22,6 @@ require (
 	github.com/davidscholberg/go-durationfmt v0.0.0-20170122144659-64843a2083d3
 	github.com/disintegration/imaging v1.6.2
 	github.com/flosch/pongo2/v5 v5.0.0
-	github.com/fogleman/gg v1.3.0
 	github.com/fumiama/ahsai v0.1.0
 	github.com/fumiama/cron v1.3.0
 	github.com/fumiama/go-base16384 v1.6.4
@@ -65,7 +65,6 @@ require (
 )
 
 require (
-	github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230227014928-82e458c8e97f // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1376 // indirect
 	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/danwakefield/fnmatch v0.0.0-20160403171240-cbb64ac3d964 // indirect

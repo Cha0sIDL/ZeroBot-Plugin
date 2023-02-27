@@ -12,8 +12,8 @@ import (
 
 	"github.com/FloatTech/imgfactory"
 
+	"github.com/FloatTech/gg"
 	ctrl "github.com/FloatTech/zbpctrl"
-	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"

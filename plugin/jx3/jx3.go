@@ -52,67 +52,12 @@ import (
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 
-	"github.com/fogleman/gg"
+	"github.com/FloatTech/gg"
 )
 
-var tuiKey = map[string]string{
-	"大战":     "60f211c82d105c0014c5dd7d",
-	"武林通鉴秘境": "60f211c82d105c0014c5de01",
-	"武林通鉴公共": "60f211c82d105c0014c5dd97",
-	"十人团队秘境": "60f211c82d105c0014c5ddcd",
-	"阵营日常":   "60f211c82d105c0014c5dd9d",
-}
-
-var chatServer = map[string]string{
-	"绝代天骄": "45",
-	"唯我独尊": "19",
-}
-
-var allServer = map[string][2]string{
-	"斗转星移": {"斗转星移", "电信五区"},
-	"姨妈":   {"斗转星移", "电信五区"},
-	"蝶恋花":  {"蝶恋花", "电信一区"},
-	"龙争虎斗": {"龙争虎斗", "电信一区"},
-	"长安城":  {"长安城", "电信一区"},
-	"幽月轮":  {"幽月轮", "电信五区"},
-	"剑胆琴心": {"剑胆琴心", "电信五区"},
-	"煎蛋":   {"剑胆琴心", "电信五区"},
-	"乾坤一掷": {"乾坤一掷", "电信五区"},
-	"华乾":   {"乾坤一掷", "电信五区"},
-	"唯我独尊": {"唯我独尊", "电信五区"},
-	"唯满侠":  {"唯我独尊", "电信五区"},
-	"梦江南":  {"梦江南", "电信五区"},
-	"双梦":   {"梦江南", "电信五区"},
-	"绝代天骄": {"绝代天骄", "电信八区"},
-	"绝代":   {"绝代天骄", "电信八区"},
-	"破阵子":  {"破阵子", "双线一区"},
-	"念破":   {"破阵子", "双线一区"},
-	"天鹅坪":  {"天鹅坪", "双线一区"},
-	"纵月":   {"天鹅坪", "双线一区"},
-	"飞龙在天": {"飞龙在天", "双线二区"},
-	"大唐万象": {"大唐万象", "电信五区"},
-	"青梅煮酒": {"青梅煮酒", "双线四区"},
-	"共結來緣": {"共結來緣"},
-	"傲血戰意": {"傲血戰意"},
-	"巔峰再起": {"巔峰再起"},
-	"江海雲夢": {"江海雲夢"},
-}
-
-var serverIP = map[string]string{
-	"斗转星移": "125.88.195.133:3724",
-	"蝶恋花":  "125.88.195.112:3724",
-	"龙争虎斗": "125.88.195.69:3724",
-	"长安城":  "125.88.195.52:3724",
-	"幽月轮":  "125.88.195.117:3724",
-	"剑胆琴心": "125.88.195.42:3724",
-	"乾坤一掷": "125.88.195.154:3724",
-	"唯我独尊": "125.88.195.89:3724",
-	"梦江南":  "125.88.195.59:3724",
-	"绝代天骄": "125.88.195.178:3724",
-	"破阵子":  "103.228.229.128:3724",
-	"天鹅坪":  "103.228.229.129:3724",
-	"飞龙在天": "103.228.229.130:3724",
-	"青梅煮酒": "103.228.229.127:3724",
+type metalData struct {
+	alias      []string
+	officialID uint64
 }
 
 type cd struct {
@@ -135,13 +80,6 @@ type sandBox struct {
 var sand sandBox
 
 var controlCd = make(map[string]cd)
-
-var xiaoheiIndx = map[string]string{
-	"电信点卡": "server1",
-	"双线一区": "server2",
-	"电信一区": "server3",
-	"双线二区": "server4",
-}
 
 type xiaohei struct {
 	State int `json:"state"`
@@ -357,8 +295,8 @@ func init() {
 	en.OnPrefix("宏").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			name := ctx.State["args"].(string)
-			mental := jdb.getMentalData(strings.ReplaceAll(name, " ", ""))
-			mentalURL := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.Name))
+			mental := getMentalData(strings.ReplaceAll(name, " ", ""))
+			mentalURL := fmt.Sprintf("https://cms.jx3box.com/api/cms/posts?type=macro&per=10&page=1&order=update&client=std&search=%s", goUrl.QueryEscape(mental.alias[0]))
 			data, err := web.RequestDataWith(NewTimeOutDefaultClient(), mentalURL, "GET", "application/x-www-form-urlencoded", web.RandUA(), nil)
 			DataList := gjson.Get(binutils.BytesToString(data), "data.list").Array()
 			if err != nil || len(DataList) == 0 {
@@ -529,6 +467,14 @@ func init() {
 				ctx.SendChain(message.ImageBytes(dbData.Pic))
 			}
 		})
+	en.OnPrefix("配装").SetBlock(true).Limit(ctxext.LimitByUser).
+		Handle(func(ctx *zero.Ctx) {
+			commandPart := util.SplitSpace(ctx.State["args"].(string))
+			if len(commandPart) != 2 {
+				ctx.SendChain(message.Text("配装参数输入有误！配装 pve|pvp 职业"))
+				return
+			}
+		})
 	en.OnPrefix("交易行").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
@@ -690,9 +636,9 @@ func init() {
 				ctx.SendChain(message.Text("团队编号输入有误"))
 				return
 			}
-			mental := jdb.getMentalData(commandPart[1])
+			mental := getMentalData(commandPart[1])
 			nickName := commandPart[2]
-			if mental.ID == 0 {
+			if mental.officialID == 0 {
 				ctx.SendChain(message.Text("心法输入有误"))
 				return
 			}
@@ -716,7 +662,7 @@ func init() {
 				TeamID:         uint(teamID),
 				MemberQQ:       ctx.Event.UserID,
 				MemberNickName: nickName,
-				MentalID:       mental.ID,
+				MentalID:       mental.officialID,
 				Double:         double,
 				SignUp:         carbon.Now().Timestamp(),
 			}
@@ -1767,7 +1713,7 @@ func drawTeam(teamID int) image.Image {
 			double = "双修"
 		}
 		dc.DrawString(double, x, y+th*2)
-		back, _ := gg.LoadImage(iconfile + strconv.Itoa(int(m.MentalID)) + ".png")
+		back, _ := gg.LoadImage(util.IconFilePath + strconv.Itoa(int(m.MentalID)) + ".png")
 		dc.DrawImage(back, int(x), int(y+th*3))
 	}
 	return dc.Image()
@@ -1825,4 +1771,16 @@ func newPage() *components.Page {
 	}
 	p.AssetsHost = "http://localhost:8083/assets/"
 	return p
+}
+
+func getMentalData(mentalName string) (m metalData) {
+	for _, data := range mentalAlias {
+		for _, a := range data.alias {
+			if a == mentalName {
+				m = data
+				return
+			}
+		}
+	}
+	return
 }

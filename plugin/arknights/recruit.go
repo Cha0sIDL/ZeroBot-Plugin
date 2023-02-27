@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fogleman/gg"
+	"github.com/FloatTech/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"

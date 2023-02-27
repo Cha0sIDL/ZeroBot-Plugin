@@ -7,6 +7,8 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
+const IconFilePath = "./template/sect/"
+
 // Template2html 模板转html
 func Template2html(templateName string, arg pongo2.Context) string {
 	tpl, err := pongo2.FromFile("./template/" + templateName)

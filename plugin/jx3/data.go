@@ -14,11 +14,10 @@ import (
 )
 
 const (
-	dbpath      = "data/jx3/"
-	dbfile      = dbpath + "robotData.db"
-	iconfile    = dbpath + "mental_icon/"
-	fileURL     = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
-	dbMental    = "mental"
+	dbpath  = "data/jx3/"
+	dbfile  = dbpath + "robotData.db"
+	fileURL = "https://raw.githubusercontent.com/Cha0sIDL/data/master/jx/"
+	//	dbMental    = "mental"
 	dbControl   = "jxControl"
 	dbTeam      = "team"
 	dbMember    = "member"
@@ -36,7 +35,7 @@ var jdb *jx3db
 type jx3db gorm.DB
 
 var rangeDB = map[string]interface{}{
-	dbMental:    &mental{},
+	//dbMental:    &mental{},
 	dbControl:   &jxControl{},
 	dbTeam:      &Team{},
 	dbMember:    &Member{},
@@ -48,9 +47,9 @@ var rangeDB = map[string]interface{}{
 }
 
 // TableName 表名
-func (mental) TableName() string {
-	return dbMental
-}
+// func (mental) TableName() string {
+//	return dbMental
+//}
 
 // TableName ..
 func (jxControl) TableName() string {

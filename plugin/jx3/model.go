@@ -2,7 +2,6 @@ package jx3
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 
 	"github.com/samber/lo"
@@ -11,11 +10,12 @@ import (
 )
 
 // Mental的结构体
-type mental struct {
-	ID     uint64 `gorm:"column:mentalID"`
-	Name   string `gorm:"column:mentalName"`
-	Accept string `gorm:"column:acceptName"`
-}
+// type mental struct {
+//	ID         uint64 `gorm:"column:mentalID"`
+//	Name       string `gorm:"column:mentalName"`
+//	Accept     string `gorm:"column:acceptName"`
+//	OfficialID int    `gorm:"column:officialID"`
+//}
 
 type jxControl struct {
 	GroupID int64  `gorm:"column:gid"`     // GroupID 群号
@@ -136,12 +136,12 @@ func (jdb *jx3db) getMemberInfo(teamID int) (mSlice []Member) {
 	return
 }
 
-func (jdb *jx3db) getMentalData(mentalName string) mental {
-	db := (*gorm.DB)(jdb)
-	var m mental
-	db.Where("acceptName LIKE ? OR mentalName = ?", fmt.Sprintf("%%%s%%", mentalName), mentalName).First(&m)
-	return m
-}
+// func (jdb *jx3db) getMentalData(mentalName string) mental {
+//	db := (*gorm.DB)(jdb)
+//	var m mental
+//	db.Where("acceptName LIKE ? OR mentalName = ?", fmt.Sprintf("%%%s%%", mentalName), mentalName).First(&m)
+//	return m
+//}
 
 func (jdb *jx3db) isEnable() (servers map[int64]string) {
 	var controls []jxControl
