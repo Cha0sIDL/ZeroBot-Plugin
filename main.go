@@ -79,9 +79,10 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chouxianghua" // 说抽象话
 
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"        // 英文字符翻转
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser"    // 三次元小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cpstory"  // cp短打
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/danbooru" // DeepDanbooru二次元图标签识别
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser"     // 三次元小姐姐
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cpstory"   // cp短打
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/dailynews" // 今日早报
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/danbooru"  // DeepDanbooru二次元图标签识别
 
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/diana"        // 嘉心糖发病
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/dress"        // 女装
@@ -104,10 +105,11 @@ import (
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jandan"       // 煎蛋网无聊图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jiami" // 兽语加密
-	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"    // 小鸡词典
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"   // 日语听力学习材料
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"     // 绝绝子生成器
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/kfccrazythursday" // 疯狂星期四
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon" // lolicon 随机图片
+
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"  // magicprompt吟唱提示
 
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/midicreate"    // 简易midi音乐制作
@@ -143,6 +145,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/vitsnyaru"   // vits猫雷
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/vtb_quotation" // vtb语录
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/vtbmusic"  // vtb点歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wallet"    // 钱包
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/wangyiyun" // 网易云音乐热评
 
@@ -163,8 +166,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"    // 古风小姐姐
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"   // 一言
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"        // 剑网相关
-
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao" // 早报
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
 
