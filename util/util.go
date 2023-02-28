@@ -138,17 +138,6 @@ func BytesCombine(pBytes ...[]byte) []byte {
 	return bytes.Join(pBytes, []byte(""))
 }
 
-// RandStr 返回指定长度随机字符串
-func RandStr(length int) string {
-	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	bytes := []byte(str)
-	var result []byte
-	for i := 0; i < length; i++ {
-		result = append(result, bytes[rand.Intn(len(bytes))])
-	}
-	return string(result)
-}
-
 // DiffTime 格式化输出两个时间戳相差时间
 func DiffTime(start int64, end int64) string {
 	diff := end - start

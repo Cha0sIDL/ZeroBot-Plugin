@@ -469,10 +469,118 @@ func init() {
 		})
 	en.OnPrefix("配装").SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
+			id := ctx.Event.MessageID
 			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			if len(commandPart) != 2 {
-				ctx.SendChain(message.Text("配装参数输入有误！配装 pve|pvp 职业"))
+			if len(commandPart) != 1 {
+				ctx.SendChain(message.Text("配装参数输入有误！配装 职业"))
 				return
+			}
+			mental := getMentalData(commandPart[0])
+			if mental.officialID == 0 {
+				ctx.SendChain(message.Text("职业输入有误"))
+				return
+			}
+			var tags string
+			var m = "请输入要查询的配装类型(支持多选，数字中间用空格分隔):\n1:PvE\n2:PvP\n3:橙武\n4:大橙武\n5:小橙武\n6:精简\n7:特效\n8:外防\n9:内防\n10:闪避\n11:招架\n"
+			messageText := map[int]string{
+				1:  "PvE",
+				2:  "PvP",
+				3:  "橙武",
+				4:  "大橙武",
+				5:  "小橙武",
+				6:  "精简",
+				7:  "特效",
+				8:  "外防",
+				9:  "内防",
+				10: "闪避",
+				11: "招架",
+			}
+			ctx.SendChain(message.Text(m))
+			next, cancel := zero.NewFutureEvent("message", 999, false, zero.RegexRule(`^\d+(\s+\d+)*$`), ctx.CheckSession()).Repeat()
+			defer cancel()
+			for {
+				select {
+				case <-time.After(time.Second * 60):
+					ctx.SendChain(message.Reply(id), message.Text("你考虑的时间太长了"))
+					return
+				case c := <-next:
+					msg := util.SplitSpace(c.Event.Message.ExtractPlainText())
+					for i, tagIdx := range msg {
+						tagIdxInt, err := strconv.Atoi(tagIdx)
+						if err != nil {
+							ctx.SendChain(message.Text("请输入正确数字序号"))
+							return
+						}
+						if val, ok := messageText[tagIdxInt]; ok {
+							tags += val
+							if i+1 == len(msg) {
+								continue
+							}
+							tags += ","
+						} else {
+							ctx.SendChain(message.Text("请输入1-11范围内的数字"))
+							return
+						}
+					}
+					url := fmt.Sprintf("https://cms.jx3box.com/api/cms/app/pz?per=10&page=1&search=&tags=%s&client=std&valid=1&mount=%d", goUrl.QueryEscape(tags), mental.officialID)
+					data, err := web.GetData(url)
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+						return
+					}
+					articleID := gjson.ParseBytes(data).Get("data.list.0.id").Int()
+					pw, err := playwright.Run()
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+						return
+					}
+					defer func(pw *playwright.Playwright) {
+						err := pw.Stop()
+						if err != nil {
+							ctx.SendChain(message.Text("Err:", err))
+						}
+					}(pw)
+					browser, err := pw.Chromium.Launch()
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+						return
+					}
+					page, err := browser.NewPage(playwright.BrowserNewContextOptions{
+						Viewport: &playwright.BrowserNewContextOptionsViewport{
+							Width:  playwright.Int(1920),
+							Height: playwright.Int(1080),
+						},
+					})
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+						return
+					}
+					_, err = page.Goto(fmt.Sprintf("https://www.jx3box.com/pz/view/%d", articleID), playwright.PageGotoOptions{
+						WaitUntil: playwright.WaitUntilStateNetworkidle,
+						Timeout:   playwright.Float(30000),
+					})
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+						return
+					}
+					result, _ := page.QuerySelector("//*[@id=\"overview-horizontal\"]")
+					result.ScrollIntoViewIfNeeded() //nolint:errcheck
+					box, _ := result.BoundingBox()
+					PageScreenshotOptions := playwright.PageScreenshotOptions{
+						Clip: &playwright.PageScreenshotOptionsClip{
+							X:      playwright.Float(float64(box.X)),
+							Y:      playwright.Float(float64(box.Y)),
+							Width:  playwright.Float(float64(box.Width)),
+							Height: playwright.Float(float64(box.Width)),
+						},
+					}
+					b, err := page.Screenshot(PageScreenshotOptions)
+					if err != nil {
+						ctx.SendChain(message.Text("Err:", err))
+					}
+					ctx.SendChain(message.ImageBytes(b))
+					return
+				}
 			}
 		})
 	en.OnPrefix("交易行").SetBlock(true).Limit(ctxext.LimitByUser).

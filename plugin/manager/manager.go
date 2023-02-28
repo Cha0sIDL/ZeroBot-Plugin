@@ -701,7 +701,7 @@ func init() { // 插件主体
 		data, _ := web.GetData("https://api.ipify.org")
 		var msg string
 		msg += "检测到以下地址正在窥屏：\n"
-		name := util.RandStr(util.Rand(3, 10))
+		name := lo.RandomString(util.Rand(3, 10), lo.AllCharset)
 		img := []string{"https://www.google.com.hk/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
 			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newbaike-889054f349.png",
 			"https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/topnav/newzhidao-da1cf444b0.png",

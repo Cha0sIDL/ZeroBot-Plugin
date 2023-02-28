@@ -7,6 +7,7 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
+// IconFilePath 职业icon的路径
 const IconFilePath = "./template/sect/"
 
 // Template2html 模板转html

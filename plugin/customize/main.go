@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/samber/lo"
+
 	"github.com/fumiama/unibase2n"
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
@@ -56,7 +58,7 @@ func init() {
 				case c := <-recv:
 					switch step {
 					case 0:
-						origin = "来自开发者的信息：\n" + c.Event.RawMessage + "\n--------------------\n" + unibase2n.BaseRune.EncodeString(util.RandStr(rand.Intn(20)))
+						origin = "来自开发者的信息：\n" + c.Event.RawMessage + "\n--------------------\n" + unibase2n.BaseRune.EncodeString(lo.RandomString(rand.Intn(20), lo.AllCharset))
 						ctx.SendChain(message.Text("请输入\"确定\"或者\"取消\"来决定是否发送此公告"))
 						step++
 					case 1:
