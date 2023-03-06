@@ -7,4 +7,4 @@ go-zero*
 nohup.out
 zerobot
 ZeroBot-Plugin*
-config.json
+*.syso

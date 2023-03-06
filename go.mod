@@ -4,9 +4,9 @@ go 1.19
 
 require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
-	github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194
+	github.com/FloatTech/AnimeAPI v1.6.1-0.20230301080805-a8aa0e4cee1f
 	github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230227014928-82e458c8e97f
-	github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74
+	github.com/FloatTech/floatbox v0.0.0-20230301074105-03017a267762
 	github.com/FloatTech/gg v1.1.2
 	github.com/FloatTech/imgfactory v0.2.2-0.20230215052637-9f7b05520ca9
 	github.com/FloatTech/rendercard v0.0.10-0.20230215092509-ff0745852f23
@@ -25,7 +25,7 @@ require (
 	github.com/fumiama/ahsai v0.1.0
 	github.com/fumiama/cron v1.3.0
 	github.com/fumiama/go-base16384 v1.6.4
-	github.com/fumiama/go-registry v0.2.5
+	github.com/fumiama/go-registry v0.2.6
 	github.com/fumiama/gotracemoe v0.0.3
 	github.com/fumiama/jieba v0.0.0-20221203025406-36c17a10b565
 	github.com/fumiama/unibase2n v0.0.0-20221020155353-02876e777430
@@ -56,9 +56,10 @@ require (
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
-	github.com/wdvxdr1123/ZeroBot v1.6.9
+	github.com/wdvxdr1123/ZeroBot v1.6.10
 	gitlab.com/gomidi/midi/v2 v2.0.25
 	golang.org/x/image v0.5.0
+	golang.org/x/sys v0.5.0
 	golang.org/x/text v0.7.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/gorm v1.24.5
@@ -118,7 +119,6 @@ require (
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/tools v0.2.0 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect

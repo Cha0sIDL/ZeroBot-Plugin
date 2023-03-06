@@ -7,12 +7,15 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
+	_ "github.com/FloatTech/ZeroBot-Plugin/console" // 更改控制台属性
 	"github.com/FloatTech/ZeroBot-Plugin/util"
 
-	"github.com/FloatTech/ZeroBot-Plugin/kanban" // 在最前打印 banner
+	"github.com/FloatTech/ZeroBot-Plugin/kanban" // 打印 banner
 
 	// ---------以下插件均可通过前面加 // 注释，注释后停用并不加载插件--------- //
 	// ----------------------插件优先级按顺序从高到低---------------------- //
@@ -233,6 +236,8 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
 	"github.com/wdvxdr1123/ZeroBot/message"
+
+	"github.com/FloatTech/ZeroBot-Plugin/kanban/banner"
 	// -----------------------以上为内置依赖，勿动------------------------ //
 )
 
@@ -339,15 +344,17 @@ func init() {
 
 func main() {
 	util.ConfigLocalFilesystemLogger("./log", "log", 3*time.Hour*24, time.Hour*24)
-	rand.Seed(time.Now().UnixNano()) // 全局 seed，其他插件无需再 seed
+	if !strings.Contains(runtime.Version(), "go1.2") { // go1.20之前版本需要全局 seed，其他插件无需再 seed
+		rand.Seed(time.Now().UnixNano()) //nolint: staticcheck
+	}
 	// 帮助
 	zero.OnFullMatchGroup([]string{"/help", ".help", "菜单"}, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text(kanban.Banner, "\n可发送\"/服务列表\"查看 bot 功能"))
+			ctx.SendChain(message.Text(banner.Banner, "\n管理发送\"/服务列表\"查看 bot 功能\n发送\"/用法name\"查看功能用法"))
 		})
 	zero.OnFullMatch("查看zbp公告", zero.OnlyToMe, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text(kanban.Kanban()))
+			ctx.SendChain(message.Text(strings.ReplaceAll(kanban.Kanban(), "\t", "")))
 		})
 	zero.RunAndBlock(&config.Z, process.GlobalInitMutex.Unlock)
 }
