@@ -89,6 +89,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/danbooru"  // DeepDanbooru二次元图标签识别
 
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/diana"        // 嘉心糖发病
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/drawlots"     // 多功能抽签
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/dress"        // 女装
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/drift_bottle" // 漂流瓶
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/emojimix"     // 合成emoji
@@ -101,7 +102,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/github"       // 搜索GitHub仓库
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"   // 猜歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"        // 黑丝
-
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"     // 一言
 	//	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"           // 炉石
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"        // 百人一首
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder" // 关键字搜图
@@ -168,7 +169,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"  // 明日方舟公招tag查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"    // 古风小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hitokoto"   // 一言
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"        // 剑网相关
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
@@ -237,6 +237,8 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/driver"
 	"github.com/wdvxdr1123/ZeroBot/message"
 
+	// webctrl "github.com/FloatTech/zbputils/control/web"
+
 	"github.com/FloatTech/ZeroBot-Plugin/kanban/banner"
 	// -----------------------以上为内置依赖，勿动------------------------ //
 )
@@ -255,6 +257,7 @@ func init() {
 	d := flag.Bool("d", false, "Enable debug level log and higher.")
 	w := flag.Bool("w", false, "Enable warning level log and higher.")
 	h := flag.Bool("h", false, "Display this help.")
+	// g := flag.String("g", "127.0.0.1:3000", "Set webui url.")
 	// 直接写死 AccessToken 时，请更改下面第二个参数
 	token := flag.String("t", "", "Set AccessToken of WSClient.")
 	// 直接写死 URL 时，请更改下面第二个参数
@@ -340,6 +343,9 @@ func init() {
 		logrus.Infoln("[main] 配置文件已保存到", *save)
 		os.Exit(0)
 	}
+
+	// 启用 webui
+	// go webctrl.RunGui(*g)
 }
 
 func main() {

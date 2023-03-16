@@ -2,57 +2,173 @@
 package hitokoto
 
 import (
-	"encoding/json"
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
 
+	"github.com/FloatTech/floatbox/binary"
+	fcext "github.com/FloatTech/floatbox/ctxext"
 	ctrl "github.com/FloatTech/zbpctrl"
-
-	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/FloatTech/zbputils/ctxext"
+	"github.com/FloatTech/zbputils/img/text"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
-const url = "https://v1.hitokoto.cn/?c=a&c=b&c=c&c=d&c=h&c=i" // 动漫 漫画 游戏 文学 影视 诗词
-
-// RspData RspData内容
-type RspData struct {
-	ID         int    `json:"id"`
-	UUID       string `json:"uuid"`
-	Hitokoto   string `json:"hitokoto"`
-	Type       string `json:"type"`
-	From       string `json:"from"`
-	FromWho    string `json:"from_who"`
-	Creator    string `json:"creator"`
-	CreatorUID int    `json:"creator_uid"`
-	Reviewer   int    `json:"reviewer"`
-	CommitFrom string `json:"commit_from"`
-	CreatedAt  string `json:"created_at"`
-	Length     int    `json:"length"`
-}
-
-func init() {
+func init() { // 插件主体
 	engine := control.Register("hitokoto", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "一言",
-		Help:             "- 每日一言(建议配合job插件净化群友心灵)\n",
+		Help: "- 一言[xxx]\n" +
+			"- 系列一言",
+		PublicDataFolder: "Hitokoto",
 	})
-	engine.OnFullMatch("每日一言").SetBlock(true).Handle(handle)
-}
-func handle(ctx *zero.Ctx) {
-	var rsp RspData
-	data, err := web.GetData(url)
-	if err != nil {
-		ctx.SendChain(message.Text("Err:", err))
-	}
-	err = json.Unmarshal(data, &rsp)
-	if err != nil {
-		ctx.SendChain(message.Text("Err:", err))
-		return
-	}
-	msg := ""
-	msg += rsp.Hitokoto + "\n出自：" + rsp.From + "\n"
-	if len(rsp.FromWho) != 0 {
-		msg += "作者：" + rsp.FromWho
-	}
-	ctx.SendChain(message.Text(msg))
+	getdb := fcext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
+		dbfile := engine.DataFolder() + "hitokoto.db"
+		_, err := engine.GetLazyData("hitokoto.db", false)
+		if err != nil {
+			ctx.SendChain(message.Text("ERROR: ", err))
+			return false
+		}
+		hdb, err = initialize(dbfile)
+		if err != nil {
+			ctx.SendChain(message.Text("ERROR: ", err))
+			return false
+		}
+		return true
+	})
+	engine.OnPrefix(`一言`, getdb).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			ctx.SendChain(message.Text("少女祈祷中..."))
+			args := ctx.State["args"].(string)
+			blist, err := hdb.getByKey(strings.TrimSpace(args))
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
+			if len(blist) == 0 {
+				ctx.SendChain(message.Text("ERROR: hitokoto empty"))
+				return
+			}
+			m := make(message.Message, 0, 10)
+			text := strings.Builder{}
+			if len(blist) <= 10 {
+				for _, b := range blist {
+					text.WriteString(b.Hitokoto)
+					text.WriteString("\n——")
+					text.WriteString(b.From)
+					m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Text(text.String())))
+					text.Reset()
+				}
+			} else {
+				indexes := map[int]struct{}{}
+				for i := 0; i < 10; i++ {
+					ind := rand.Intn(len(blist))
+					if _, ok := indexes[ind]; ok {
+						i--
+						continue
+					}
+					indexes[ind] = struct{}{}
+				}
+				for k := range indexes {
+					b := blist[k]
+					text.WriteString(b.Hitokoto)
+					text.WriteString("\n——")
+					text.WriteString(b.From)
+					m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Text(text.String())))
+					text.Reset()
+				}
+			}
+			if id := ctx.Send(m).ID(); id == 0 {
+				ctx.SendChain(message.Text("ERROR: 可能被风控或下载图片用时过长，请耐心等待"))
+			}
+		})
+	engine.OnFullMatch(`系列一言`, getdb).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			next := zero.NewFutureEvent("message", 999, false, ctx.CheckSession())
+			recv, cancel := next.Repeat()
+			defer cancel()
+			results, err := hdb.getAllCategory()
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
+			tex := strings.Builder{}
+			tex.WriteString("请输入系列一言序号\n")
+			for i, v := range results {
+				tex.WriteString(strconv.Itoa(i))
+				tex.WriteString(". ")
+				tex.WriteString(v.Category)
+				tex.WriteString("\n")
+			}
+			base64Str, err := text.RenderToBase64(tex.String(), text.FontFile, 400, 20)
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
+			ctx.SendChain(message.Image("base64://" + binary.BytesToString(base64Str)))
+			for {
+				select {
+				case <-time.After(time.Second * 120):
+					ctx.SendChain(message.Text("系列一言指令过期"))
+					return
+				case c := <-recv:
+					msg := c.Event.Message.ExtractPlainText()
+					num, err := strconv.Atoi(msg)
+					if err != nil {
+						ctx.SendChain(message.Text("请输入数字!"))
+						continue
+					}
+					if num < 0 || num >= len(results) {
+						ctx.SendChain(message.Text("序号非法!"))
+						continue
+					}
+					ctx.SendChain(message.Text("请欣赏系列一言: ", results[num].Category))
+					hlist, err := hdb.getByCategory(results[num].Category)
+					if err != nil {
+						ctx.SendChain(message.Text("ERROR: ", err))
+						return
+					}
+					if len(hlist) == 0 {
+						ctx.SendChain(message.Text("ERROR: hitokoto empty"))
+						return
+					}
+					m := make(message.Message, 0, 10)
+					text := strings.Builder{}
+					if len(hlist) <= 10 {
+						for _, b := range hlist {
+							text.WriteString(b.Hitokoto)
+							text.WriteString("\n——")
+							text.WriteString(b.From)
+							m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Text(text.String())))
+							text.Reset()
+						}
+					} else {
+						indexes := map[int]struct{}{}
+						for i := 0; i < 10; i++ {
+							ind := rand.Intn(len(hlist))
+							if _, ok := indexes[ind]; ok {
+								i--
+								continue
+							}
+							indexes[ind] = struct{}{}
+						}
+						for k := range indexes {
+							b := hlist[k]
+							text.WriteString(b.Hitokoto)
+							text.WriteString("\n——")
+							text.WriteString(b.From)
+							m = append(m, ctxext.FakeSenderForwardNode(ctx, message.Text(text.String())))
+							text.Reset()
+						}
+					}
+					if id := ctx.Send(m).ID(); id == 0 {
+						ctx.SendChain(message.Text("ERROR: 可能被风控或下载图片用时过长，请耐心等待"))
+					}
+					return
+				}
+			}
+		})
 }
