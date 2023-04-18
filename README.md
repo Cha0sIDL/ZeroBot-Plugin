@@ -451,14 +451,58 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>百度一下</summary>
+  <summary>百科</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/baidu"`
 
-  - [x] 百度下[xxx]
-  - [x] 维基|百科[xxx]
-  - [x] 百度百科[xxx]
+  - [x] 百度/百科/维基/wiki[xxx]
 
+
+</details>
+<details>
+  <summary>百度内容审核</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/baiduaudit"`
+
+  - [x] 获取BDAkey
+
+  - [x] 配置BDAKey [API Key] [Secret Key]
+
+  - [x] 获取BDAkey
+
+  - [x] [开启|关闭]内容审核
+
+  - [x] [开启|关闭]撤回提示
+
+  - [x] [开启|关闭]详细提示
+
+  - [x] [开启|关闭]撤回禁言
+
+  - [x] [开启|关闭]禁言累加
+
+  - [x] [开启|关闭]文本检测
+
+  - [x] [开启|关闭]图像检测
+
+  - [x] 设置最大禁言时间[分钟，默认:60,最大43200]
+
+  - [x] 设置每次累加时间[分钟，默认:1]
+
+  - [x] 设置撤回禁言时间[分钟，默认:1]
+
+  - [x] 查看检测类型
+
+  - [x] 查看检测配置
+
+  - [x] 测试文本检测[文本内容]
+
+  - [x] 测试图像检测[图片]
+
+  - [x] 设置检测类型[类型编号]
+
+  - [x] 设置不检测类型[类型编号]
+
+    检测类型编号列表:[1:违禁违规|2:文本色情|3:敏感信息|4:恶意推广|5:低俗辱骂|6:恶意推广-联系方式|7:恶意推广-软文推广]
 </details>
 <details>
   <summary>base64卦加解密</summary>
@@ -531,7 +575,7 @@ print("run[CQ:image,file="+j["img"]+"]")
   
   - [x] b站推送列表
   
-  - [x] 拉取b站推送 (使用job执行定时任务------记录在"@every 10s"触发的指令) 
+  - [x] 拉取b站推送 (使用job执行定时任务------记录在"@every 5m"触发的指令) 
 
 </details>
 <details>
@@ -606,6 +650,16 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
+  <summary>程序员做饭指南</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/dish"`
+
+  - [x] 怎么做 | 烹饪[菜名]
+
+  - [x] 随机菜谱 | 随便做点菜
+
+</details>
+<details>
   <summary>多功能抽签</summary>
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/drawlots"`
@@ -672,7 +726,8 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/font"`
 
-  - [x] (用[终末体|终末变体|紫罗兰体|樱酥体|Consolas体|苹方体])渲染文字xxx
+  - [x] (用[终末体|终末变体|紫罗兰体|樱酥体|Consolas体|粗苹方体|未来荧黑体|Gugi体|八丸体|Impact体|猫啃体|苹方体])渲染(抖动)文字xxx
+
 </details>
 <details>
   <summary>每日运势</summary>
@@ -1062,6 +1117,7 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   - [x] 签到
   - [x] 获得签到背景[@xxx] | 获得签到背景
+  - [x] 设置签到预设(0~3)
   - [x] 查看等级排名
   - 注:跨群排行
   - [x] 查看我的钱包
@@ -1094,9 +1150,25 @@ print("run[CQ:image,file="+j["img"]+"]")
 
   - [x] 卖萌[@xxx]
 
-  - [x] 抽老婆[@xxx]
+  - [x] 今日老婆[@xxx]
 
   - [x] 黄油角色[@xxx]
+
+</details>
+<details>
+  <summary>steam</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/steam"`
+
+  - [x] steam[添加|删除]订阅xxxxx
+
+  - [x] steam查看订阅
+
+  - [x] steam绑定 api key xxxxxxx
+
+  - [x] 查看apikey
+
+  - [x] 拉取steam订阅 (使用job执行定时任务------记录在"@every 1m"触发的指令) 
 
 </details>
 <details>
@@ -1174,19 +1246,23 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 <details>
-  <summary>月幕galgame图</summary>
+  <summary>据意查句</summary>
 
-  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"`
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wantquotes"`
 
-  - [x] 随机galCG
+  - [x] 据意查句 大海
+  
+  - [x] 登录据意查句 
 
-  - [x] 随机gal表情包
+</details>
 
-  - [x] galCG[xxx]
+</details>
+<details>
+  <summary>抽老婆</summary>
 
-  - [x] gal表情包[xxx]
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wife"`
 
-  - [x] 更新gal
+  - [x] 抽老婆
 
 </details>
 <details>
@@ -1453,6 +1529,15 @@ print("run[CQ:image,file="+j["img"]+"]")
   - [x] 设置回复模式[青云客 | 小爱 | ChatGPT]
 
   - [x] 设置 ChatGPT api key xxx
+
+</details>
+<details>
+  <summary>词典匹配回复</summary>
+
+  `import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus"`
+
+  - [x] 切换[kimo|傲娇|可爱]词库
+  - [x] 设置词库触发概率0.x (0<x<9)
 
 </details>
 

@@ -20,13 +20,13 @@ func init() {
 		Help: "- 今天是什么少女[@xxx]\n" +
 			"- 异世界转生[@xxx]\n" +
 			"- 卖萌[@xxx]\n" +
-			"- 抽老婆[@xxx]\n" +
+			"- 今日老婆[@xxx]\n" +
 			"- 黄油角色[@xxx]",
 	})
 	engine.OnPrefix("异世界转生", number(587874)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handlepic)
 	engine.OnPrefix("今天是什么少女", number(162207)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handlepic)
 	engine.OnPrefix("卖萌", number(360578)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handletxt)
-	engine.OnPrefix("抽老婆", number(1075116)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handlecq)
+	engine.OnPrefix("今日老婆", number(1075116)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handlecq)
 	engine.OnPrefix("黄油角色", number(1115465)).SetBlock(true).Limit(ctxext.LimitByUser).Handle(handlepic)
 }
 

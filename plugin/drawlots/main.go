@@ -55,7 +55,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"抽签列表", "刷新抽签列表"}).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		lotsList, err := getList() // 刷新列表
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		messageText := &strings.Builder{}
@@ -67,7 +67,7 @@ func init() {
 		}
 		textPic, err := text.RenderToBase64(messageText.String(), text.BoldFontFile, 400, 50)
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		ctx.SendChain(message.Image("base64://" + helper.BytesToString(textPic)))
@@ -82,7 +82,7 @@ func init() {
 		if fileInfo.lotsType == "folder" {
 			picPath, err := randFile(lotsType, 3)
 			if err != nil {
-				ctx.SendChain(message.Text("ERROR:", err))
+				ctx.SendChain(message.Text("ERROR: ", err))
 				return
 			}
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Image("file:///"+picPath))
@@ -90,13 +90,13 @@ func init() {
 		}
 		lotsImg, err := randGif(lotsType + "." + fileInfo.lotsType)
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		// 生成图片
 		data, err := imgfactory.ToBytes(lotsImg)
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		ctx.SendChain(message.Reply(ctx.Event.MessageID), message.ImageBytes(data))
@@ -129,13 +129,13 @@ func init() {
 		}
 		im, err := gif.DecodeAll(bytes.NewReader(gifdata))
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		fileName := datapath + "/" + lotsName + ".gif"
 		err = file.DownloadTo(picURL, fileName)
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		lotsList[lotsName] = info{
@@ -158,7 +158,7 @@ func init() {
 		}
 		err := os.Remove(datapath + lotsName + "." + fileInfo.lotsType)
 		if err != nil {
-			ctx.SendChain(message.Text("ERROR:", err))
+			ctx.SendChain(message.Text("ERROR: ", err))
 			return
 		}
 		delete(lotsList, lotsName)
@@ -244,10 +244,10 @@ func randGif(gifName string) (image.Image, error) {
 			return nil, err
 		}
 		v := im.Image[rand.Intn(len(im.Image))]
-		return imgfactory.Size(firstImg, firstImg.Bounds().Max.X, firstImg.Bounds().Max.Y).InsertUpC(v, 0, 0, firstImg.Bounds().Max.X/2, firstImg.Bounds().Max.Y/2).Clone().Image(),err
+		return imgfactory.Size(firstImg, firstImg.Bounds().Dx(), firstImg.Bounds().Dy()).InsertUpC(v, 0, 0, firstImg.Bounds().Dx()/2, firstImg.Bounds().Dy()/2).Clone().Image(),err
 	/*/
 	// 如果gif图片出现信息缺失请使用上面注释掉的代码，把下面注释了(上面代码部分图存在bug)
 	v := im.Image[rand.Intn(len(im.Image))]
-	return imgfactory.NewFactoryBG(v.Rect.Max.X, v.Rect.Max.Y, color.NRGBA{0, 0, 0, 255}).InsertUp(v, 0, 0, 0, 0).Clone().Image(), err
+	return imgfactory.NewFactoryBG(v.Rect.Dx(), v.Rect.Dy(), color.NRGBA{0, 0, 0, 255}).InsertUp(v, 0, 0, 0, 0).Clone().Image(), err
 	// */
 }
