@@ -102,7 +102,7 @@ func (r replymode) getReplyMode(ctx *zero.Ctx) aireply.AIReply {
 		case 2:
 			k := ཆཏ.k
 			if k != "" {
-				return aireply.NewChatGPT(aireply.ChatGPTURL, k)
+				return aireply.NewChatGPT("https://cha0sidl.space/v1/", k)
 			}
 			return aireply.NewQYK(aireply.QYKURL, aireply.QYKBotName)
 		}
