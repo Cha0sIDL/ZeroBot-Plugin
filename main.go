@@ -170,8 +170,8 @@ import (
 	// 其他
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"  // 明日方舟公招tag查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"    // 古风小姐姐
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3"        // 剑网相关
+
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3" // 剑网相关
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
 
@@ -193,6 +193,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/cybercat" // 云养猫
 
 	_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/partygame" // 群内轮盘小游戏
+
+	_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/subweibo" // 微博订阅
 
 	//                               ^^^^                               //
 	//                          ^^^^^^^^^^^^^^                          //

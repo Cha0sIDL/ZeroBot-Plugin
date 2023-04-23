@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/FloatTech/floatbox/file"
 	"os"
 	"time"
 
@@ -16,20 +17,18 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 )
 
-const config = "config.json"
+const config = "./config/config.json"
 
 // Config 具体配置
 type Config struct {
-	RPCHost   string   `json:"rpc_host"`  // http rpc的地址
-	TTS       *TTS     `json:"tts"`       // 阿里tts的一些配置
-	WsURL     string   `json:"ws_url"`    // jxapi ws的地址
-	Weather   string   `json:"weather"`   // 天气查询token
-	Ignore    []string `json:"ignore"`    // 忽略的触发列表
-	SecretID  string   `json:"secretId"`  // 腾讯npl
-	SecretKey string   `json:"secretKey"` // 腾讯npl
-	JxChat    *[]Chat  `json:"jxChat"`
-	SignKey   string   `json:"signKey"`
-	KasKey    string   `json:"kasKey"` // 卡巴斯基软件检测的key
+	TTS       *TTS    `json:"tts"`       // 阿里tts的一些配置
+	WsURL     string  `json:"ws_url"`    // jxapi ws的地址
+	Weather   string  `json:"weather"`   // 天气查询token
+	SecretID  string  `json:"secretId"`  // 腾讯npl
+	SecretKey string  `json:"secretKey"` // 腾讯npl
+	JxChat    *[]Chat `json:"jxChat"`
+	SignKey   string  `json:"signKey"`
+	KasKey    string  `json:"kasKey"` // 卡巴斯基软件检测的key
 }
 
 // TTS tts的结构体
@@ -69,6 +68,10 @@ func init() {
 }
 
 func initConfig() {
+	if !file.IsExist(config) {
+		data, _ := json.Marshal(Cfg)
+		os.WriteFile(config, data, 0644)
+	}
 	tmp, err := os.ReadFile(config)
 	if err != nil {
 		panic("读取文件失败")

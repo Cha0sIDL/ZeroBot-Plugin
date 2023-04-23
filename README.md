@@ -1314,15 +1314,6 @@ print("run[CQ:image,file="+j["img"]+"]")
 
 </details>
 
-<details>
-  <summary>古风小姐姐</summary>
-
-`import _ "github.com/FloatTech/ZeroBot-Plugin/plugin/haimage"`
-
-- [x] 来张古风小姐姐的图
-
-
-</details>
 
 <details>
   <summary>明日方舟公招tag查询</summary>
