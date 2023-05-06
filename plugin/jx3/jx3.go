@@ -522,7 +522,7 @@ func init() {
 							return
 						}
 					}
-					url := fmt.Sprintf("https://cms.jx3box.com/api/cms/app/pz?per=10&page=1&search=&tags=%s&client=std&valid=1&mount=%d", goUrl.QueryEscape(tags), mental.officialID)
+					url := fmt.Sprintf("https://cms.jx3box.com/api/cms/app/pz?per=10&page=1&tags=%s&client=std&global_level=120&mount=%d", goUrl.QueryEscape(tags), mental.officialID)
 					data, err := web.GetData(url)
 					if err != nil {
 						ctx.SendChain(message.Text("Err:", err))
@@ -913,7 +913,7 @@ func init() {
 			}
 			server := commandPart[0]
 			name := commandPart[1]
-			qiyuURL := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&csrf=%d", server, name, carbon.Now().TimestampMilli())
+			qiyuURL := fmt.Sprintf("https://www.jx3mm.com/home/qyinfo?S=%s&n=%s&csrf=%d", goUrl.QueryEscape(server), goUrl.QueryEscape(name), carbon.Now().TimestampMilli())
 			rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
 			// rspData, err := util.ProxyHTTP(NewTimeOutDefaultClient(), qiyuURL, "GET", "", web.RandUA(), nil)
 			parsingJSON := gjson.ParseBytes(rspData)

@@ -768,7 +768,7 @@ func init() { // 插件主体
 			case "NoThreats":
 				fileStatus = "无威胁"
 			case "NotCategorized":
-				fileStatus = "未分类"
+				fileStatus = "未分类/安全"
 			default:
 				fileStatus = "未知"
 			}
