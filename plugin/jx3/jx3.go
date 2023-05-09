@@ -2,12 +2,8 @@
 package jx3
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"image"
 	"io"
 	"net/http"
 	goUrl "net/url"
@@ -19,18 +15,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/FloatTech/ZeroBot-Plugin/config"
+	"github.com/FloatTech/floatbox/process"
 	"github.com/FloatTech/zbputils/ctxext"
-	"github.com/FloatTech/zbputils/img/text"
 	"github.com/go-resty/resty/v2"
 	"github.com/golang-module/carbon/v2"
 	"github.com/playwright-community/playwright-go"
 	"github.com/samber/lo"
-	"github.com/tidwall/sjson"
-	"github.com/wdvxdr1123/ZeroBot/utils/helper"
-
-	"github.com/FloatTech/floatbox/process"
-
-	"github.com/FloatTech/ZeroBot-Plugin/config"
 
 	"github.com/antchfx/htmlquery"
 
@@ -43,7 +34,6 @@ import (
 	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/go-echarts/go-echarts/v2/charts"
-	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -51,9 +41,9 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 
 	"github.com/FloatTech/ZeroBot-Plugin/util"
-
-	"github.com/FloatTech/gg"
 )
+
+var en *control.Engine
 
 type metalData struct {
 	alias      []string
@@ -147,7 +137,7 @@ type GroupList struct {
 }
 
 func init() {
-	en := control.Register("jx3", &ctrl.Options[*zero.Ctx]{
+	en = control.Register("jx3", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault:  false,
 		PrivateDataFolder: "jx3",
 		Brief:             "剑网相关插件",
@@ -703,181 +693,6 @@ func init() {
 				ctx.Send(message.Text("区服输入有误"))
 			}
 		})
-	// 开团 副本名 备注
-	en.OnPrefixGroup([]string{"开团", "新建团队", "创建团队"}, zero.AdminPermission).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			if len(commandPart) != 2 {
-				ctx.SendChain(message.Text("开团参数输入有误！开团 副本名 备注"))
-				return
-			}
-			dungeon := commandPart[0]
-			comment := commandPart[1]
-			teamID, err := jdb.createNewTeam(&Team{
-				LeaderID: ctx.Event.UserID,
-				Dungeon:  dungeon,
-				Comment:  comment,
-				GroupID:  ctx.Event.GroupID,
-			})
-			if err != nil {
-				ctx.SendChain(message.Text("Error :", err))
-				return
-			}
-			ctx.SendChain(message.Text("开团成功，团队id为：", teamID))
-		})
-	// 报团 团队ID 心法 角色名 [是否双休] 按照报名时间先后默认排序 https://docs.qq.com/doc/DUGJRQXd1bE5YckhB
-	en.OnPrefixGroup([]string{"报名", "报团", "报名团队", "代报名"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			double := 0
-			switch {
-			case len(commandPart) == 3:
-				double = 0
-			case len(commandPart) == 4:
-				double, _ = strconv.Atoi(commandPart[3])
-			default:
-				ctx.SendChain(message.Text("报团参数有误。"))
-				return
-			}
-			teamID, err := strconv.Atoi(commandPart[0])
-			if err != nil {
-				ctx.SendChain(message.Text("团队编号输入有误"))
-				return
-			}
-			mental := getMentalData(commandPart[1])
-			nickName := commandPart[2]
-			if mental.officialID == 0 {
-				ctx.SendChain(message.Text("心法输入有误"))
-				return
-			}
-			Team := jdb.getTeamInfo(teamID)
-			if Team.GroupID != ctx.Event.GroupID {
-				ctx.SendChain(message.Text("当前团队不存在。"))
-				return
-			}
-			if []rune(ctx.MessageString())[0] == '代' {
-				if jdb.isInTeam("team_id = ? and member_nick_name = ?", teamID, nickName) {
-					ctx.SendChain(message.Text(nickName, "已经在团队中了。"))
-					return
-				}
-			} else {
-				if jdb.isInTeam("team_id = ? and member_qq = ?", teamID, ctx.Event.UserID) {
-					ctx.SendChain(message.Text("你已经在团队中了。"))
-					return
-				}
-			}
-			var member = Member{
-				TeamID:         uint(teamID),
-				MemberQQ:       ctx.Event.UserID,
-				MemberNickName: nickName,
-				MentalID:       mental.officialID,
-				Double:         double,
-				SignUp:         carbon.Now().Timestamp(),
-			}
-			err = jdb.addMember(&member)
-			if err != nil {
-				ctx.SendChain(message.Text("数据库写入失败,Err:", err))
-				return
-			}
-			ctx.SendChain(message.Text("报团成功"), message.Reply(ctx.Event.MessageID))
-			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamID)))))
-		})
-	en.OnPrefixGroup([]string{"撤销报团"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			teamID, _ := strconv.Atoi(commandPart[0])
-			team := jdb.getTeamInfo(teamID)
-			if team.GroupID != ctx.Event.GroupID {
-				ctx.SendChain(message.Text("参数输入有误。"))
-				return
-			}
-			err := jdb.deleteMember(teamID, ctx.Event.UserID)
-			if err != nil {
-				ctx.SendChain(message.Text("Err:", err))
-				return
-			}
-			ctx.SendChain(message.Text("撤销成功"), message.Reply(ctx.Event.MessageID))
-			ctx.SendChain(message.Text("当前团队:\n"), message.Image("base64://"+helper.BytesToString(util.Image2Base64(drawTeam(teamID)))))
-		})
-	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			var sTeam []Team
-			err := jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
-			if err != nil {
-				ctx.SendChain(message.Text("Err:", err))
-			}
-			s := lo.Map(sTeam, func(item Team, _ int) uint {
-				return item.TeamID
-			})
-			SignUp := lo.Uniq(jdb.getSignUp(ctx.Event.UserID))
-
-			ctx.SendChain(message.Text("本群你报名过的团队id：\n", util.IntersectArray(s, SignUp)))
-		})
-	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			var sTeam []Team
-			err := jdb.Find("leaderId = ? and groupId = ?", &sTeam, ctx.Event.UserID, ctx.Event.GroupID)
-			if err != nil {
-				ctx.SendChain(message.Text("Err:", err))
-				return
-			}
-			out := ""
-			for _, data := range sTeam {
-				out += fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，备注：%s\n",
-					data.TeamID, data.LeaderID, data.Dungeon, data.Comment)
-			}
-			ctx.SendChain(message.Text(out))
-		})
-	en.OnFullMatchGroup([]string{"查看全部团队"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			var sTeam []Team
-			err := jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
-			if err != nil {
-				ctx.SendChain(message.Text("Err:", err))
-				return
-			}
-			if len(sTeam) == 0 {
-				ctx.SendChain(message.Text("本群没有有效团队哦"))
-				return
-			}
-			out := ""
-			for _, data := range sTeam {
-				out += fmt.Sprintf("团队id：%d,团长 ：%d,副本：%s，备注：%s\n",
-					data.TeamID, data.LeaderID, data.Dungeon, data.Comment)
-			}
-			ctx.SendChain(message.Text(out))
-		})
-	// 查看团队 teamid
-	en.OnPrefixGroup([]string{"查看团队", "查询团队", "查团"}, zero.OnlyGroup).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			teamID, _ := strconv.Atoi(commandPart[0])
-			team := jdb.getTeamInfo(teamID)
-			if team.GroupID != ctx.Event.GroupID {
-				ctx.SendChain(message.Text("团队id输入有误。"))
-				return
-			}
-			ctx.SendChain(message.Image("base64://" + helper.BytesToString(util.Image2Base64(drawTeam(teamID)))))
-		})
-	// 取消开团 团队id
-	en.OnPrefixGroup([]string{"取消开团", "删除团队", "结束团队"}).SetBlock(true).
-		Handle(func(ctx *zero.Ctx) {
-			commandPart := util.SplitSpace(ctx.State["args"].(string))
-			if len(commandPart) < 1 {
-				ctx.SendChain(message.Text("参数有误"))
-			}
-			teamID, err := strconv.Atoi(commandPart[0])
-			team := jdb.getTeamInfo(teamID)
-			if err != nil || team.GroupID != ctx.Event.GroupID || team.LeaderID != ctx.Event.UserID {
-				ctx.SendChain(message.Text("团队id输入有误"))
-				return
-			}
-			err = jdb.delTeam(teamID, ctx.Event.UserID)
-			if err != nil {
-				ctx.SendChain(message.Text(err))
-			}
-			ctx.SendChain(message.Text("取消成功"))
-		})
 	en.OnPrefixGroup([]string{"奇遇", "奇遇查询"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			// var msg string
@@ -959,16 +774,6 @@ func init() {
 			}
 			ctx.SendChain(message.Text("更新成功"))
 		})
-	en.OnPrefixGroup([]string{"属性"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
-		func(ctx *zero.Ctx) {
-			attributes(ctx, datapath)
-		},
-	)
-	en.OnPrefixGroup([]string{"战绩"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).Handle(
-		func(ctx *zero.Ctx) {
-			indicator(ctx, datapath)
-		},
-	)
 }
 
 func server(ctx *zero.Ctx, server string) {
@@ -1274,249 +1079,6 @@ func updateTalk() error {
 	}
 }
 
-func indicator(ctx *zero.Ctx, datapath string) {
-	commandPart := util.SplitSpace(ctx.State["args"].(string))
-	var server string
-	var name string
-	switch {
-	case len(commandPart) == 1:
-		server = jdb.bind(ctx.Event.GroupID)
-		name = commandPart[0]
-		if len(server) == 0 {
-			ctx.SendChain(message.Text("本群尚未绑定区服"))
-			return
-		}
-	case len(commandPart) == 2:
-		server = commandPart[0]
-		name = commandPart[1]
-	default:
-		ctx.SendChain(message.Text("参数输入有误！\n" + "战绩 绝代天骄 xxx"))
-		return
-	}
-	if normServer, ok := allServer[server]; ok {
-		zone := normServer[1]
-		server = normServer[0]
-		var user User
-		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
-		gameRoleID := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
-		if err != nil {
-			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))
-			return
-		}
-		var data = make(map[string]interface{})
-		indicator, err := getIndicator(struct {
-			RoleID string `json:"role_id"`
-			Server string `json:"server"`
-			Zone   string `json:"zone"`
-			TS     string `json:"ts"`
-		}{
-			RoleID: gameRoleID,
-			Server: server,
-			Zone:   zone,
-			TS:     ts(),
-		})
-		if err != nil {
-			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
-			return
-		}
-		strIndicator := binutils.BytesToString(indicator)
-		templateData := map[string]interface{}{
-			"name":   gjson.Get(strIndicator, "data.role_info.name").String(),
-			"server": gjson.Get(strIndicator, "data.role_info.zone").String() + "_" + gjson.Get(strIndicator, "data.role_info.server").String(),
-			"data":   data,
-		}
-		performanceData := make(map[string]interface{})
-		for _, indicatorData := range gjson.Get(strIndicator, "data.indicator").Array() {
-			t := indicatorData.Get("type").String()
-			var key string
-			performance := indicatorData.Get("performance").IsObject()
-			if !performance {
-				continue
-			}
-			switch t {
-			case "2c":
-				key = "pvp2"
-			case "3c":
-				key = "pvp3"
-			case "5c":
-				key = "pvp5"
-			}
-			performanceData[key] = map[string]string{
-				"totalCount": indicatorData.Get("performance.total_count").String(),
-				"mvpCount":   indicatorData.Get("performance.mvp_count").String(),
-				"winCount":   indicatorData.Get("performance.win_count").String(),
-				"mmr":        indicatorData.Get("performance.mmr").String(),
-				"ranking":    indicatorData.Get("performance.ranking").String(),
-				"winRate":    fmt.Sprintf("%.2f", indicatorData.Get("performance.win_count").Float()/indicatorData.Get("performance.total_count").Float()*100),
-				"grade":      indicatorData.Get("performance.grade").String(),
-			}
-		}
-		data["performance"] = performanceData
-		history, err := getPersonHistory(struct {
-			TS       string `json:"ts"`
-			PersonID string `json:"person_id"`
-			Cursor   int    `json:"cursor"`
-			Size     int    `json:"size"`
-		}{
-			TS:       ts(),
-			PersonID: gjson.Parse(user.Data).Get("body.msg.0.sPersonId").String(),
-			Size:     10,
-			Cursor:   0,
-		})
-		if err != nil {
-			ctx.SendChain(message.Text("请求剑网推栏失败,请稍后重试~"))
-			return
-		}
-		historyStr := binutils.BytesToString(history)
-		for idx, historyData := range gjson.Parse(historyStr).Get("data").Array() {
-			startTime := historyData.Get("start_time").Int()
-			endTime := historyData.Get("end_time").Int()
-			historyStr, _ = sjson.Set(historyStr, "data."+fmt.Sprintf("%d", idx)+".time",
-				util.DiffTime(startTime, endTime))
-			historyStr, _ = sjson.Set(historyStr, "data."+fmt.Sprintf("%d", idx)+".ago", carbon.CreateFromTimestamp(endTime).ToDateTimeString())
-		}
-		data["history"] = util.JSONToMap(historyStr)
-		templateData["data"] = data
-		html := util.Template2html("match.html", templateData)
-		finName, err := util.HTML2pic(datapath, name+"_match", html)
-		if err != nil {
-			ctx.SendChain(message.Text("Err:", err))
-			return
-		}
-		ctx.SendChain(message.Image("file:///" + finName))
-	} else {
-		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
-	}
-}
-
-func getIndicator(body interface{}) ([]byte, error) {
-	xSk := sign(body)
-	client := resty.New()
-	res, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetHeader("Host", "m.pvp.xoyo.com").
-		SetHeader("Connection", "keep-alive").
-		SetHeader("Accept", "application/json").
-		SetHeader("fromsys", "APP").
-		SetHeader("gamename", "jx3").
-		SetHeader("X-Sk", xSk).
-		SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
-		SetHeader("apiversion", "3").
-		SetHeader("platform", "ios").
-		SetHeader("token", (*config.Cfg.JxChat)[0].Token).
-		SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
-		SetHeader("Cache-Control", "no-cache").
-		SetHeader("clientkey", "1").
-		SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
-		SetHeader("sign", "true").
-		SetBody(body).
-		Post("https://m.pvp.xoyo.com/role/indicator")
-	return res.Body(), err
-}
-
-func getPersonHistory(body interface{}) ([]byte, error) {
-	xSk := sign(body)
-	client := resty.New()
-	res, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetHeader("Host", "m.pvp.xoyo.com").
-		SetHeader("Connection", "keep-alive").
-		SetHeader("Accept", "application/json").
-		SetHeader("fromsys", "APP").
-		SetHeader("gamename", "jx3").
-		SetHeader("X-Sk", xSk).
-		SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
-		SetHeader("apiversion", "3").
-		SetHeader("platform", "ios").
-		SetHeader("token", (*config.Cfg.JxChat)[0].Token).
-		SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
-		SetHeader("Cache-Control", "no-cache").
-		SetHeader("clientkey", "1").
-		SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
-		SetHeader("sign", "true").
-		SetBody(body).
-		Post("https://m.pvp.xoyo.com/mine/match/person-history")
-	return res.Body(), err
-}
-
-func attributes(ctx *zero.Ctx, datapath string) {
-	ts := ts()
-	commandPart := util.SplitSpace(ctx.State["args"].(string))
-	var server string
-	var name string
-	switch {
-	case len(commandPart) == 1:
-		server = jdb.bind(ctx.Event.GroupID)
-		name = commandPart[0]
-		if len(server) == 0 {
-			ctx.SendChain(message.Text("本群尚未绑定区服"))
-			return
-		}
-	case len(commandPart) == 2:
-		server = commandPart[0]
-		name = commandPart[1]
-	default:
-		ctx.SendChain(message.Text("参数输入有误！\n" + "属性 绝代天骄 xxx"))
-		return
-	}
-	if normServer, ok := allServer[server]; ok {
-		var user User
-		zone := normServer[1]
-		server = normServer[0]
-		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
-		if err != nil {
-			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))
-			return
-		}
-		gameRoleID := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
-		body := map[string]string{
-			"server":       server,
-			"zone":         zone,
-			"game_role_id": gameRoleID,
-			"ts":           ts,
-		}
-		xSk := sign(body)
-		client := resty.New()
-		data, err := client.R().
-			SetHeader("Content-Type", "application/json").
-			// SetHeader("Host", "m.pvp.xoyo.com").
-			SetHeader("Connection", "keep-alive").
-			SetHeader("Accept", "application/json").
-			SetHeader("fromsys", "APP").
-			SetHeader("gamename", "jx3").
-			SetHeader("X-Sk", xSk).
-			SetHeader("Accept-Language", "zh-CN,zh-Hans;q=0.9").
-			SetHeader("apiversion", "3").
-			SetHeader("platform", "ios").
-			SetHeader("token", (*config.Cfg.JxChat)[0].Token).
-			SetHeader("deviceid", "jzrjvE6MDwUbMQTIFIiDQg==").
-			SetHeader("Cache-Control", "no-cache").
-			SetHeader("clientkey", "1").
-			SetHeader("User-Agent", "SeasunGame/193 CFNetwork/1385 Darwin/22.0.0").
-			SetHeader("sign", "true").
-			SetHeader("proxy", "https://m.pvp.xoyo.com/mine/equip/get-role-equip").
-			SetBody(body).
-			Post("https://http-go-http-proxy-jvuuzynfbg.cn-hangzhou.fcapp.run")
-		if err != nil {
-			ctx.SendChain(message.Text("请求出错了，稍后试试吧~", err))
-			return
-		}
-		jsonObj := gjson.ParseBytes(data.Body()).Get("data").String()
-		templateData := map[string]interface{}{
-			"name":   name,
-			"server": zone + "_" + server,
-			"data":   util.JSONToMap(jsonObj)}
-		html := util.Template2html("equip.html", templateData)
-		finName, err := util.HTML2pic(datapath, name, html)
-		if err != nil {
-			ctx.SendChain(message.Text("Err:", err))
-		}
-		ctx.SendChain(message.Image("file:///" + finName))
-	} else {
-		ctx.SendChain(message.Text("输入区服有误，请检查qaq~"))
-	}
-}
-
 func priceData2line(price map[string][]map[string]interface{}, datapath string) string {
 	var tmp []map[string]interface{}
 	for _, val := range price {
@@ -1768,118 +1330,6 @@ func tuilan(tuiType string) string {
 //	}
 //	return finName
 //}
-
-func drawTeam(teamID int) image.Image {
-	Fonts, err := gg.LoadFontFace(text.FontFile, 50)
-	if err != nil {
-		panic(err)
-	}
-	const W = 1200
-	const H = 1200
-	dc := gg.NewContext(W, H)
-	dc.SetRGB(1, 1, 1)
-	dc.Clear()
-	// 画直线
-	for i := 0; i < 1200; {
-		dc.SetRGBA(255, 255, 255, 11)
-		dc.SetLineWidth(1)
-		dc.DrawLine(0, float64(i), 1200, float64(i))
-		dc.Stroke()
-		i += 200
-	}
-	// 画直线
-	for i := 200; i < 1200; {
-		// dc.SetRGBA(255, 255, 255, 11)
-		// dc.SetLineWidth(1)
-		dc.DrawLine(float64(i), 200, float64(i), 1200)
-		dc.Stroke()
-		i += 200
-	}
-	dc.SetFontFace(Fonts)
-	// 队伍
-	for i := 1; i < 6; i++ {
-		dc.DrawString(strconv.Itoa(i)+"队", 40, float64(100+200*i))
-	}
-	// 标题
-	team := jdb.getTeamInfo(teamID)
-	title := strconv.Itoa(int(team.TeamID)) + " " + team.Dungeon
-	_, th := dc.MeasureString("哈")
-	t := 1200/2 - (float64(len([]rune(title))) / 2)
-	dc.DrawStringAnchored(title, t, th, 0.5, 0.5)
-	dc.DrawStringAnchored(team.Comment, 1200/2-float64(len([]rune(team.Comment)))/2, 3*th, 0.5, 0.5)
-	// 团队
-	mSlice := jdb.getMemberInfo(teamID)
-	dc.LoadFontFace(text.FontFile, 30) //nolint:errcheck
-	_, th = dc.MeasureString("哈")
-	start := 200
-	for idx, m := range mSlice {
-		x := float64(start + idx%5*200 + 10)
-		y := float64(start+idx/5*200) + th*2
-		dc.DrawString(m.MemberNickName, x, y)
-		double := "单修"
-		if m.Double == 1 {
-			double = "双修"
-		}
-		dc.DrawString(double, x, y+th*2)
-		back, _ := gg.LoadImage(util.IconFilePath + strconv.Itoa(int(m.MentalID)) + ".png")
-		dc.DrawImage(back, int(x), int(y+th*3))
-	}
-	return dc.Image()
-}
-
-func average(price gjson.Result) string {
-	var a float64
-	price.ForEach(
-		func(key, value gjson.Result) bool {
-			a += value.Float()
-			return true
-		})
-	return fmt.Sprintf("%.2f", a/price.Get("#").Float())
-}
-
-func ts() string {
-	return carbon.Now().Layout("20060102150405", carbon.UTC) + util.Interface2String(carbon.Now(carbon.UTC).Millisecond())
-}
-
-func sign(data interface{}) string {
-	bData, _ := json.Marshal(data)
-	CombineData := util.BytesCombine(bData, []byte("@#?.#@"))
-	key := []byte(config.Cfg.SignKey)
-	h := hmac.New(sha256.New, key)
-	h.Write(CombineData)
-	sha := hex.EncodeToString(h.Sum(nil))
-	return sha
-}
-
-// 51.2345.67.89
-func price2hRead(price int64) (readStr string) {
-	strPrice := strconv.FormatInt(price, 10)
-	l := len(strPrice)
-	for idx, str := range strPrice {
-		i := l - idx
-		readStr += string(str)
-		switch {
-		case i == 9:
-			readStr += "金砖"
-		case i == 5:
-			readStr += "金"
-		case i == 3:
-			readStr += "银"
-		}
-	}
-	readStr += "铜"
-	return
-}
-
-func newPage() *components.Page {
-	p := components.NewPage()
-	_, err := web.GetData("http://localhost:8083/assets")
-	if err != nil {
-		return p
-	}
-	p.AssetsHost = "http://localhost:8083/assets/"
-	return p
-}
 
 func getMentalData(mentalName string) (m metalData) {
 	for _, data := range mentalAlias {
