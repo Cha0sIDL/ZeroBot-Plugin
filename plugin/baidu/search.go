@@ -102,11 +102,11 @@ func screenshot(url string) []byte {
 		log.Errorf("could not goto: %v", err)
 	}
 	Clip := util.PageScreenshotOptionsClip(
-		playwright.PageScreenshotOptionsClip{
-			X:      playwright.Float(10),
-			Y:      playwright.Float(0),
-			Width:  playwright.Float(1500),
-			Height: playwright.Float(1400),
+		playwright.Rect{
+			X:      10,
+			Y:      0,
+			Width:  1500,
+			Height: 1400,
 		})
 	if pic, err = page.Screenshot(playwright.PageScreenshotOptions{
 		Clip:     Clip,

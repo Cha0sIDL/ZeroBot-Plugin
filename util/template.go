@@ -24,7 +24,7 @@ func Template2html(templateName string, arg pongo2.Context) string {
 }
 
 // HTML2pic  html转图片
-func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright.PageScreenshotOptionsClip) (finName string, err error) {
+func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright.Rect) (finName string, err error) {
 	pw, err := playwright.Run()
 	finName = ""
 	if err != nil {
@@ -67,7 +67,7 @@ func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright
 	return finName, err
 }
 
-// PageScreenshotOptionsClip 返回PageScreenshotOptionsClip的指针
-func PageScreenshotOptionsClip(v playwright.PageScreenshotOptionsClip) *playwright.PageScreenshotOptionsClip {
+// PageScreenshotOptionsClip 返回Rect的指针
+func PageScreenshotOptionsClip(v playwright.Rect) *playwright.Rect {
 	return &v
 }

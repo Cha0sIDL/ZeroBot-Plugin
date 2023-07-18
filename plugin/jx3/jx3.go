@@ -167,9 +167,9 @@ func init() {
 		}
 	})
 	c.AddFunc("@every 30s", func() { //nolint:errcheck
+		controls := jdb.isEnable()
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 			var grpList []GroupList
-			controls := jdb.isEnable()
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
 				if val, ok := controls[grp]; ok {
@@ -185,8 +185,8 @@ func init() {
 	})
 	c.AddFunc("@every 2m", func() { //nolint:errcheck
 		zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-			var grpList []GroupList
 			controls := jdb.isEnable()
+			var grpList []GroupList
 			for _, g := range ctx.GetGroupList().Array() {
 				grp := g.Get("group_id").Int()
 				if val, ok := controls[grp]; ok {
@@ -209,6 +209,7 @@ func init() {
 			go startChatWs(chat)
 		}
 	}
+	go startWs()
 	datapath := file.BOTPATH + "/" + en.DataFolder()
 	en.OnFullMatchGroup([]string{"日常", "日常任务"}, zero.OnlyGroup).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
@@ -536,9 +537,9 @@ func init() {
 						return
 					}
 					page, err := browser.NewPage(playwright.BrowserNewContextOptions{
-						Viewport: &playwright.BrowserNewContextOptionsViewport{
-							Width:  playwright.Int(1920),
-							Height: playwright.Int(1080),
+						Viewport: &playwright.ViewportSize{
+							Width:  1920,
+							Height: 1080,
 						},
 					})
 					if err != nil {
@@ -557,11 +558,11 @@ func init() {
 					result.ScrollIntoViewIfNeeded() //nolint:errcheck
 					box, _ := result.BoundingBox()
 					PageScreenshotOptions := playwright.PageScreenshotOptions{
-						Clip: &playwright.PageScreenshotOptionsClip{
-							X:      playwright.Float(float64(box.X)),
-							Y:      playwright.Float(float64(box.Y)),
-							Width:  playwright.Float(float64(box.Width)),
-							Height: playwright.Float(float64(box.Width)),
+						Clip: &playwright.Rect{
+							X:      box.X,
+							Y:      box.Y,
+							Width:  box.Width,
+							Height: box.Width,
 						},
 					}
 					b, err := page.Screenshot(PageScreenshotOptions)
@@ -1051,6 +1052,99 @@ func wujia(ctx *zero.Ctx, datapath string, control int8) {
 		ctx.SendChain(message.Image("file:///" + finName))
 	}
 }
+
+//func feiNiuWuJia(ctx *zero.Ctx, datapath string) {
+//	var price = make(map[string][]map[string]interface{})
+//	commandPart := util.SplitSpace(ctx.State["args"].(string))
+//	if len(commandPart) != 1 {
+//		ctx.SendChain(message.Text("参数输入有误！\n" + "物价 牛金"))
+//		return
+//	}
+//	name := commandPart[0]
+//	if hei, ok := controlCd[name]; ok && (carbon.Now().Timestamp()-hei.last) < 86400 {
+//		ctx.SendChain(message.Image(hei.fileName))
+//	} else {
+//		goodURL := fmt.Sprintf("https://12897x770b.oicp.vip/m/bj/getsearch?qy=%s&gjc=%s&xl=%s&lb=%s&page=1&cxpara=hs", goUrl.QueryEscape("全区全服"), goUrl.QueryEscape(name), goUrl.QueryEscape("全部系列"), goUrl.QueryEscape("全部类别"))
+//		rspData, err := web.RequestDataWith(NewTimeOutDefaultClient(), goodURL, "GET", "", web.RandUA(), nil)
+//		switch {
+//		case err != nil:
+//			ctx.SendChain(message.Text("出错了联系管理员看看吧", err))
+//			return
+//		case len(gjson.ParseBytes(rspData).Array()) == 0:
+//			ctx.SendChain(message.Text("没有查找到", name, "请重新输入后重试"))
+//			return
+//		}
+//
+//		if len(gjson.Get(binutils.BytesToString(rspData), "data").Array()) == 0 { // 如果输入无数据则请求
+//			searchURL := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/outward/search?step=0&page=1&size=20&name=%s", goUrl.QueryEscape(name))
+//			searchData, err := web.PostData(searchURL, "application/x-www-form-urlencoded", nil)
+//			searchList := gjson.Get(binutils.BytesToString(searchData), "data.list").Array()
+//			if err != nil || len(searchList) == 0 {
+//				ctx.SendChain(message.Text(fmt.Sprintf("没有找到%s，你是不是乱输的哦~", name)))
+//				return
+//			}
+//			msg := "你可能找的是以下结果：\n"
+//			for _, s := range searchList {
+//				msg += s.Get("outwardName").String() + "\n"
+//			}
+//			msg += "自动帮你查询：" + searchList[0].Get("outwardAlias").String()
+//			ctx.SendChain(message.Text(msg))
+//			ctx.State["args"] = searchList[0].Get("outwardName").String()
+//			wujia(ctx, datapath)
+//			return
+//		}
+//		goodid := gjson.Get(binutils.BytesToString(rspData), "data.0.id").Int() // 获得商品id
+//		infoURL := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/prices?regionId=1&outwardId=%d", goodid)
+//		wuJiaData, err := web.PostData(infoURL, "application/x-www-form-urlencoded", nil)
+//		json.Unmarshal(wuJiaData, &data) //nolint:errcheck
+//		if err != nil || data.State != 0 {
+//			ctx.SendChain(message.Text("出错了联系管理员看看吧"))
+//			return
+//		}
+//		wujiaPicURL := fmt.Sprintf("https://www.j3price.top:8088/black-api/api/common/search/index/outward?regionId=1&imageLimit=1&outwardId=%d", goodid)
+//		wujiaPic, err := RequestDataWith(wujiaPicURL)
+//		if err != nil {
+//			ctx.SendChain(message.Text("Err:", err))
+//			return
+//		}
+//		for _, rprice := range data.Data.Other {
+//			if server, ok := xiaoheiIndx[rprice.Prices.Region]; ok {
+//				price[server] = append(price[server], map[string]interface{}{
+//					"date":   rprice.Prices.TradeTime,
+//					"server": rprice.Prices.Server,
+//					"value":  fmt.Sprintf("%.2f", rprice.Prices.Price),
+//					"sale":   rprice.Prices.SaleCode,
+//				})
+//			}
+//		}
+//		for _, rprice := range data.Data.Prices {
+//			if server, ok := xiaoheiIndx[rprice.Region]; ok {
+//				price[server] = append(price[server], map[string]interface{}{
+//					"date":   rprice.TradeTime,
+//					"server": rprice.Server,
+//					"value":  fmt.Sprintf("%.2f", rprice.Price),
+//					"sale":   rprice.SaleCode,
+//				})
+//			}
+//		}
+//		lineHTML := priceData2line(price, datapath)
+//		html := util.Template2html("price.html", map[string]interface{}{
+//			"image": gjson.Get(binutils.BytesToString(wujiaPic), "data.images.0.image"),
+//			"name":  name,
+//			"data":  price,
+//		})
+//		finName, err := util.HTML2pic(datapath, name+util.TodayFileName(), html+lineHTML)
+//		if err != nil {
+//			ctx.SendChain(message.Text("Err:", err))
+//			return
+//		}
+//		controlCd[name] = cd{
+//			last:     carbon.Now().Timestamp(),
+//			fileName: "file:///" + finName,
+//		}
+//		ctx.SendChain(message.Image("file:///" + finName))
+//	}
+//}
 
 func updateTalk() error {
 	url := "https://cms.jx3box.com/api/cms/post/jokes?per=%d&page=%d"

@@ -6,7 +6,7 @@ import (
 )
 
 // ScreenShot 截取浏览器
-func ScreenShot(url string, option ...playwright.PageScreenshotOptionsClip) []byte {
+func ScreenShot(url string, option ...playwright.Rect) []byte {
 	pw, err := playwright.Run()
 	var pic []byte
 	if err != nil {

@@ -36,11 +36,11 @@ func daily(ctx *zero.Ctx) {
 	result.ScrollIntoViewIfNeeded()
 	box, _ := result.BoundingBox()
 	PageScreenshotOptions := playwright.PageScreenshotOptions{
-		Clip: &playwright.PageScreenshotOptionsClip{
-			X:      playwright.Float(float64(box.X - 25)),
-			Y:      playwright.Float(float64(box.Y - 55)),
-			Width:  playwright.Float(float64(box.Width - 130)),
-			Height: playwright.Float(float64(box.Width + 70)),
+		Clip: &playwright.Rect{
+			X:      box.X - 25,
+			Y:      box.Y - 55,
+			Width:  box.Width - 130,
+			Height: box.Width + 70,
 		},
 	}
 	b, err := page.Screenshot(PageScreenshotOptions)
