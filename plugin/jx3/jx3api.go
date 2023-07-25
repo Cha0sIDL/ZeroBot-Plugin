@@ -62,15 +62,16 @@ func sendNotice(payload gjson.Result) {
 		controls := jdb.isEnable()
 		for _, g := range ctx.GetGroupList().Array() {
 			grp := g.Get("group_id").Int()
-			if _, ok := controls[grp]; ok {
+			if server, ok := controls[grp]; ok {
 				switch payload.Get("action").Int() {
 				case 2004:
-					rsp =
-						[]message.MessageSegment{
-							message.Text("【818】:\n"),
-							message.Text(payload.Get("data.title").String() + "\n" +
-								payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
-						}
+					if server == payload.Get("server").String() {
+						rsp =
+							[]message.MessageSegment{
+								message.Text(payload.Get("data.title").String() + "\n" +
+									payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
+							}
+					}
 				}
 				if len(rsp) != 0 {
 					ctx.SendGroupMessage(grp, rsp)
