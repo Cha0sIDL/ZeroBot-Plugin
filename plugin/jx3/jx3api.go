@@ -65,7 +65,7 @@ func sendNotice(payload gjson.Result) {
 			if server, ok := controls[grp]; ok {
 				switch payload.Get("action").Int() {
 				case 2004:
-					if server == payload.Get("server").String() || payload.Get("server").String() == "-" {
+					if server == payload.Get("data.server").String() || payload.Get("data.server").String() == "-" {
 						rsp =
 							[]message.MessageSegment{
 								message.Text(payload.Get("data.title").String() + "\n" +
