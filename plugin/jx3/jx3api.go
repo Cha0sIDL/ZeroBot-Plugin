@@ -60,6 +60,7 @@ func sendNotice(payload gjson.Result) {
 	var rsp []message.MessageSegment
 	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 		controls := jdb.isEnable()
+		log.Println("sendNotice controls ", controls, "data", payload.Get("data.server"))
 		for _, g := range ctx.GetGroupList().Array() {
 			grp := g.Get("group_id").Int()
 			if server, ok := controls[grp]; ok {
