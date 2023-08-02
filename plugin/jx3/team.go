@@ -115,7 +115,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"我报的团", "我的报名"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var sTeam []Team
-			err := jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
+			err := jdb.find("groupId = ?", &sTeam, ctx.Event.GroupID)
 			if err != nil {
 				ctx.SendChain(message.Text("Err:", err))
 			}
@@ -129,7 +129,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"我的开团"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var sTeam []Team
-			err := jdb.Find("leaderId = ? and groupId = ?", &sTeam, ctx.Event.UserID, ctx.Event.GroupID)
+			err := jdb.find("leaderId = ? and groupId = ?", &sTeam, ctx.Event.UserID, ctx.Event.GroupID)
 			if err != nil {
 				ctx.SendChain(message.Text("Err:", err))
 				return
@@ -144,7 +144,7 @@ func init() {
 	en.OnFullMatchGroup([]string{"查看全部团队"}, zero.OnlyGroup).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var sTeam []Team
-			err := jdb.Find("groupId = ?", &sTeam, ctx.Event.GroupID)
+			err := jdb.find("groupId = ?", &sTeam, ctx.Event.GroupID)
 			if err != nil {
 				ctx.SendChain(message.Text("Err:", err))
 				return

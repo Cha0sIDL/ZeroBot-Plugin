@@ -676,7 +676,7 @@ func init() { // 插件主体
 			ctx.SendChain(message.Text("取消失败, 信息: ", rsp.Msg, "解释: ", rsp.Wording))
 		}
 	})
-	engine.OnFullMatchGroup([]string{"菜单", "使用手册", "使用说明"}).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+	engine.OnFullMatchGroup([]string{"菜单", "使用手册", "使用说明", "help"}).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		ctx.SendChain(message.Text("https://www.yuque.com/docs/share/34aee3c7-defc-4f29-b45a-1c7f8f4ab535?# 《ZeroBot使用手册》"))
 	})
 	engine.OnFullMatch("谁在窥屏", zero.OnlyGroup, zero.AdminPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {

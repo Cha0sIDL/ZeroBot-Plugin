@@ -73,7 +73,7 @@ func (ws *userWsClient) listen() {
 				continue
 			}
 			rw.Lock()
-			jdb.Insert(&User{ //nolint:errcheck
+			jdb.insert(&User{ //nolint:errcheck
 				ID:   roleName + "_" + server,
 				Data: binutils.BytesToString(payload),
 			})

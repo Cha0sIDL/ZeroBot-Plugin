@@ -54,7 +54,7 @@ func attributes(ctx *zero.Ctx, datapath string) {
 		var user User
 		zone := normServer[1]
 		server = normServer[0]
-		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
+		err := jdb.find("id = ?", &user, name+"_"+chatServer[server])
 		if err != nil {
 			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))
 			return
@@ -131,7 +131,7 @@ func indicator(ctx *zero.Ctx, datapath string) {
 		zone := normServer[1]
 		server = normServer[0]
 		var user User
-		err := jdb.Find("id = ?", &user, name+"_"+chatServer[server])
+		err := jdb.find("id = ?", &user, name+"_"+chatServer[server])
 		gameRoleID := gjson.Parse(user.Data).Get("body.msg.0.sRoleId").String()
 		if err != nil {
 			ctx.SendChain(message.Text("没有查找到这个角色呢,试着在世界频道说句话试试吧~"))

@@ -209,7 +209,7 @@ func (jdb *jx3db) getAdventure(name string) Adventure {
 }
 
 func (jdb *jx3db) updateAdventure(data *Adventure) {
-	jdb.Insert(data) //nolint:errcheck
+	jdb.insert(data) //nolint:errcheck
 }
 
 func (jdb *jx3db) findDaily(server string) (daily Daily) {
@@ -218,29 +218,39 @@ func (jdb *jx3db) findDaily(server string) (daily Daily) {
 	return
 }
 
-func (jdb *jx3db) Pick(out interface{}) (data interface{}) {
+func (jdb *jx3db) pick(out interface{}) (data interface{}) {
 	db := (*gorm.DB)(jdb)
 	db.Order("random()").Take(&out)
 	return out
 }
 
-func (jdb *jx3db) Insert(value interface{}) error {
+func (jdb *jx3db) insert(value interface{}) error {
 	db := (*gorm.DB)(jdb)
 	return db.Clauses(clause.OnConflict{UpdateAll: true}).Create(value).Error
 }
 
-func (jdb *jx3db) Find(query, out interface{}, args ...interface{}) error {
+func (jdb *jx3db) find(query, out interface{}, args ...interface{}) error {
 	db := (*gorm.DB)(jdb)
 	return db.Where(query, args...).First(out).Error
 }
 
-func (jdb *jx3db) Count(value interface{}) (num int64, err error) {
+func (jdb *jx3db) findAll(query interface{}, args ...interface{}) error {
+	db := (*gorm.DB)(jdb)
+	return db.Find(query, args...).Error
+}
+
+func (jdb *jx3db) delete(query, value interface{}, args ...interface{}) error {
+	db := (*gorm.DB)(jdb)
+	return db.Where(query, args).Delete(value).Error
+}
+
+func (jdb *jx3db) count(value interface{}) (num int64, err error) {
 	db := (*gorm.DB)(jdb)
 	err = db.Model(value).Count(&num).Error
 	return
 }
 
-func (jdb *jx3db) CanFind(query, out interface{}, args ...interface{}) bool {
+func (jdb *jx3db) canFind(query, out interface{}, args ...interface{}) bool {
 	db := (*gorm.DB)(jdb)
 	err := db.Where(query, args...).First(out).Error
 	return !errors.Is(err, gorm.ErrRecordNotFound)

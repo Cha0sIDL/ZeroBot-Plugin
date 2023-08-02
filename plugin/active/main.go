@@ -15,8 +15,6 @@ import (
 
 	"github.com/FloatTech/ZeroBot-Plugin/config"
 	"github.com/FloatTech/ZeroBot-Plugin/nlp"
-	"github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb"
-
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -61,17 +59,17 @@ func init() {
 		return util.Rand(1, 100) < getActive(ctx) && zero.OnlyGroup(ctx)
 	}).SetBlock(false).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
-			if zero.HasPicture(ctx) {
-				b, err := chinesebqb.Bdb.Pick()
-				if err != nil {
-					return
-				}
-				ctx.SendChain(message.Image(b.URL))
-			} else {
-				msg := ctx.ExtractPlainText()
-				r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.XiaoAiURL, aireply.XiaoAiBotName), nlp.NewTencent(nlp.BotName)})
-				ctx.SendChain(message.Text(r.TalkPlain(ctx.Event.UserID, msg, zero.BotConfig.NickName[0])))
-			}
+			//if zero.HasPicture(ctx) {
+			//	b, err := chinesebqb.Bdb.Pick()
+			//	if err != nil {
+			//		return
+			//	}
+			//	ctx.SendChain(message.Image(b.URL))
+			//} else {
+			msg := ctx.ExtractPlainText()
+			r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.XiaoAiURL, aireply.XiaoAiBotName), nlp.NewTencent(nlp.BotName)})
+			ctx.SendChain(message.Text(r.TalkPlain(ctx.Event.UserID, msg, zero.BotConfig.NickName[0])))
+			//}
 		})
 	en.OnPrefix("复读").SetBlock(true).Handle(
 		func(ctx *zero.Ctx) {

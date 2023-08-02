@@ -163,8 +163,10 @@ func init() {
 	_, err := c.AddFunc("0 5 * * *", func() {
 		err := updateTalk()
 		if err != nil {
+			log.Errorln("updateTalk error", err)
 			return
 		}
+		cleanOldData()
 	})
 	c.AddFunc("@every 30s", func() { //nolint:errcheck
 		controls := jdb.isEnable()
@@ -659,7 +661,7 @@ func init() {
 	en.OnRegex(`^(?i)骚话(.*)`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var t Jokes
-			jdb.Pick(&t)
+			jdb.pick(&t)
 			ctx.SendChain(message.Text(t.Talk))
 		})
 	en.OnFullMatch("/roll").SetBlock(true).
@@ -824,7 +826,7 @@ func daily(ctx *zero.Ctx, server string) {
 		msg += "--------------------------------\n"
 		msg += "数据来源JXBOX和推栏"
 		ctx.SendChain(message.Text(msg))
-		jdb.Insert(&Daily{ //nolint:errcheck
+		jdb.insert(&Daily{ //nolint:errcheck
 			Server:    server,
 			DailyTask: msg,
 			Time:      carbon.CreateFromTime(7, 0, 0).Timestamp(),
@@ -1160,7 +1162,7 @@ func updateTalk() error {
 			return err
 		}
 		for _, talkData := range gjson.Get(jsonData, "data.list").Array() {
-			jdb.Insert(&Jokes{ //nolint:errcheck
+			jdb.insert(&Jokes{ //nolint:errcheck
 				ID:   talkData.Get("id").Int(),
 				Talk: talkData.Get("content").String(),
 			})
@@ -1171,6 +1173,30 @@ func updateTalk() error {
 		page++
 		time.Sleep(time.Millisecond * 500)
 	}
+}
+
+func cleanOldData() error {
+	controls := make([]jxControl, 0)
+	err := jdb.findAll(&controls)
+	if err != nil {
+		return err
+	}
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		grps := lo.Associate(ctx.GetGroupList().Array(), func(item gjson.Result) (int64, string) {
+			return item.Get("group_id").Int(), ""
+		})
+		for _, c := range controls {
+			if _, ok := grps[c.GroupID]; !ok {
+				log.Errorln("delete grp data", c)
+				//err := jdb.delete("gid = ?", &jxControl{}, c.GroupID)
+				if err != nil {
+					log.Errorln("delete grp err", err)
+				}
+			}
+		}
+		return true
+	})
+	return nil
 }
 
 func priceData2line(price map[string][]map[string]interface{}, datapath string) string {
@@ -1317,7 +1343,7 @@ func checkServer(ctx *zero.Ctx, grpList []GroupList) {
 
 func news(ctx *zero.Ctx, grpList []GroupList) {
 	msg := make([]News, 0, 5)
-	count, _ := jdb.Count(&News{})
+	count, _ := jdb.count(&News{})
 	doc, _ := htmlquery.LoadURL("https://jx3.xoyo.com/allnews/")
 	li := htmlquery.Find(doc, "/html/body/div[5]/div/div/div[2]/div/div[3]/div[2]/div/div/ul/li")
 	for _, node := range li {
@@ -1329,7 +1355,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 		if !strings.Contains(href, "https://jx3.xoyo.com") {
 			href = "https://jx3.xoyo.com" + href
 		}
-		canFind := jdb.CanFind("id = ?", &News{}, href)
+		canFind := jdb.canFind("id = ?", &News{}, href)
 		data := News{
 			ID:    href,
 			Date:  date,
@@ -1339,7 +1365,7 @@ func news(ctx *zero.Ctx, grpList []GroupList) {
 		if canFind {
 			continue
 		}
-		err := jdb.Insert(&data)
+		err := jdb.insert(&data)
 		if err != nil {
 			continue
 		}

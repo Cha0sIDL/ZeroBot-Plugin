@@ -168,8 +168,9 @@ import (
 
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"           // 鬼东西
 	// 其他
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights"  // 明日方舟公招tag查询
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/arknights" // 明日方舟公招tag查询
+
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chinesebqb" // 搜表情包
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jx3" // 剑网相关
 

@@ -51,13 +51,17 @@ func (ws *wsClient) listen() {
 		if t == websocket.TextMessage {
 			rsp := gjson.Parse(helper.BytesToString(payload))
 			log.Println("收到JXApi推送", helper.BytesToString(payload))
-			sendNotice(rsp)
+			go sendNotice(rsp)
 		}
 	}
 }
 
 func sendNotice(payload gjson.Result) {
 	var rsp []message.MessageSegment
+	now := time.Now().Hour()
+	if now >= 0 && now < 6 { //十二点之后不响应
+		return
+	}
 	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 		controls := jdb.isEnable()
 		log.Println("sendNotice controls ", controls, "data", payload.Get("data.server"))
@@ -66,6 +70,7 @@ func sendNotice(payload gjson.Result) {
 			if server, ok := controls[grp]; ok {
 				switch payload.Get("action").Int() {
 				case 2004:
+					log.Println("sendNotice grp ", controls[grp], "data", payload.Get("data.server").String(), "grp", grp)
 					if server == payload.Get("data.server").String() || payload.Get("data.server").String() == "-" {
 						rsp =
 							[]message.MessageSegment{
