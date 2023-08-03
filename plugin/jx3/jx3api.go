@@ -57,20 +57,18 @@ func (ws *wsClient) listen() {
 }
 
 func sendNotice(payload gjson.Result) {
-	var rsp []message.MessageSegment
 	now := time.Now().Hour()
 	if now >= 0 && now < 6 { //十二点之后不响应
 		return
 	}
 	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
 		controls := jdb.isEnable()
-		log.Println("sendNotice controls ", controls, "data", payload.Get("data.server"))
 		for _, g := range ctx.GetGroupList().Array() {
+			var rsp []message.MessageSegment
 			grp := g.Get("group_id").Int()
 			if server, ok := controls[grp]; ok {
 				switch payload.Get("action").Int() {
 				case 2004:
-					log.Println("sendNotice grp ", controls[grp], "data", payload.Get("data.server").String(), "grp", grp)
 					if server == payload.Get("data.server").String() || payload.Get("data.server").String() == "-" {
 						rsp =
 							[]message.MessageSegment{
