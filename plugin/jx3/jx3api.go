@@ -3,6 +3,7 @@ package jx3
 // JxApi Ws
 import (
 	"github.com/FloatTech/floatbox/process"
+	"github.com/golang-module/carbon/v2"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"time"
@@ -62,24 +63,32 @@ func sendNotice(payload gjson.Result) {
 		return
 	}
 	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
-		controls := jdb.isEnable()
-		for _, g := range ctx.GetGroupList().Array() {
-			var rsp []message.MessageSegment
-			grp := g.Get("group_id").Int()
-			if server, ok := controls[grp]; ok {
-				switch payload.Get("action").Int() {
-				case 2004:
-					if server == payload.Get("data.server").String() || payload.Get("data.server").String() == "-" {
-						rsp =
-							[]message.MessageSegment{
-								message.Text(payload.Get("data.title").String() + "\n" +
-									payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
-							}
+		if cd818, ok := controlCd[payload.Get("data.server").String()+"_818"]; ok && (carbon.Now().Timestamp()-cd818.last) < 3600 {
+			return true
+		} else {
+			controls := jdb.isEnable()
+			for _, g := range ctx.GetGroupList().Array() {
+				var rsp []message.MessageSegment
+				grp := g.Get("group_id").Int()
+				if server, ok := controls[grp]; ok {
+					switch payload.Get("action").Int() {
+					case 2004:
+						if server == payload.Get("data.server").String() || payload.Get("data.server").String() == "-" {
+							rsp =
+								[]message.MessageSegment{
+									message.Text(payload.Get("data.title").String() + "\n" +
+										payload.Get("data.url").String() + "\n" + payload.Get("data.date").String()),
+								}
+						}
 					}
-				}
-				if len(rsp) != 0 {
-					ctx.SendGroupMessage(grp, rsp)
-					process.SleepAbout1sTo2s()
+					if len(rsp) != 0 {
+						controlCd[payload.Get("data.server").String()+"_818"] = cd{
+							last:     carbon.Now().Timestamp(),
+							fileName: "",
+						}
+						ctx.SendGroupMessage(grp, rsp)
+						process.SleepAbout1sTo2s()
+					}
 				}
 			}
 		}
