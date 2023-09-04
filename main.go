@@ -177,7 +177,7 @@ import (
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/antirecall" // 反撤回
 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/mcfish"
+	//_ "github.com/FloatTech/ZeroBot-Plugin/plugin/mcfish"
 
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/leetcode" // 力扣每日一题
 
