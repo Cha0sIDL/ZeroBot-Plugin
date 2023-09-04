@@ -2,6 +2,7 @@
 package aireply
 
 import (
+	"os"
 	"regexp"
 	"strconv"
 	"time"
@@ -75,6 +76,12 @@ func init() { // 插件主体
 	})
 
 	endpre := regexp.MustCompile(`\pP$`)
+	ttscachedir := ent.DataFolder() + "cache/"
+	_ = os.RemoveAll(ttscachedir)
+	err := os.MkdirAll(ttscachedir, 0755)
+	if err != nil {
+		panic(err)
+	}
 	ent.OnMessage(zero.OnlyToMe).SetBlock(true).Limit(ctxext.LimitByUser).
 		Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
@@ -123,27 +130,29 @@ func init() { // 插件主体
 			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text(err))
 			return
 		}
-		if banner, ok := genshin.TestRecord[param]; ok {
-			logrus.Debugln("[tts] banner:", banner, "get sound mode...")
-			// 设置验证
-			speaker, err := ttsmd.getSoundMode(ctx)
-			if err != nil {
-				ctx.SendChain(message.Text("ERROR: ", err))
-				return
-			}
-			logrus.Debugln("[tts] got sound mode, speaking...")
-			rec, err := speaker.Speak(ctx.Event.UserID, func() string { return banner })
-			if err != nil {
-				ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("无法发送测试语音，请重试。"))
-				return
-			}
-			logrus.Debugln("[tts] sending...")
-			if id := ctx.SendChain(message.Record(rec).Add("cache", 0)); id.ID() == 0 {
-				ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("无法发送测试语音，请重试。"))
-				return
-			}
-			time.Sleep(time.Second * 2)
+		banner := genshin.TestRecord[param]
+		if banner == "" {
+			banner = genshin.TestRecord["默认"]
 		}
+		logrus.Debugln("[tts] banner:", banner, "get sound mode...")
+		// 设置验证
+		speaker, err := ttsmd.getSoundMode(ctx)
+		if err != nil {
+			ctx.SendChain(message.Text("ERROR: ", err))
+			return
+		}
+		logrus.Debugln("[tts] got sound mode, speaking...")
+		rec, err := speaker.Speak(ctx.Event.UserID, func() string { return banner })
+		if err != nil {
+			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("无法发送测试语音，请重试。"))
+			return
+		}
+		logrus.Debugln("[tts] sending...")
+		if id := ctx.SendChain(message.Record(rec).Add("cache", 0)); id.ID() == 0 {
+			ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("无法发送测试语音，请重试。"))
+			return
+		}
+		time.Sleep(time.Second * 2)
 		ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("设置成功"))
 	})
 

@@ -32,7 +32,7 @@ type result struct {
 }
 
 func init() { // 主函数
-	en := control.Register("baidu", &ctrl.Options[*zero.Ctx]{
+	en := control.AutoRegister(&ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "baidu\n" +
 			"- 百度下[xxx]\n" +

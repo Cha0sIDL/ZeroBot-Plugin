@@ -408,7 +408,7 @@ func init() {
 					ctx.SendChain(message.Text("Err:", err))
 					return
 				}
-				page, err := browser.NewPage(playwright.BrowserNewContextOptions{
+				page, err := browser.NewPage(playwright.BrowserNewPageOptions{
 					IsMobile: playwright.Bool(true),
 				})
 				if err != nil {
@@ -538,8 +538,8 @@ func init() {
 						ctx.SendChain(message.Text("Err:", err))
 						return
 					}
-					page, err := browser.NewPage(playwright.BrowserNewContextOptions{
-						Viewport: &playwright.ViewportSize{
+					page, err := browser.NewPage(playwright.BrowserNewPageOptions{
+						Viewport: &playwright.Size{
 							Width:  1920,
 							Height: 1080,
 						},

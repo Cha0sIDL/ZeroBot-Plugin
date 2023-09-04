@@ -19,13 +19,12 @@ import (
 )
 
 func init() {
-	engine := control.Register("choose", &ctrl.Options[*zero.Ctx]{
-		DisableOnDefault:  false,
+	engine := control.AutoRegister(&ctrl.Options[*zero.Ctx]{
+		DisableOnDefault: false,
 		PrivateDataFolder: "choose",
-		Brief:             "选择困难症帮手",
-		Help: "choose\n" +
-			"- 选择可口可乐还是百事可乐\n" +
-			"- 选择肯德基还是麦当劳还是必胜客",
+		Brief:            "选择困难症帮手",
+		Help: "例: 选择可口可乐还是百事可乐\n" +
+			"选择肯德基还是麦当劳还是必胜客",
 	})
 	getData := fcext.DoOnceOnSuccess(func(ctx *zero.Ctx) bool {
 		err := file.DownloadTo("https://raw.githubusercontent.com/Cha0sIDL/data/master/what2eat/eating.json",
@@ -82,7 +81,6 @@ func init() {
 			ctx.SendChain(message.Text(lo.Sample(crazy)))
 		})
 }
-
 func handle(ctx *zero.Ctx) {
 	rawOptions := strings.Split(ctx.State["args"].(string), "还是")
 	var options = make([]string, 0)

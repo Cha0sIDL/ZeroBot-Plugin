@@ -36,7 +36,7 @@ func HTML2pic(dataPath string, fileName string, html string, clip ...*playwright
 	if err != nil {
 		playwright.Install() //nolint:errcheck
 	}
-	page, err := browser.NewPage(playwright.BrowserNewContextOptions{
+	page, err := browser.NewPage(playwright.BrowserNewPageOptions{
 		BaseURL: playwright.String("file:///" + file.Pwd() + "/template/"),
 	})
 	if err != nil {
