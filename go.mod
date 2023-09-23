@@ -31,16 +31,15 @@ require (
 	github.com/fumiama/unibase2n v0.0.0-20221020155353-02876e777430
 	github.com/glebarez/sqlite v1.9.0
 	github.com/go-echarts/go-echarts/v2 v2.2.7
-	github.com/go-resty/resty/v2 v2.7.0
-	github.com/gogo/protobuf v1.3.2
-	github.com/golang-module/carbon/v2 v2.2.3
+	github.com/go-resty/resty/v2 v2.8.0
+	github.com/golang-module/carbon/v2 v2.2.8
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jozsefsallai/gophersauce v1.0.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lithammer/fuzzysearch v1.1.5
-	github.com/mileusna/useragent v1.3.3
+	github.com/mileusna/useragent v1.3.4
 	github.com/mroth/weightedrand v1.0.0
 	github.com/notnil/chess v1.9.0
 	github.com/orcaman/concurrent-map/v2 v2.0.1
@@ -51,19 +50,18 @@ require (
 	github.com/samber/lo v1.38.1
 	github.com/shirou/gopsutil/v3 v3.23.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.710
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/nlp v1.0.710
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.710
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.754
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tmt v1.0.754
 	github.com/tidwall/gjson v1.14.4
 	github.com/tidwall/sjson v1.2.5
 	github.com/wcharczuk/go-chart/v2 v2.1.0
 	github.com/wdvxdr1123/ZeroBot v1.7.4
 	gitlab.com/gomidi/midi/v2 v2.0.25
 	golang.org/x/image v0.3.0
-	golang.org/x/sys v0.8.0
-	golang.org/x/text v0.9.0
+	golang.org/x/sys v0.12.0
+	golang.org/x/text v0.13.0
 	gopkg.in/yaml.v3 v3.0.1
-	gorm.io/gorm v1.25.2
+	gorm.io/gorm v1.25.4
 )
 
 require (
@@ -117,12 +115,12 @@ require (
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.4.0 // indirect
+	golang.org/x/crypto v0.13.0 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db // indirect
 	golang.org/x/exp/shiny v0.0.0-20221126150942-6ab00d035af9 // indirect
 	golang.org/x/mobile v0.0.0-20201217150744-e6ae53a27f4f // indirect
 	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/tools v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	modernc.org/libc v1.22.5 // indirect

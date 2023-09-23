@@ -14,7 +14,6 @@ import (
 	"github.com/samber/lo"
 
 	"github.com/FloatTech/ZeroBot-Plugin/config"
-	"github.com/FloatTech/ZeroBot-Plugin/nlp"
 	"github.com/FloatTech/zbputils/control"
 	"github.com/FloatTech/zbputils/ctxext"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -67,7 +66,7 @@ func init() {
 			//	ctx.SendChain(message.Image(b.URL))
 			//} else {
 			msg := ctx.ExtractPlainText()
-			r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.XiaoAiURL, aireply.XiaoAiBotName), nlp.NewTencent(nlp.BotName)})
+			r := lo.Sample([]aireply.AIReply{aireply.NewXiaoAi(aireply.XiaoAiURL, aireply.XiaoAiBotName)})
 			ctx.SendChain(message.Text(r.TalkPlain(ctx.Event.UserID, msg, zero.BotConfig.NickName[0])))
 			//}
 		})
